@@ -1,0 +1,2422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wayne County PreK Enrollment System - Implementation Plan</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-900);
+            background-color: var(--gray-50);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .doc-nav {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .doc-nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: var(--gray-800);
+            text-decoration: none;
+            border-radius: 0.375rem;
+            font-size: 0.9rem;
+            transition: all 0.15s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--gray-100);
+            color: var(--primary);
+        }
+
+        .nav-link.sub {
+            padding-left: 1.25rem;
+            font-size: 0.85rem;
+        }
+
+        .nav-link.collapsible {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .nav-link.collapsible .nav-text {
+            flex: 1;
+        }
+
+        .nav-link.collapsible::after {
+            content: "▼";
+            font-size: 0.7rem;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+            padding: 0.25rem;
+            user-select: none;
+        }
+
+        .nav-link.collapsible::after:hover {
+            background-color: var(--gray-100);
+            border-radius: 0.25rem;
+        }
+
+        .nav-link.collapsible.expanded::after {
+            transform: rotate(180deg);
+        }
+
+        .nav-sublist {
+            display: none;
+            transition: max-height 0.3s ease;
+        }
+
+        .nav-sublist.expanded {
+            display: block;
+        }
+
+        .nav-link.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .nav-link.doc-active {
+            background-color: var(--gray-100);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            max-width: 1200px;
+            padding: 2rem;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--gray-300);
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--gray-800);
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        div[id] {
+            scroll-margin-top: 2rem;
+        }
+
+        .phase-section {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .phase-section.mvp {
+            border-left: 5px solid var(--success);
+        }
+
+        .phase-section.phase2 {
+            border-left: 5px solid var(--warning);
+        }
+
+        .phase-section.future {
+            border-left: 5px solid var(--gray-400);
+        }
+
+        .feature-card {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h4 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .user-story {
+            background: white;
+            border-left: 3px solid var(--primary);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .user-story strong {
+            color: var(--primary);
+        }
+
+        .acceptance-criteria {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .acceptance-criteria h5 {
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .acceptance-criteria ul {
+            margin-left: 1rem;
+        }
+
+        .dependencies {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .dependencies h5 {
+            color: #b45309;
+            margin-bottom: 0.5rem;
+        }
+
+        .open-questions {
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .open-questions h5 {
+            color: #b91c1c;
+            margin-bottom: 0.5rem;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            margin-right: 0.5rem;
+        }
+
+        .tag.mvp {
+            background: var(--success);
+        }
+
+        .tag.phase2 {
+            background: var(--warning);
+        }
+
+        .tag.future {
+            background: var(--gray-400);
+        }
+
+        .note {
+            background: var(--gray-100);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 2rem 0;
+            border-radius: 0 0.375rem 0.375rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+
+            .main {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.nav-link.collapsible').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    this.classList.toggle('expanded');
+                    const sublist = this.closest('.nav-item').querySelector('.nav-sublist');
+                    if (sublist) {
+                        sublist.classList.toggle('expanded');
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">PreK Enrollment</div>
+            <nav>
+                <div class="doc-nav">
+                    <div class="doc-nav-title">Documents</div>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="spec.html" class="nav-link">Specification</a></li>
+                        <li class="nav-item"><a href="features.html" class="nav-link">Features</a></li>
+                        <li class="nav-item"><a href="implementation-plan.html" class="nav-link doc-active">Implementation Plan</a></li>
+                        <li class="nav-item"><a href="development-plan.html" class="nav-link">Development Plan</a></li>
+                        <li class="nav-item"><a href="PROGRESS.html" class="nav-link">Progress</a></li>
+                        <li class="nav-item"><a href="FEATURE_STATUS.html" class="nav-link">Feature Status</a></li>
+                        <li class="nav-item"><a href="DAILY_LOG.html" class="nav-link">Daily Log</a></li>
+                        <li class="nav-item"><a href="KANBAN.html" class="nav-link">Kanban Board</a></li>
+                    </ul>
+                </div>
+                <div class="nav-title">Implementation Phases</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#mvp-overview" class="nav-link">MVP Overview</a></li>
+                    <li class="nav-item">
+                        <a href="#mvp-feature-1" class="nav-link collapsible expanded"><span class="nav-text">MVP Features</span></a>
+                        <ul class="nav-list nav-sublist expanded" style="margin-top: 0.5rem;">
+                            <li class="nav-item"><a href="#mvp-feature-1" class="nav-link sub">1. Granular Permissions</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-2" class="nav-link sub">2. Authentication</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-3" class="nav-link sub">3. County Intake Form</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-4" class="nav-link sub">4. Eligibility Determination</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-5" class="nav-link sub">5. Priority System</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-6" class="nav-link sub">6. Application Lifecycle</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-7" class="nav-link sub">7. Form Builder</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-8" class="nav-link sub">8. District Enrollment Form</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-9" class="nav-link sub">9. Document Upload</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-10" class="nav-link sub">10. PDF Auto-Fill</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-11" class="nav-link sub">11. Capacity & Waitlist</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-12" class="nav-link sub">12. Communications</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-13" class="nav-link sub">13. Parent Portal</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-14" class="nav-link sub">14. Site Visit Scheduling</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-15" class="nav-link sub">15. ASQ Assessment</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-16" class="nav-link sub">16. Classroom Assignment</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-17" class="nav-link sub">17. Multi-language</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-18" class="nav-link sub">18. Multi-child Apps</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-19" class="nav-link sub">19. Application Transfers</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-20" class="nav-link sub">20. Notifications</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-21" class="nav-link sub">21. Reporting</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-22" class="nav-link sub">22. Data Integration</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-23" class="nav-link sub">23. Security & Audit</a></li>
+                            <li class="nav-item"><a href="#mvp-feature-24" class="nav-link sub">24. Responsive Design</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a href="#phase2-features" class="nav-link">Phase 2 Features</a></li>
+                    <li class="nav-item"><a href="#future-features" class="nav-link">Future Features</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header>
+                <h1>Wayne County PreK Enrollment System</h1>
+                <p>Implementation Plan - MVP, Phase 2, and Future Features</p>
+            </header>
+
+        <div class="note">
+            <strong>Note:</strong> This implementation plan converts the high-level requirements from spec.html and features.html into actionable development phases with user stories, acceptance criteria, technical dependencies, and open questions.
+        </div>
+
+        <section id="mvp-overview">
+            <h2>MVP Feature Set</h2>
+            <p>The MVP (Minimum Viable Product) focuses on core enrollment functionality required for the 2025-2026 school year. It enables end-to-end enrollment from parent application through student enrollment, with essential administrative capabilities.</p>
+            
+            <p><strong>MVP Scope:</strong></p>
+            <ul>
+                <li>Granular permission management system with preset permission sets and custom configurations for all admin user types (County Admin, District Admin, School Admin, Teacher)</li>
+                <li>Super Admin preset with all permissions enabled</li>
+                <li>Authentication (local + OAuth for parents, local + SAML/SSO for district staff)</li>
+                <li>County intake form with automatic eligibility determination</li>
+                <li>District enrollment form builder (basic field types)</li>
+                <li>Four-stage application lifecycle (Intake → Enrollment Paperwork → Enrolled → Site Visit)</li>
+                <li>Document upload and verification workflow</li>
+                <li>PDF auto-fill for enrollment forms</li>
+                <li>Capacity and waitlist management</li>
+                <li>Teacher-parent communications (email, SMS, phone logging)</li>
+                <li>Parent portal with status tracking</li>
+                <li>Site visit scheduling and ASQ assessment</li>
+                <li>Classroom assignment</li>
+                <li>Multi-language support (English, Spanish, Arabic)</li>
+                <li>Multi-child applications</li>
+                <li>Application transfers</li>
+                <li>Automated notifications</li>
+                <li>Basic reporting</li>
+                <li>CSV data export for SIS integration</li>
+                <li>Security and audit logging</li>
+                <li>Responsive web design</li>
+            </ul>
+        </section>
+
+        <section id="mvp-feature-1">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 1: Granular Permission Management System</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Super Admin,</strong> I want to have all permissions enabled so that I can perform any system-level task including managing all other users and their permissions.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a County Admin,</strong> I want to create and manage District Admin accounts with preset permissions so that I can delegate district-level management responsibilities.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to create School Admin and Teacher accounts with preset permissions within my district so that schools can manage their enrollment process.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to create custom permission configurations for users so that I can define specialized roles (e.g., IEP Reviewer who can only verify IEPs but not modify permissions).
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to enable multi-school access for teachers and configure which schools they can access so that they can process applications from multiple schools when needed.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a School Admin,</strong> I want to modify Teacher permissions at my school so that I can control what teachers can do without giving them full admin capabilities.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to self-register with email verification so that I can start the enrollment process with fixed permissions appropriate for my role.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li><strong>Permission Presets:</strong> System includes Super Admin, County Admin, District Admin, School Admin, and Teacher presets with pre-configured permissions</li>
+                            <li><strong>Super Admin Preset:</strong> All permissions enabled, can manage all users and permissions across the system</li>
+                            <li><strong>County Admin Preset:</strong> System management permissions for all districts, can manage District Admins, School Admins, and Teachers</li>
+                            <li><strong>District Admin Preset:</strong> District management permissions for assigned district, can manage School Admins and Teachers within district</li>
+                            <li><strong>School Admin Preset:</strong> School management permissions for assigned school, can manage Teachers at school</li>
+                            <li><strong>Teacher Preset:</strong> Application processing, document verification, communication, and site visit permissions for assigned school(s)</li>
+                            <li><strong>Custom Permission Configuration:</strong> Admins can create custom permission sets by selecting individual permissions from logical groupings</li>
+                            <li><strong>Permission Groupings:</strong> Permissions organized into: System Management, District Management, School Management, Teacher, User Management, Data Access</li>
+                            <li><strong>Permission Scope:</strong> Permissions can be scoped to system-wide, district-wide, school-wide, or single school level</li>
+                            <li><strong>Permission Hierarchy:</strong> Higher-level users can modify permissions for lower-level users (Super Admin > County Admin > District Admin > School Admin > Teacher)</li>
+                            <li><strong>User Creation:</strong> When creating users, admins can select a preset or build custom permissions</li>
+                            <li><strong>Permission Modification:</strong> Higher-level admins can edit permissions of lower-level users through a permission modification interface</li>
+                            <li><strong>Permission Enforcement:</strong> System enforces permission checks on all data access and feature usage</li>
+                            <li><strong>Parent Permissions:</strong> Parent users have fixed permissions and cannot be modified</li>
+                            <li><strong>Audit Logging:</strong> All permission changes are logged with timestamp, user, and affected permissions</li>
+                            <li><strong>Access Control Indicators:</strong> UI shows available features based on current user's permissions</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Must be implemented before: Authentication System, any role-specific features</li>
+                            <li>Requires: Database schema for users, roles, and permissions with many-to-many relationship</li>
+                            <li>Requires: JWT authentication middleware with permission claims</li>
+                            <li>Requires: Permission checking middleware/service for all API endpoints</li>
+                            <li>Requires: UI permission checking service to show/hide features based on permissions</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Should there be a permission template system for saving and reusing custom permission configurations?</li>
+                            <li>How should we handle permission conflicts when a user has conflicting permissions from different groupings?</li>
+                            <li>Should there be a permission request workflow where lower-level users can request additional permissions?</li>
+                            <li>How should we handle bulk permission updates (e.g., updating all teachers in a district at once)?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-2">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 2: Authentication System</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to sign in with Google or Microsoft so that I don't have to remember another password.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to create a local username and password so that I can sign in without using external accounts.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a District Staff Member,</strong> I want to sign in with my district SSO so that I don't have to remember separate credentials.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a User,</strong> I want to reset my password via email so that I can regain access if I forget it.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Parents can authenticate via local username/password OR OAuth (Google/Microsoft)</li>
+                            <li>District staff can authenticate via local username/password OR district SAML/SSO</li>
+                            <li>County Admin can authenticate via local username/password with optional SSO configuration</li>
+                            <li>Password reset flow works for local accounts via email verification</li>
+                            <li>Passwords must meet minimum requirements (8+ chars, uppercase, lowercase, number, special character)</li>
+                            <li>Session management with secure JWT tokens</li>
+                            <li>Session timeout after inactivity (configurable)</li>
+                            <li>District Admins can configure SAML/SSO settings for their district (app IDs, credentials)</li>
+                            <li>OAuth and SAML accounts handle password resets through their identity providers</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Must be implemented before: Any authenticated features</li>
+                            <li>Requires: User Role Management, OAuth provider accounts (Google/Microsoft), SAML/SSO library</li>
+                            <li>Integrates with: Netlify Auth or custom auth service</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Which SAML/SSO provider library should we use? (e.g., Auth0, Okta, Passport-SAML)</li>
+                            <li>Should we support multiple OAuth providers beyond Google/Microsoft?</li>
+                            <li>What should the session timeout duration be?</li>
+                            <li>Should we implement multi-factor authentication for admin accounts?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-3">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 3: County Intake Form</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to complete a standardized intake form so that I can apply for PreK enrollment for my child.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want the system to automatically determine my child's eligibility so that I know if they qualify for enrollment.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a County Admin,</strong> I want to add custom fields to the intake form so that I can collect county-specific data.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to rank up to three school preferences so that my child can be placed in my preferred schools.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Intake form includes core required fields: DOB, school selection (up to 3 ranked), income questions, IEP status, housing status</li>
+                            <li>County Admins can add optional custom fields (core fields cannot be removed)</li>
+                            <li>District custom priority questions display conditionally when district schools are selected</li>
+                            <li>System automatically calculates eligibility based on DOB, income, IEP status, and housing status</li>
+                            <li>System displays eligibility status, priority level, and timing restrictions upon submission</li>
+                            <li>Form supports multi-language (English, Spanish, Arabic) with RTL for Arabic</li>
+                            <li>Form can be saved and resumed before final submission</li>
+                            <li>Form validation prevents submission with missing required fields</li>
+                            <li>Parents can apply for multiple children with pre-filled family data</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: Authentication, User Role Management, Automatic Eligibility Determination, Multi-language Support</li>
+                            <li>Integrates with: Form Builder (for custom fields), Enrollment Priority System</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Should the intake form be single-page or multi-page with progress indicator?</li>
+                            <li>How long should draft applications be retained before expiration?</li>
+                            <li>Should there be a character limit on text fields?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-4">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 4: Automatic Eligibility Determination</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to know immediately if my child is eligible for enrollment so that I can understand the enrollment timeline.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a School Admin,</strong> I want to see eligibility determinations for all applications so that I can prioritize reviews.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As the System,</strong> I want to automatically apply timing restrictions based on eligibility factors so that enrollment follows GSRP guidelines.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>DOB eligibility: Child turns 4 on or before Sept 1 = eligible (no timing restriction)</li>
+                            <li>DOB eligibility: Child turns 4 between Sept 2 - Dec 1 = conditionally eligible (hold until Sept 2 if space permits)</li>
+                            <li>Income priority: 0-100% FPL = Priority Tier 1 (no timing restriction)</li>
+                            <li>Income priority: 101-400% FPL = Priority Tier 2 (no timing restriction)</li>
+                            <li>Income priority: 401%+ FPL = Priority Tier 3 (hold until May 1)</li>
+                            <li>Income declined = hold until August 1</li>
+                            <li>IEP status (verified) = high priority regardless of FPL</li>
+                            <li>Housing status (homeless/foster care) = highest priority regardless of FPL</li>
+                            <li>District custom priorities (verified) = priority between IEP and FPL tiers</li>
+                            <li>System calculates FPL percentage from income and family size</li>
+                            <li>Eligibility results display to parents and route to school admins</li>
+                            <li>Applications failing age eligibility are flagged for County Admin review</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: County Intake Form, Enrollment Priority System</li>
+                            <li>Must be implemented before: Application Lifecycle Stage 1 routing</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>What FPL threshold values should be used? (federal poverty guidelines change annually)</li>
+                            <li>How should the system handle leap years for DOB calculations?</li>
+                            <li>Should there be a manual override option for County Admins on eligibility determinations?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-5">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 5: Enrollment Priority System</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As the System,</strong> I want to automatically assign priority levels based on verified eligibility factors so that enrollment follows GSRP guidelines.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to verify IEP documentation so that high priority status is correctly applied.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a School Admin,</strong> I want to verify district custom priority responses so that sibling and other district-specific priorities are applied.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to understand my child's priority level so that I know their placement likelihood.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Priority order (highest to lowest): Housing status → Verified IEP → Verified district custom priorities → FPL tiers</li>
+                            <li>Homeless/foster care status = highest priority regardless of FPL</li>
+                            <li>Verified IEP = high priority regardless of FPL (requires admin verification)</li>
+                            <li>District custom priorities = priority between IEP and FPL tiers (requires admin verification)</li>
+                            <li>FPL 0-100% = Priority Tier 1</li>
+                            <li>FPL 101-400% = Priority Tier 2</li>
+                            <li>FPL 401%+ = Priority Tier 3 (hold until May 1)</li>
+                            <li>Income declined = hold until August 1</li>
+                            <li>District/School Admins can verify IEP documentation with status (Verified/Needs Review/Rejected)</li>
+                            <li>District/School Admins can verify district custom priority responses</li>
+                            <li>System applies enrollment holds based on priority and timing restrictions</li>
+                            <li>Priority level displays on applicant records for admins</li>
+                            <li>Priority level displays to parents in their dashboard</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: Automatic Eligibility Determination, Document Upload & Verification</li>
+                            <li>Must be implemented before: Capacity & Waitlist Management</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>What should happen if IEP verification is rejected? Does priority drop to FPL-based?</li>
+                            <li>How should we handle district custom priority verification disputes?</li>
+                            <li>Should priority be recalculated if verified information changes?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-6">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 6: Application Lifecycle Management</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to see my application's current stage and progress so that I know what to do next.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a School Admin,</strong> I want to assign teachers to applications so that processing can begin.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to transition applications through stages so that enrollment progresses properly.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As the System,</strong> I want to enforce stage transition rules so that the enrollment process follows the defined workflow.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li><strong>Stage 1 (Intake):</strong> Parent submits intake form → School Admin assigns teacher → routes to school</li>
+                            <li><strong>Stage 2 (Enrollment Paperwork):</strong> Parent completes district form + uploads docs → Teacher verifies → all verified = transition to Stage 3</li>
+                            <li><strong>Stage 3 (Enrolled):</strong> Teacher marks enrolled → assigns classroom → student can attend</li>
+                            <li><strong>Stage 4 (Site Visit):</strong> Student attending + teacher calendar configured → parent schedules → teacher conducts ASQ</li>
+                            <li>Parents see current stage indicator, progress bar, and available actions</li>
+                            <li>Parents see "Waiting for" status indicating what they need</li>
+                            <li>Stage transitions trigger automated notifications to appropriate parties</li>
+                            <li>System prevents invalid stage transitions (e.g., can't skip verification)</li>
+                            <li>Teachers can view all applications at their assigned stage(s)</li>
+                            <li>Admins can view applications across all stages</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: All core features (forms, eligibility, documents, communications)</li>
+                            <li>Must be implemented before: Parent Portal Status Tracking</li>
+                            <li>Requires: State machine for application status transitions</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Should applications be able to move backward in stages (e.g., from Enrolled back to Paperwork for corrections)?</li>
+                            <li>What happens if a parent withdraws an application mid-process?</li>
+                            <li>Should there be a "cancelled" or "withdrawn" status?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-7">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 7: Form Builder (Basic)</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to create custom enrollment forms so that I can collect district-specific information.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to use drag-and-drop field placement so that form creation is intuitive.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to set validation rules on fields so that submitted data is accurate.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to complete forms in multiple languages so that I can use my preferred language.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria (MVP - Basic Field Types Only)</h5>
+                        <ul>
+                            <li><strong>Supported field types (MVP):</strong> Text, Textarea, Number, Date, Email, Phone, Single Select, Radio, Checkbox, Multi-select Checkbox, File Upload</li>
+                            <li>District Admins can create forms using drag-and-drop interface</li>
+                            <li>Admins can configure field properties: label, placeholder, required, help text, validation rules</li>
+                            <li>Admins can create conditional show/hide logic based on previous field values</li>
+                            <li>Forms support multi-language labels (English, Spanish, Arabic)</li>
+                            <li>Admins can preview forms before publishing</li>
+                            <li>Forms can be versioned (new versions preserve existing submissions)</li>
+                            <li>Field validation includes: required, min/max length, pattern matching, date ranges</li>
+                            <li>File upload fields accept PDF, JPG, PNG with size limits</li>
+                            <li><strong>NOT in MVP:</strong> Advanced calculations, offline support, template library, custom collection builder</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: Authentication, User Role Management</li>
+                            <li>Must be implemented before: District Enrollment Form</li>
+                            <li>Requires: Multi-language Support infrastructure</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>What is the maximum number of fields per form?</li>
+                            <li>Should there be a limit on conditional logic complexity?</li>
+                            <li>How should we handle form deletion when submissions exist?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-8">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 8: District Enrollment Form</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to complete district-specific enrollment forms immediately after intake so that I can move forward in the process.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to build custom enrollment forms so that I can collect required district information.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to review district enrollment forms for completeness so that I can verify all required information.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Parents automatically proceed to district enrollment form after completing intake</li>
+                            <li>District enrollment form is built by District Admin using Form Builder</li>
+                            <li>Form includes district-specific questions and document upload requirements</li>
+                            <li>Common fields: proof of residency, income verification, immunization records, custody documents</li>
+                            <li>Form supports multi-language (English, Spanish, Arabic)</li>
+                            <li>Form can be saved and resumed before final submission</li>
+                            <li>Teachers can review form for completeness</li>
+                            <li>Teachers can mark form sections as complete/incomplete</li>
+                            <li>Form submission triggers Stage 2 verification process</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: Form Builder, County Intake Form, Application Lifecycle Management</li>
+                            <li>Must be implemented before: Document Upload & Verification</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Should districts share form templates with each other?</li>
+                            <li>What happens if a district changes their form after some parents have submitted?</li>
+                            <li>Should there be required vs optional document types?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-9">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 9: Document Upload & Verification</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to upload required documents so that my child's enrollment can be verified.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to upload photos from my phone and have them converted to PDF so that I can submit documents easily.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to review uploaded documents and mark them as verified or needing correction so that enrollment can proceed.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to request specific document corrections with explanations so that parents know exactly what to fix.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Parents can upload documents during enrollment paperwork stage</li>
+                            <li>Accepted file types: PDF, JPG, PNG with size limits (e.g., 10MB max)</li>
+                            <li>Built-in photo-to-PDF converter for mobile devices when uploading images</li>
+                            <li>System validates file types and displays upload confirmation</li>
+                            <li>Teachers review each document and mark as: Verified, Needs Correction, or Missing</li>
+                            <li>Teachers can request specific corrections with text explanations</li>
+                            <li>Parents receive notifications when corrections are needed</li>
+                            <li>Parents can upload corrected documents</li>
+                            <li>Real-time status display for parents (Verified, Pending, Action Required)</li>
+                            <li>Audit trail of all document verifications with timestamps and reviewer</li>
+                            <li>Common document types: proof of residency, income verification, immunization records, custody documents</li>
+                            <li>Teachers can download documents for review</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: District Enrollment Form, Application Lifecycle Management</li>
+                            <li>Must be implemented before: PDF Auto-Fill, Stage 2 completion</li>
+                            <li>Requires: Netlify Blob for document storage, image-to-PDF conversion library</li>
+                        </ul>
+                    </div>
+
+                    <div class="note">
+                        <h5>Document Storage Architecture (Netlify Blob)</h5>
+                        <p><strong>Storage Solution:</strong> Netlify Blob for object storage with application-level access control</p>
+                        <p><strong>Architecture Pattern:</strong></p>
+                        <ul>
+                            <li><strong>Storage:</strong> Documents stored in Netlify Blob with CDN delivery</li>
+                            <li><strong>Metadata:</strong> Document ownership (applicationId, studentId, schoolId, districtId) stored in MongoDB</li>
+                            <li><strong>Access Control:</strong> Server routes check user permissions before serving files (never expose direct Blob URLs)</li>
+                            <li><strong>Permission Enforcement:</strong> Hierarchical access based on user roles (Parents → own documents, Teachers → assigned school(s), School Admins → their school, District Admins → district schools, County Admins → system-wide)</li>
+                            <li><strong>Security:</strong> Signed URLs with expiration for temporary access, server-side proxy for all file requests</li>
+                        </ul>
+                        <p><strong>Implementation:</strong></p>
+                        <ul>
+                            <li>Create server routes like <code>/api/documents/[documentId]</code> that check permissions before fetching from Blob</li>
+                            <li>Generate short-lived signed URLs after permission verification</li>
+                            <li>Reference MongoDB metadata to validate user has access to requested document</li>
+                            <li>Stream file content from Blob storage through authenticated server route</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>What file size limit should we enforce?</li>
+                            <li>Should documents be virus-scanned on upload?</li>
+                            <li>How long should documents be retained after enrollment is complete?</li>
+                            <li>Should there be a document expiration or renewal requirement?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-10">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 10: PDF Auto-Fill</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to generate completed PDF enrollment forms with one click so that I don't have to manually fill out paperwork.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to upload fillable PDF templates and map fields so that the system can auto-populate them.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to batch generate PDFs for multiple applicants so that I can process forms efficiently.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Admins can upload fillable PDF templates for each form type</li>
+                            <li>Admins can map form fields to PDF form fields via visual interface</li>
+                            <li>System supports multiple PDF templates (county intake, district enrollment, etc.)</li>
+                            <li>PDF template versioning supported</li>
+                            <li>Smart field matching by name or label</li>
+                            <li>Manual field mapping for fields that don't auto-match</li>
+                            <li>Multi-value support for repeating fields (household members, income sources)</li>
+                            <li>Calculated fields (age, income-to-FPL ratio) included in PDF output</li>
+                            <li>One-click PDF generation from applicant records</li>
+                            <li>Batch PDF generation for multiple applicants</li>
+                            <li>Teachers and admins can download completed forms for their assigned schools</li>
+                            <li>Audit trail logs all PDF generations with user, timestamp, and applicant</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: Document Upload & Verification, County Intake Form, District Enrollment Form</li>
+                            <li>Requires: PDF manipulation library (e.g., pdf-lib, pdffiller)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Which PDF library should we use for form filling?</li>
+                            <li>Should PDFs be stored or generated on-demand?</li>
+                            <li>How should we handle PDF templates that don't match field names?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-11">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 11: Capacity & Waitlist Management</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to configure capacity for each school so that enrollment is managed appropriately.
+                    </strong>
+                    
+                    <div class="user-story">
+                        <strong>As the System,</strong> I want to automatically route applications to first-choice schools with available capacity so that placement is efficient.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As the System,</strong> I want to automatically maintain waitlists for full schools so that spots are filled by priority when they open.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a School Admin,</strong> I want to view capacity status and waitlist positions so that I can manage enrollment effectively.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>District Admins configure capacity for each school in their district</li>
+                            <li>System automatically routes applications to first-choice school with available capacity</li>
+                            <li>If first choice is full, routes to next available choice in parent's ranked list</li>
+                            <li>Applications for full schools placed on automated waitlists</li>
+                            <li>Waitlists ordered by priority (housing > IEP > district custom > FPL tiers)</li>
+                            <li>When spots open, system fills from waitlist based on priority order</li>
+                            <li>System maintains 10% allocation hold for 0-400% FPL students until September 1</li>
+                            <li>Waitlist must be maintained and reportable for Spring Early Childhood Collection</li>
+                            <li>Subrecipients can refer waitlisted families to (313) 410-4588 or FindPREK.org</li>
+                            <li>Capacity status dashboard showing enrollment vs. available spots</li>
+                            <li>Automated waitlist movement notifications to parents when spots open</li>
+                            <li>Students absent 2 weeks without notice are removed and placed at top of waitlist for their site</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: Enrollment Priority System, Application Lifecycle Management</li>
+                            <li>Must be implemented before: Application routing logic</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Should capacity be configurable per classroom or per school?</li>
+                            <li>How should we handle over-enrollment if capacity is exceeded?</li>
+                            <li>Should waitlist position be visible to parents?</li>
+                            <li>What happens if a parent declines a waitlist offer?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-12">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 12: Teacher-Parent Communications</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to send emails to parents directly from applicant records so that I don't have to switch applications.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to send SMS messages to parents for quick updates so that communication is timely.
+                    </strong>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to log phone calls with parents so that all communication is tracked.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to see all communication history in one place so that I can track interactions.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria (MVP - Basic Communications)</h5>
+                        <ul>
+                            <li>Teachers can send emails directly from applicant records</li>
+                            <li>Email templates for common communications (document requests, reminders)</li>
+                            <li>Rich text editor with formatting options</li>
+                            <li>Email tracking with timestamp and status</li>
+                            <li>Parent email replies logged in communication history (forwarded to teacher email)</li>
+                            <li>Teachers can send SMS directly from applicant records</li>
+                            <li>SMS templates for quick messaging</li>
+                            <li>Character counter to avoid message splitting</li>
+                            <li>Parent SMS replies logged in communication history</li>
+                            <li>Notification badge in navigation bar showing unread replies</li>
+                            <li>Teachers can log phone calls with date, duration, summary, outcome</li>
+                            <li>Teachers can log in-person meetings with notes</li>
+                            <li>Unified timeline showing all communication types chronologically</li>
+                            <li>Filter communication history by type (email, SMS, phone, meeting)</li>
+                            <li>System automatically records "date of last contact" for each applicant</li>
+                            <li>Reports show "days since last contact" for all applicants</li>
+                            <li>Applications with no contact for 7+ days flagged for follow-up</li>
+                            <li><strong>NOT in MVP:</strong> Bulk email to multiple parents, WebSocket real-time updates</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: Authentication, Application Lifecycle Management</li>
+                            <li>Requires: Email service (Mailgun), SMS service (Twilio)</li>
+                            <li>Requires: Email forwarding/webhook setup for reply handling</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Should teachers be able to send bulk emails to multiple parents?</li>
+                            <li>How should we handle SMS delivery failures?</li>
+                            <li>Should there be communication templates at the district level?</li>
+                            <li>What is the character limit for SMS messages?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-13">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 13: Parent Portal & Status Tracking</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to see my application's current stage and progress so that I know what to do next.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to see document verification status so that I know which documents need attention.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to access communication history so that I can review all interactions.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to receive notifications for key events so that I stay informed.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Application dashboard with stage indicator (Intake, Enrollment Paperwork, Enrolled, Site Visit)</li>
+                            <li>Progress bar showing completion percentage through enrollment lifecycle</li>
+                            <li>Available actions list based on current stage</li>
+                            <li>"Waiting for" status indicating what parent is waiting for</li>
+                            <li>Stage-specific details displayed:
+                                <ul>
+                                    <li>Intake: form completion, document upload, teacher assignment notification</li>
+                                    <li>Enrollment Paperwork: form completion, document verification status, correction action items</li>
+                                    <li>Enrolled: classroom assignment, teacher contact, orientation details</li>
+                                    <li>Site Visit: teacher assignment, available time slots, scheduled visit, location confirmation</li>
+                                </ul>
+                            </li>
+                            <li>Document status dashboard showing Verified, Pending, Action Required for each document</li>
+                            <li>Clear instructions for any needed corrections</li>
+                            <li>Communication timeline showing all interactions chronologically</li>
+                            <li>Notifications center for alerts and status updates</li>
+                            <li>Multi-child application list view on parent dashboard</li>
+                            <li>Switch between child applications from dashboard</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: Application Lifecycle Management, Document Upload & Verification, Teacher-Parent Communications</li>
+                            <li>Requires: Multi-child Applications</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Should parents be able to download their application data?</li>
+                            <li>Should parents be able to withdraw applications themselves?</li>
+                            <li>How long should notification history be retained?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-14">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 14: Site Visit Scheduling</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to configure my calendar availability after student enrollment so that parents can schedule visits.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to self-schedule site visits from available time slots so that I can choose a convenient time.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to reschedule visits up to 24 hours before so that I can adjust if needed.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to conduct and log site visit outcomes so that assessments are tracked.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Teachers configure availability windows after student enrollment and during early school year</li>
+                            <li>Teachers set recurring or one-time availability slots</li>
+                            <li>Teachers configure default visit duration (45 minutes)</li>
+                            <li>Teachers set travel buffer times to prevent impossible scheduling</li>
+                            <li>Parents receive notification to schedule site visit after student starts attending school</li>
+                            <li>Parents self-schedule from teacher's available time slots</li>
+                            <li>Parents can reschedule up to 24 hours before visit</li>
+                            <li>Parents confirm visit location (home, library, community center)</li>
+                            <li>Visits must be in private space (never public spaces)</li>
+                            <li>Teachers conduct 45-minute home visit in private space</li>
+                            <li>Teachers log visit outcomes and next steps</li>
+                            <li>Teachers upload documents collected during visit (photo-to-PDF conversion on mobile)</li>
+                            <li>Second visit scheduled after assessment checkpoint for kindergarten transition review</li>
+                            <li>Automated reminders sent before scheduled visits</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: Application Lifecycle Management (Stage 3 - Enrolled)</li>
+                            <li>Requires: Teacher-Parent Communications for notifications</li>
+                            <li>Requires: Calendar/scheduling library</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>What calendar library should we use?</li>
+                            <li>Should teachers be able to block off specific dates (holidays, vacations)?</li>
+                            <li>How should we handle timezone differences?</li>
+                            <li>Should there be a maximum number of visits per day?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-15">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 15: Ages and Stages Assessment</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to complete the Ages and Stages Questionnaire during site visits so that I can assess child development.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to discuss child's progress and set goals so that I can support development.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to log visit outcomes and upload documents so that assessments are tracked.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Teacher conducts 45-minute home visit in private space after student enrollment</li>
+                            <li>Teacher completes Ages and Stages Questionnaire assessment during visit</li>
+                            <li>Teacher discusses child's progress and development with family</li>
+                            <li>Teacher shares curriculum and program information</li>
+                            <li>Teacher sets goals for the child</li>
+                            <li>Teacher logs visit outcomes and next steps in system</li>
+                            <li>Teacher uploads documents received from parents during visit</li>
+                            <li>Photo-to-PDF conversion available on mobile devices for document uploads</li>
+                            <li>Second visit scheduled after assessment checkpoint for kindergarten transition review</li>
+                            <li>Assessment history view tracking development over time</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: Site Visit Scheduling</li>
+                            <li>Requires: Document Upload & Verification (for uploading visit documents)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Should the ASQ form be built using the Form Builder or a separate module?</li>
+                            <li>Should ASQ results be integrated with reporting?</li>
+                            <li>Should parents be able to view ASQ assessment results?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-16">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 16: Classroom Assignment</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to assign enrolled students to classrooms so that they have a designated learning environment.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a School Admin,</strong> I want to monitor classroom ratios so that compliance is maintained.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to receive classroom assignment notification so that I know where my child will attend.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Students must be fully enrolled with all documents verified before assignment</li>
+                            <li>Teachers assign students to classrooms based on age, IEP status, and program requirements</li>
+                            <li>System reports classroom ratios (typically 10:1 or 12:1)</li>
+                            <li>Teachers coordinate orientation scheduling with families</li>
+                            <li>Program type assignment: Extended day (5-day) or Half-day (4-day) based on availability</li>
+                            <li>Start date coordinated with family schedule and program orientation</li>
+                            <li>Sibling placement priority to keep siblings in same school when possible</li>
+                            <li>Parents receive official classroom assignment notification</li>
+                            <li>Teacher contact information provided with assignment</li>
+                            <li>Orientation scheduling coordinated by assigned teacher</li>
+                            <li>Capacity tracking for each classroom</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: Application Lifecycle Management (Stage 3 - Enrolled)</li>
+                            <li>Requires: Capacity & Waitlist Management</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Should classroom assignment be manual or automatic based on criteria?</li>
+                            <li>Should there be maximum classroom sizes?</li>
+                            <li>How should we handle classroom changes after assignment?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-17">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 17: Multi-language Support</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a User,</strong> I want to select my preferred language so that I can use the system in my native language.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As an Arabic-speaking User,</strong> I want right-to-left layout so that the interface is readable.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As an Admin,</strong> I want to configure language-specific content so that forms are available in multiple languages.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Users select preferred language during account creation or from settings</li>
+                            <li>System displays all forms, labels, and messages in selected language</li>
+                            <li>Supported languages: English, Spanish, Arabic</li>
+                            <li>Admins configure language-specific content for custom fields</li>
+                            <li>Arabic users see right-to-left layout automatically</li>
+                            <li>Language-specific date and number formatting</li>
+                            <li>Multi-language form preview for admins</li>
+                            <li>Language selector in header or settings</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: Authentication (for language preference storage)</li>
+                            <li>Must be implemented before: Form Builder, County Intake Form, District Enrollment Form</li>
+                            <li>Requires: Internationalization (i18n) library</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Which i18n library should we use? (e.g., vue-i18n, i18next)</li>
+                            <li>Should we support additional languages in the future?</li>
+                            <li>How should we handle language-specific validation messages?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-18">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 18: Multi-child Applications</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to apply for multiple children so that I don't have to re-enter family information.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want family data pre-filled from the first application so that subsequent applications are faster.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to switch between child applications so that I can manage each child's enrollment.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Parents complete application for first child</li>
+                            <li>"Add another child" button on application completion</li>
+                            <li>System pre-fills parent/guardian and household data from first application</li>
+                            <li>Parents complete child-specific information for each additional child</li>
+                            <li>Each child has a separate application record linked to the same parent account</li>
+                            <li>Pre-filled form fields with parent/household data</li>
+                            <li>Child list view on parent dashboard showing all applications</li>
+                            <li>Switch between child applications from dashboard</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: County Intake Form, District Enrollment Form</li>
+                            <li>Requires: Parent Portal</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Is there a maximum number of children per parent account?</li>
+                            <li>Should siblings be automatically linked in the system?</li>
+                            <li>How should we handle different school preferences for siblings?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-19">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 19: Application Transfers</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a County Admin,</strong> I want to transfer applicants between schools so that I can manage enrollment flexibly.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to transfer applicants to another school in my district if selected by parent so that I can accommodate family preferences.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As an Admin,</strong> I want all application data preserved during transfer so that no information is lost.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>County Admins can transfer any applicant to any school in the system</li>
+                            <li>District Admins can transfer applicants to another school in their district if selected by parent</li>
+                            <li>System preserves all application data, documents, and verification status during transfer</li>
+                            <li>Receiving school admins and teachers gain access to transferred applicant</li>
+                            <li>Transfer interface on applicant records for authorized admins</li>
+                            <li>School selection dropdown for transfer destination</li>
+                            <li>Transfer confirmation with data preservation notice</li>
+                            <li>Transfer history log on applicant records</li>
+                            <li>Transfer triggers notification to receiving school staff</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: User Role Management, Application Lifecycle Management</li>
+                            <li>Requires: Capacity & Waitlist Management</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Should parents be notified when their child's application is transferred?</li>
+                            <li>Should there be an approval workflow for transfers?</li>
+                            <li>How should we handle transfers when destination school is at capacity?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-20">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 20: Automated Notifications</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to receive automatic notifications for key events so that I stay informed without checking the system.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to receive notifications for new applications and document submissions so that I can respond promptly.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As an Admin,</strong> I want to receive notifications for capacity thresholds so that I can manage enrollment proactively.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>System automatically sends notifications based on enrollment stage transitions</li>
+                            <li>Parents receive notifications for: application received, placement, document requests, site visits, enrollment complete</li>
+                            <li>Teachers receive notifications for: new applications, document submissions, communication replies</li>
+                            <li>Admins receive notifications for: capacity thresholds, system events</li>
+                            <li>Notifications sent via email and SMS</li>
+                            <li>Notification preferences in user settings (opt-out options)</li>
+                            <li>Email and SMS delivery status tracking</li>
+                            <li>Notification templates for admins to customize messaging</li>
+                            <li>Notification center showing all alerts and status updates</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: Application Lifecycle Management, Teacher-Parent Communications</li>
+                            <li>Requires: Email service (Mailgun), SMS service (Twilio)</li>
+                            <li>Requires: Notification queue/job system</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>What notification events should be configurable?</li>
+                            <li>Should there be notification digest options (daily/weekly)?</li>
+                            <li>How should we handle notification delivery failures?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-21">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 21: Reporting (Basic)</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a County Admin,</strong> I want to view system-wide enrollment statistics so that I can monitor overall enrollment.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to generate reports for my district so that I can track enrollment and waitlist status.
+                    </strong>
+                    
+                    <div class="user-story">
+                        <strong>As a School Admin,</strong> I want to access school-specific reports so that I can manage my school's enrollment.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As an Admin,</strong> I want to export reports in various formats so that I can submit data to state agencies.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria (MVP - Basic Reports)</h5>
+                        <ul>
+                            <li>County Admins view system-wide enrollment statistics and demographics</li>
+                            <li>District Admins generate reports for their district including enrollment and waitlist status</li>
+                            <li>School Admins access school-specific reports and classroom data</li>
+                            <li>Admins export reports in CSV and PDF formats</li>
+                            <li>Report types: enrollment statistics, waitlist reports, demographics reporting, contact activity metrics</li>
+                            <li>Filter controls for date range, school, district, and status</li>
+                            <li><strong>NOT in MVP:</strong> Scheduled report generation, advanced analytics, custom report builder</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: All core features that generate data</li>
+                            <li>Requires: Data aggregation and query optimization</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Which reporting library should we use? (e.g., Chart.js, D3.js)</li>
+                            <li>Should reports be real-time or cached?</li>
+                            <li>What is the maximum date range for reports?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-22">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 22: Data Integration (CSV Export Only)</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to export enrollment data in CSV format so that I can manually import into our Student Information System.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to configure field mapping for different SIS formats so that exports match our requirements.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria (MVP - CSV Export Only)</h5>
+                        <ul>
+                            <li>District Admins export enrollment data in CSV format for manual SIS import</li>
+                            <li>System supports field mapping configuration for different SIS formats</li>
+                            <li>Export interface with filter options (date range, status, school)</li>
+                            <li>Export history and status tracking</li>
+                            <li>Community Based Organizations utilize MiSTAR for 25-26 SY enrollment</li>
+                            <li><strong>NOT in MVP:</strong> Direct API integration with PowerSchool, MIStar, Infinite Campus, webhooks, JSON import/export</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: All core enrollment features</li>
+                            <li>Requires: CSV generation library</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>What CSV format specifications should we support?</li>
+                            <li>Should there be standard templates for common SIS systems?</li>
+                            <li>How should we handle special characters in CSV exports?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-23">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 23: Security & Audit Logging</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Security Admin,</strong> I want all data access events logged so that I can track who viewed what information.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Compliance Officer,</strong> I want audit logs for enrollment decisions so that I can ensure FERPA compliance.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a System Admin,</strong> I want data retention policies enforced so that old data is archived appropriately.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>FERPA-focused audit logging for: data access events, document uploads/downloads, enrollment decisions, status changes, admin configuration changes</li>
+                            <li>All audit logs include timestamp, user, action, and affected records</li>
+                            <li>Indefinite retention of all application and enrollment data</li>
+                            <li>Automatic archival of records older than 5 years to cold storage</li>
+                            <li>Archived data remains accessible with retrieval time considerations</li>
+                            <li>Real-time replication with point-in-time recovery (managed by database provider)</li>
+                            <li>Automated daily backups with 30-day retention</li>
+                            <li>Cross-region backup replication for disaster recovery</li>
+                            <li>Continuous vulnerability monitoring of dependencies and application code</li>
+                            <li>Annual penetration testing by third-party security firm</li>
+                            <li>Automated security scanning in CI/CD pipeline</li>
+                            <li>Incident response procedures aligned with FERPA breach notification requirements</li>
+                            <li>Authorized admins can review audit logs for compliance and troubleshooting</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: All features that access/modify data</li>
+                            <li>Requires: Audit logging middleware</li>
+                            <li>Requires: Managed database service with backup capabilities</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Which audit logging solution should we use?</li>
+                            <li>Should audit logs be searchable?</li>
+                            <li>What is the retention period for audit logs vs application data?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mvp-feature-24">
+            <div class="phase-section mvp">
+                <h3>MVP Feature 24: Responsive Web Design</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to access the system from my mobile phone so that I can complete applications on the go.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want touch-friendly controls so that using the system on mobile is easy.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to use the system on a tablet so that I can conduct site visits and complete assessments.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Responsive layout that adjusts to desktop, tablet, and mobile screens</li>
+                            <li>Touch-optimized buttons and form controls</li>
+                            <li>Mobile-specific navigation patterns</li>
+                            <li>Camera integration for mobile document capture</li>
+                            <li>Photo-to-PDF converter available on mobile devices</li>
+                            <li>Users access system from any device with web browser</li>
+                            <li>Interface automatically adapts to screen size and device type</li>
+                            <li><strong>NOT in MVP:</strong> Progressive Web App (PWA), native mobile apps</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: CSS framework with responsive design capabilities</li>
+                            <li>Requires: Mobile-specific UI components</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Which CSS framework should we use? (e.g., Tailwind CSS, Bootstrap)</li>
+                            <li>What minimum screen sizes should we support?</li>
+                            <li>Should we optimize for specific mobile devices?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="phase2-features">
+            <h2>Phase 2 Features</h2>
+            <p>Phase 2 features build upon the MVP foundation to enhance capabilities, improve user experience, and add integrations that were deferred from MVP to accelerate initial delivery.</p>
+
+            <div class="phase-section phase2">
+                <h3>Phase 2 Feature 1: Advanced Form Builder Features</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to create calculated fields so that I can auto-compute values from other form responses.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to create custom collection fields so that I can collect repeatable data (e.g., vehicles, previous schools).
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to save field templates so that I can reuse configurations across forms.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li><strong>Calculated Fields:</strong> Auto-calculation from other field values (e.g., income-to-FPL ratio, age from birthdate)</li>
+                            <li><strong>Score Generation:</strong> Calculate eligibility scores based on multiple criteria</li>
+                            <li><strong>Dynamic Text:</strong> Display calculated or conditional text based on form responses</li>
+                            <li><strong>Visibility Control:</strong> Computed fields configurable as visible to applicants, admins only, or hidden entirely</li>
+                            <li><strong>Custom Collection Builder:</strong> Create repeatable collections with any combination of field types</li>
+                            <li><strong>Collection Configuration:</strong> Set minimum/maximum entries, collection-level validation</li>
+                            <li><strong>Field Templates:</strong> Save configured fields as reusable templates</li>
+                            <li><strong>Form Templates:</strong> Clone entire forms with modifications</li>
+                            <li><strong>Shared Component Library:</strong> Districts can share custom field collections</li>
+                            <li><strong>Form Analytics:</strong> Completion tracking, field-level analytics, time-to-complete metrics</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: MVP Form Builder</li>
+                            <li>Requires: Expression evaluation library for calculated fields</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Which expression language should we use for calculated fields?</li>
+                            <li>Should there be a marketplace for sharing form templates?</li>
+                            <li>How should we handle version conflicts when sharing templates?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-section phase2">
+                <h3>Phase 2 Feature 2: Direct SIS API Integration</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to integrate directly with our Student Information System so that data syncs automatically.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a System Admin,</strong> I want to configure SIS integrations so that enrollment data flows to school systems.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>REST API integration with PowerSchool, MIStar, and Infinite Campus</li>
+                            <li>Field mapping configuration for SIS integration</li>
+                            <li>Synchronization status monitoring and error handling</li>
+                            <li>Bi-directional sync where supported by SIS</li>
+                            <li>Automatic sync scheduling (configurable intervals)</li>
+                            <li>Conflict resolution for data discrepancies</li>
+                            <li>Integration testing tools for validation</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: MVP Data Integration (CSV export)</li>
+                            <li>Requires: API client libraries for each SIS platform</li>
+                            <li>Requires: Job scheduling system for sync tasks</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Which SIS platforms should we prioritize?</li>
+                            <li>Should we use a unified API gateway or individual integrations?</li>
+                            <li>How should we handle SIS API rate limits?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-section phase2">
+                <h3>Phase 2 Feature 3: Webhooks for Event Notifications</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want to configure webhooks so that external systems receive event notifications.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Developer,</strong> I want to subscribe to system events so that I can build custom integrations.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Webhooks for key events: application submitted, status changed, enrollment complete, document uploaded</li>
+                            <li>Retry logic for failed webhook deliveries</li>
+                            <li>Webhook configuration interface (URL, events, authentication)</li>
+                            <li>Webhook delivery logs and status tracking</li>
+                            <li>Signature verification for webhook security</li>
+                            <li>Event payload documentation</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: MVP Application Lifecycle Management</li>
+                            <li>Requires: Webhook delivery system with retry queue</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>What events should be available for webhooks?</li>
+                            <li>What retry policy should we use?</li>
+                            <li>Should we support webhook authentication methods?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-section phase2">
+                <h3>Phase 2 Feature 4: Offline Form Support</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a Parent,</strong> I want to complete forms without internet so that I can apply even in areas with poor connectivity.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As a Teacher,</strong> I want to complete site visit assessments offline so that I can work during home visits without connectivity.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Forms cache locally to work when internet is unavailable</li>
+                            <li>Pending submissions automatically sync when connectivity is restored</li>
+                            <li>Smart merging when offline changes conflict with server data</li>
+                            <li>Offline indicator showing sync status</li>
+                            <li>Conflict resolution interface for users</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: MVP Form Builder, MVP Responsive Web Design</li>
+                            <li>Requires: Service Worker or PWA capabilities</li>
+                            <li>Requires: Local storage/IndexedDB</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Should we implement PWA or use service workers directly?</li>
+                            <li>What data should be cached offline?</li>
+                            <li>How should we handle large document uploads offline?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-section phase2">
+                <h3>Phase 2 Feature 5: Advanced Reporting & Analytics</h3>
+                
+                <div class="feature-card">
+                    <h4>User Stories</h4>
+                    
+                    <div class="user-story">
+                        <strong>As a County Admin,</strong> I want scheduled reports so that I receive regular enrollment updates without manual requests.
+                    </strong>
+                    
+                    <div class="user-story">
+                        <strong>As a District Admin,</strong> I want custom report builders so that I can create reports specific to my needs.
+                    </div>
+                    
+                    <div class="user-story">
+                        <strong>As an Admin,</strong> I want advanced analytics so that I can identify trends and make data-driven decisions.
+                    </div>
+                    
+                    <div class="acceptance-criteria">
+                        <h5>Acceptance Criteria</h5>
+                        <ul>
+                            <li>Scheduled report generation for recurring needs</li>
+                            <li>Custom report builder with drag-and-drop field selection</li>
+                            <li>Advanced analytics with trend analysis</li>
+                            <li>Data visualization with interactive charts</li>
+                            <li>Report sharing and collaboration features</li>
+                            <li>Drill-down capabilities from summary to detail</li>
+                            <li>Dashboard customization for different user roles</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: MVP Reporting</li>
+                            <li>Requires: Advanced charting/analytics library</li>
+                            <li>Requires: Report scheduling system</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="open-questions">
+                        <h5>Open Questions</h5>
+                        <ul>
+                            <li>Which analytics library should we use?</li>
+                            <li>What scheduling intervals should we support?</li>
+                            <li>Should reports be exportable to additional formats?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="future-features">
+            <h2>Future Features</h2>
+            <p>Future features are potential enhancements that may be considered based on user feedback, operational needs, and strategic priorities. These are not currently committed to any release timeline.</p>
+
+            <div class="phase-section future">
+                <h3>Future Feature 1: Progressive Web App (PWA)</h3>
+                
+                <div class="feature-card">
+                    <h4>Description</h4>
+                    <p>Convert the responsive web application to a Progressive Web App for improved mobile experience, including installability, push notifications, and better offline capabilities.</p>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: MVP Responsive Web Design, Phase 2 Offline Support</li>
+                            <li>Requires: PWA manifest, service worker enhancements</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-section future">
+                <h3>Future Feature 2: Native Mobile Applications</h3>
+                
+                <div class="feature-card">
+                    <h4>Description</h4>
+                    <p>Develop native iOS and Android applications for parents and teachers to provide a more optimized mobile experience with device-specific features.</p>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: Mobile development team (React Native, Flutter, or native)</li>
+                            <li>Requires: Mobile app store deployment process</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-section future">
+                <h3>Future Feature 3: Interactive In-App Tutorial</h3>
+                
+                <div class="feature-card">
+                    <h4>Description</h4>
+                    <p>Replace email welcome guides with interactive in-app tutorials/walkthroughs for first-time users to improve onboarding experience.</p>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: User onboarding/tutorial library</li>
+                            <li>Requires: Tutorial content creation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-section future">
+                <h3>Future Feature 4: Multi-Factor Authentication (MFA)</h3>
+                
+                <div class="feature-card">
+                    <h4>Description</h4>
+                    <p>Add multi-factor authentication for admin accounts to enhance security for sensitive operations.</p>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: MFA library/service integration</li>
+                            <li>Requires: User interface for MFA setup and verification</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-section future">
+                <h3>Future Feature 5: Bulk Operations</h3>
+                
+                <div class="feature-card">
+                    <h4>Description</h4>
+                    <p>Add bulk email, bulk document verification, and bulk status update capabilities to improve administrative efficiency.</p>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: MVP Teacher-Parent Communications, MVP Document Upload & Verification</li>
+                            <li>Requires: Bulk operation UI patterns</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-section future">
+                <h3>Future Feature 6: Real-time Updates via WebSockets</h3>
+                
+                <div class="feature-card">
+                    <h4>Description</h4>
+                    <p>Replace polling with WebSocket connections for real-time updates on notifications, communication replies, and status changes.</p>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: WebSocket server implementation</li>
+                            <li>Requires: Client-side WebSocket integration</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-section future">
+                <h3>Future Feature 7: Field-Level Permissions</h3>
+                
+                <div class="feature-card">
+                    <h4>Description</h4>
+                    <p>Implement granular field-level permissions to control which roles can view or edit specific fields on forms.</p>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: MVP Form Builder, MVP User Role Management</li>
+                            <li>Requires: Permission system enhancement</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-section future">
+                <h3>Future Feature 8: Budget Tracking Module</h3>
+                
+                <div class="feature-card">
+                    <h4>Description</h4>
+                    <p>Add budget tracking and financial reporting capabilities to complement enrollment operations (currently external systems handle this).</p>
+                    
+                    <div class="dependencies">
+                        <h5>Technical Dependencies</h5>
+                        <ul>
+                            <li>Requires: New data models for budget/financial data</li>
+                            <li>Requires: Financial reporting capabilities</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="technical-dependencies-summary">
+            <h2>Technical Dependencies Summary</h2>
+            
+            <div class="phase-section">
+                <h3>Core Infrastructure (Must be implemented first)</h3>
+                <ul>
+                    <li><strong>Database:</strong> MongoDB with managed service (Atlas)</li>
+                    <li><strong>Frontend Framework:</strong> Nuxt.js with TypeScript, Vue 3</li>
+                    <li><strong>Hosting:</strong> Netlify for frontend, serverless functions for API</li>
+                    <li><strong>Caching:</strong> Redis for sessions and application caching</li>
+                    <li><strong>File Storage:</strong> Cloud storage service (AWS S3, Cloudinary, or similar)</li>
+                </ul>
+            </div>
+
+            <div class="phase-section">
+                <h3>Authentication & Security</h3>
+                <ul>
+                    <li>JWT authentication middleware</li>
+                    <li>OAuth integration (Google, Microsoft)</li>
+                    <li>SAML/SSO library for district authentication</li>
+                    <li>Audit logging middleware</li>
+                    <li>CSRF protection</li>
+                    <li>Input sanitization</li>
+                </ul>
+            </div>
+
+            <div class="phase-section">
+                <h3>External Services</h3>
+                <ul>
+                    <li><strong>Email:</strong> Mailgun or similar transactional email service</li>
+                    <li><strong>SMS:</strong> Twilio for SMS messaging</li>
+                    <li><strong>PDF:</strong> pdf-lib or similar PDF manipulation library</li>
+                    <li><strong>Image Processing:</strong> Image-to-PDF conversion library</li>
+                    <li><strong>Internationalization:</strong> vue-i18n or similar i18n library</li>
+                    <li><strong>Calendar/Scheduling:</strong> Calendar library for availability management</li>
+                    <li><strong>Reporting:</strong> Chart.js or D3.js for data visualization</li>
+                </ul>
+            </div>
+
+            <div class="phase-section">
+                <h3>Feature Dependency Graph</h3>
+                <ul>
+                    <li><strong>Foundation Layer:</strong> Authentication → User Role Management → Multi-language Support</li>
+                    <li><strong>Forms Layer:</strong> Form Builder → County Intake Form → District Enrollment Form</li>
+                    <li><strong>Eligibility Layer:</strong> County Intake Form → Automatic Eligibility Determination → Enrollment Priority System</li>
+                    <li><strong>Process Layer:</strong> All forms + eligibility → Application Lifecycle Management</li>
+                    <li><strong>Documents Layer:</strong> District Enrollment Form → Document Upload & Verification → PDF Auto-Fill</li>
+                    <li><strong>Placement Layer:</strong> Eligibility + Priority → Capacity & Waitlist Management</li>
+                    <li><strong>Communication Layer:</strong> Authentication → Teacher-Parent Communications → Automated Notifications</li>
+                    <li><strong>User Experience Layer:</strong> Lifecycle + Documents + Communications → Parent Portal</li>
+                    <li><strong>Operations Layer:</strong> Lifecycle → Site Visit Scheduling → ASQ Assessment → Classroom Assignment</li>
+                    <li><strong>Integration Layer:</strong> All features → Reporting → Data Integration</li>
+                    <li><strong>Cross-cutting:</strong> Security & Audit Logging (applies to all features)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="open-questions-summary">
+            <h2>Open Questions Summary</h2>
+            
+            <div class="phase-section">
+                <h3>Business/Process Questions</h3>
+                <ul>
+                    <li>What FPL threshold values should be used? (federal poverty guidelines change annually)</li>
+                    <li>How should we handle IEP verification rejection? Does priority drop to FPL-based?</li>
+                    <li>How should we handle district custom priority verification disputes?</li>
+                    <li>Should priority be recalculated if verified information changes?</li>
+                    <li>Should applications be able to move backward in stages for corrections?</li>
+                    <li>What happens if a parent withdraws an application mid-process?</li>
+                    <li>Should there be a "cancelled" or "withdrawn" status?</li>
+                    <li>How should we handle Head Start referral acknowledgment process?</li>
+                </ul>
+            </div>
+
+            <div class="phase-section">
+                <h3>Technical/Architecture Questions</h3>
+                <ul>
+                    <li>Which SAML/SSO provider library should we use?</li>
+                    <li>Which PDF library should we use for form filling?</li>
+                    <li>Which i18n library should we use?</li>
+                    <li>Which calendar library should we use?</li>
+                    <li>Which reporting/charting library should we use?</li>
+                    <li>Which CSS framework should we use?</li>
+                    <li>Should we implement PWA or use service workers directly?</li>
+                    <li>Should we use a unified API gateway or individual SIS integrations?</li>
+                    <li>Which audit logging solution should we use?</li>
+                </ul>
+            </div>
+
+            <div class="phase-section">
+                <h3>UX/Configuration Questions</h3>
+                <ul>
+                    <li>What should the session timeout duration be?</li>
+                    <li>What file size limit should we enforce for document uploads?</li>
+                    <li>What is the maximum number of fields per form?</li>
+                    <li>Should there be a limit on conditional logic complexity?</li>
+                    <li>Should capacity be configurable per classroom or per school?</li>
+                    <li>Should waitlist position be visible to parents?</li>
+                    <li>What notification events should be configurable?</li>
+                    <li>Should there be notification digest options?</li>
+                    <li>Is there a maximum number of children per parent account?</li>
+                    <li>How should we handle timezone differences for scheduling?</li>
+                </ul>
+            </div>
+
+            <div class="phase-section">
+                <h3>Security/Compliance Questions</h3>
+                <ul>
+                    <li>Should we implement multi-factor authentication for admin accounts?</li>
+                    <li>Should documents be virus-scanned on upload?</li>
+                    <li>How long should documents be retained after enrollment is complete?</li>
+                    <li>Should there be a document expiration or renewal requirement?</li>
+                    <li>What is the retention period for audit logs vs application data?</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="note">
+            <strong>Status:</strong> Implementation plan complete with MVP (24 features), Phase 2 (5 features), and Future (8 features) defined. User stories, acceptance criteria, technical dependencies, and open questions documented for each feature. Ready for development planning and sprint scheduling.
+        </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wayne County PreK Enrollment System - Granular Permission Management System</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-900);
+            background-color: var(--gray-50);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .doc-nav {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .doc-nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: var(--gray-800);
+            text-decoration: none;
+            border-radius: 0.375rem;
+            font-size: 0.9rem;
+            transition: all 0.15s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--gray-100);
+            color: var(--primary);
+        }
+
+        .nav-link.doc-active {
+            background-color: var(--gray-100);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .main {
+            flex: 1;
+            max-width: 900px;
+            padding: 2rem;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--gray-300);
+        }
+
+        h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--gray-800);
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .step-section {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .step-section h3 {
+            margin-top: 0;
+            color: var(--primary);
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .prompt-section {
+            background: var(--gray-100);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 0.375rem 0.375rem 0;
+        }
+
+        .prompt-section h4 {
+            margin-top: 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+
+            .main {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">PreK Enrollment</div>
+            <nav>
+                <div class="doc-nav">
+                    <div class="doc-nav-title">Documents</div>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="spec.html" class="nav-link">Specification</a></li>
+                        <li class="nav-item"><a href="features.html" class="nav-link">Features</a></li>
+                        <li class="nav-item"><a href="implementation-plan.html" class="nav-link">Implementation Plan</a></li>
+                        <li class="nav-item"><a href="development-plan.html" class="nav-link">Development Plan</a></li>
+                        <li class="nav-item"><a href="PROGRESS.html" class="nav-link">Progress</a></li>
+                        <li class="nav-item"><a href="FEATURE_STATUS.html" class="nav-link">Feature Status</a></li>
+                        <li class="nav-item"><a href="DAILY_LOG.html" class="nav-link">Daily Log</a></li>
+                        <li class="nav-item"><a href="KANBAN.html" class="nav-link">Kanban Board</a></li>
+                    </ul>
+                </div>
+                <div class="doc-nav">
+                    <div class="doc-nav-title">Feature Specs</div>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="feature-granular-permission-management.html" class="nav-link doc-active">Granular Permission Management</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header>
+                <h1>Granular Permission Management System</h1>
+            </header>
+
+            <h2>Summary</h2>
+            <p>A feature and function-specific permission system for all admin user types (County Admin, District Admin, School Admin, Teacher) with preset permission sets and custom configuration capabilities. Parent users have fixed permissions. The system enforces permission checks on all data access and feature usage to ensure FERPA compliance and appropriate data access based on organizational hierarchy.</p>
+
+            <h2>Goals</h2>
+            <ul>
+                <li>Enable hierarchical control where higher-level users can manage permissions for lower-level users</li>
+                <li>Provide preset permission configurations for common admin roles while allowing custom permission configurations</li>
+                <li>Organize permissions into logical groupings (System Management, District Management, School Management, Teacher, User Management, Data Access)</li>
+                <li>Scope permissions to system-wide, district-wide, school-wide, or single school level</li>
+                <li>Enforce permission checks on all data access and feature usage to ensure FERPA compliance</li>
+            </ul>
+
+            <h2>Requirements</h2>
+            <ul>
+                <li>Support five preset permission configurations: Super Admin, County Admin, District Admin, School Admin, and Teacher</li>
+                <li>Super Admin preset provides all permissions enabled for system administrators</li>
+                <li>County Admin preset includes county-level configuration and district management permissions for all districts</li>
+                <li>District Admin preset includes district-level configuration and school management permissions within their assigned district</li>
+                <li>School Admin preset includes school management and teacher permissions for their assigned school</li>
+                <li>Teacher preset includes application processing, document verification, communication, and site visit permissions for assigned school(s)</li>
+                <li>Parent users have fixed permissions and cannot be configured</li>
+                <li>Admins can select a preset when creating user accounts or create custom permission configurations</li>
+                <li>Custom configurations allow selecting individual permissions from logical groupings (System Management, District Management, School Management, Teacher, User Management, Data Access)</li>
+                <li>Higher-level users can modify permissions for lower-level users (e.g., District Admin can modify School Admin and Teacher permissions)</li>
+                <li>Permissions can be scoped to system-wide, district-wide, school-wide, or single school level</li>
+                <li>System enforces permission checks on all data access and feature usage</li>
+                <li>User creation interface must include preset dropdown (Super Admin, County Admin, District Admin, School Admin, Teacher)</li>
+                <li>Custom permission builder must have expandable permission groupings</li>
+                <li>Permission checkboxes must be organized by functional grouping (System Management, District Management, School Management, Teacher, User Management, Data Access)</li>
+                <li>Permission scope selector must allow selecting System-wide, District-wide, School-wide, or Single School</li>
+                <li>Permission preview must show which features will be available with current selection</li>
+                <li>User management interface must show current permission configuration for each user</li>
+                <li>Permission modification interface must allow higher-level admins to edit lower-level user permissions</li>
+                <li>Access control indicators must show available features based on current user's permissions</li>
+                <li>Audit log must show permission changes and who made them</li>
+            </ul>
+
+            <h2>Technical Decisions</h2>
+            <ul>
+                <li>Store permission configurations in MongoDB as embedded documents within user records for efficient lookup during authentication</li>
+                <li>Implement permission checks as Nuxt middleware on server routes to enforce access control at the API level</li>
+                <li>Create a permission utility composable (usePermissions) that provides helper functions for checking permissions in components and server code</li>
+                <li>Use bitmask or enum-based permission identifiers for efficient storage and comparison</li>
+                <li>Implement permission inheritance where higher-level roles automatically include lower-level permissions</li>
+                <li>Cache user permissions in session storage after authentication to reduce database queries</li>
+                <li>Create permission presets as configuration objects that can be extended for custom configurations</li>
+            </ul>
+
+            <h2>Constraints</h2>
+            <ul>
+                <li>Do not implement role-based access control (RBAC) as the primary mechanism - use feature-level permissions instead</li>
+                <li>Do not allow parents to modify or configure their own permissions</li>
+                <li>Do not implement permission inheritance across different organizational levels (e.g., District Admin should not inherit County Admin permissions)</li>
+                <li>Do not use external authorization services or libraries - implement permission checking within the application</li>
+                <li>Do not store permission configurations in a separate collection from user records</li>
+                <li>Do not implement real-time permission updates during active sessions - require re-authentication for permission changes to take effect</li>
+                <li>Do not create permission templates beyond the five specified presets (Super Admin, County Admin, District Admin, School Admin, Teacher)</li>
+            </ul>
+
+            <h2>Implementation Steps</h2>
+
+            <div class="step-section">
+                <h3>Step 1: Define permission data model and types</h3>
+                <p>Define the permission data structure including permission identifiers, groupings, scopes, and preset configurations. Create TypeScript types and enums for type safety. This establishes the foundation for the entire permission system.</p>
+
+                <h4>Tests</h4>
+                <ul>
+                    <li>Test that permission identifiers are correctly defined as bitmask or enum values</li>
+                    <li>Test that all six permission groupings are defined with correct permissions</li>
+                    <li>Test that all five permission presets are defined with correct permission combinations</li>
+                    <li>Test that permission scope types are correctly defined</li>
+                    <li>Test that user permission structure can be serialized for MongoDB storage</li>
+                </ul>
+
+                <div class="prompt-section">
+                    <h4>Test Prompt (Write Failing Tests First)</h4>
+                    <p>Write Vitest tests for the permission data model and types defined in <code>types/permissions.ts</code>. Test that:</p>
+                    <ul>
+                        <li>All permission identifiers are correctly defined as bitmask or enum values</li>
+                        <li>All six permission groupings (System Management, District Management, School Management, Teacher, User Management, Data Access) are defined with correct permissions</li>
+                        <li>All five permission presets (Super Admin, County Admin, District Admin, School Admin, Teacher) are defined with correct permission combinations</li>
+                        <li>Permission scope types (System-wide, District-wide, School-wide, Single School) are correctly defined</li>
+                        <li>User permission structure can be serialized for MongoDB storage</li>
+                    </ul>
+                    <p>Create the test file in <code>tests/unit/permissions.types.test.ts</code>. Use Vitest's describe, test, and expect functions. These tests should fail initially since the types don't exist yet.</p>
+                </div>
+
+                <div class="prompt-section">
+                    <h4>Implementation Prompt (Make Tests Pass)</h4>
+                    <p>Define the permission data model and types for the Granular Permission Management System. Create TypeScript types and enums for:</p>
+                    <ul>
+                        <li>Permission identifiers (bitmask or enum-based)</li>
+                        <li>Permission groupings (System Management, District Management, School Management, Teacher, User Management, Data Access)</li>
+                        <li>Permission scopes (System-wide, District-wide, School-wide, Single School)</li>
+                        <li>Permission preset configurations (Super Admin, County Admin, District Admin, School Admin, Teacher)</li>
+                        <li>User permission structure to be embedded in MongoDB user records</li>
+                    </ul>
+                    <p>Follow the technical decision to use bitmask or enum-based permission identifiers for efficient storage and comparison. Ensure types are defined in a dedicated types file (e.g., <code>types/permissions.ts</code>). Reference the feature requirements for the six permission groupings and five preset configurations. Implement the types to make the failing tests pass.</p>
+                </div>
+            </div>
+
+            <div class="step-section">
+                <h3>Step 2: Create permission utility composable</h3>
+                <p>Implement the usePermissions composable with helper functions for checking permissions, comparing user permissions against required permissions, and determining access rights. This composable will be used throughout the application for permission checks.</p>
+
+                <h4>Tests</h4>
+                <ul>
+                    <li>Test that hasPermission() returns true when user has the required permission</li>
+                    <li>Test that hasPermission() returns false when user lacks the required permission</li>
+                    <li>Test that comparePermissions() correctly evaluates permission scope requirements</li>
+                    <li>Test that canModifyPermissions() enforces hierarchical control (higher-level can modify lower-level, not vice versa)</li>
+                    <li>Test that permission caching works correctly after authentication</li>
+                    <li>Test that composable works in both client and server contexts</li>
+                </ul>
+
+                <div class="prompt-section">
+                    <h4>Test Prompt (Write Failing Tests First)</h4>
+                    <p>Write Vitest tests for the usePermissions composable in <code>composables/usePermissions.ts</code>. Test that:</p>
+                    <ul>
+                        <li>hasPermission() returns true when user has the required permission</li>
+                        <li>hasPermission() returns false when user lacks the required permission</li>
+                        <li>comparePermissions() correctly evaluates permission scope requirements</li>
+                        <li>canModifyPermissions() enforces hierarchical control (higher-level can modify lower-level, not vice versa)</li>
+                        <li>Permission caching works correctly after authentication</li>
+                        <li>Composable works in both client and server contexts</li>
+                    </ul>
+                    <p>Create the test file in <code>tests/unit/usePermissions.test.ts</code>. Mock MongoDB calls and session storage. Use Vitest's describe, test, expect, and vi.mock functions. These tests should fail initially since the composable doesn't exist yet.</p>
+                </div>
+
+                <div class="prompt-section">
+                    <h4>Implementation Prompt (Make Tests Pass)</h4>
+                    <p>Create the usePermissions composable for permission checking throughout the application. Implement helper functions for:</p>
+                    <ul>
+                        <li>Checking if a user has a specific permission</li>
+                        <li>Comparing user permissions against required permissions for a feature</li>
+                        <li>Determining access rights based on permission scope</li>
+                        <li>Checking if a user can modify another user's permissions (hierarchical control)</li>
+                    </ul>
+                    <p>The composable should work in both client components and server-side code. Use the permission types defined in Step 1. Follow the technical decision to cache user permissions in session storage after authentication to reduce database queries. Create the composable in <code>composables/usePermissions.ts</code>. Implement the composable to make the failing tests pass.</p>
+                </div>
+            </div>
+
+            <div class="step-section">
+                <h3>Step 3: Implement permission checking middleware</h3>
+                <p>Create Nuxt middleware that intercepts server route requests and validates permissions before allowing access. This enforces permission checks at the API level for all data access and feature usage.</p>
+
+                <h4>Tests</h4>
+                <ul>
+                    <li>Test that middleware allows access when user has required permissions</li>
+                    <li>Test that middleware returns 403 when user lacks required permissions</li>
+                    <li>Test that middleware logs permission check failures</li>
+                    <li>Test that middleware correctly handles unauthenticated requests</li>
+                    <li>Test that middleware applies to all protected server routes</li>
+                </ul>
+
+                <div class="prompt-section">
+                    <h4>Test Prompt (Write Failing Tests First)</h4>
+                    <p>Write Vitest tests for the permission checking middleware in <code>server/middleware/permissions.ts</code>. Test that:</p>
+                    <ul>
+                        <li>Middleware allows access when user has required permissions</li>
+                        <li>Middleware returns 403 when user lacks required permissions</li>
+                        <li>Middleware logs permission check failures</li>
+                        <li>Middleware correctly handles unauthenticated requests</li>
+                        <li>Middleware applies to all protected server routes</li>
+                    </ul>
+                    <p>Create the test file in <code>tests/unit/permissions.middleware.test.ts</code>. Mock Nuxt's request/response objects and the usePermissions composable. Use Vitest's describe, test, expect, and vi.mock functions. These tests should fail initially since the middleware doesn't exist yet.</p>
+                </div>
+
+                <div class="prompt-section">
+                    <h4>Implementation Prompt (Make Tests Pass)</h4>
+                    <p>Implement Nuxt middleware for permission checking on server routes. Create middleware that:</p>
+                    <ul>
+                        <li>Intercepts server route requests before they execute</li>
+                        <li>Validates that the authenticated user has the required permissions for the route</li>
+                        <li>Returns appropriate error responses (403 Forbidden) when permission check fails</li>
+                        <li>Logs permission check failures for audit purposes</li>
+                    </ul>
+                    <p>Create the middleware file in <code>server/middleware/permissions.ts</code>. Use the usePermissions composable from Step 2 for permission checks. Apply this middleware to all server routes that require permission enforcement. Follow the technical decision to enforce permission checks at the API level. Implement the middleware to make the failing tests pass.</p>
+                </div>
+            </div>
+
+            <div class="step-section">
+                <h3>Step 4: Build user creation interface with preset selection</h3>
+                <p>Create the user creation form with preset dropdown (Super Admin, County Admin, District Admin, School Admin, Teacher) and apply the selected preset configuration to the new user's permission record.</p>
+
+                <h4>Tests</h4>
+                <ul>
+                    <li>Test that preset dropdown displays all five options</li>
+                    <li>Test that selecting a preset shows correct description</li>
+                    <li>Test that applying a preset correctly sets user permissions</li>
+                    <li>Test that validation prevents creating users with higher-level presets without sufficient permissions</li>
+                    <li>Test that form validation catches invalid inputs</li>
+                </ul>
+
+                <div class="prompt-section">
+                    <h4>Test Prompt (Write Failing Tests First)</h4>
+                    <p>Write Vitest tests for the UserCreationForm component in <code>components/admin/UserCreationForm.vue</code>. Test that:</p>
+                    <ul>
+                        <li>Preset dropdown displays all five options</li>
+                        <li>Selecting a preset shows correct description</li>
+                        <li>Applying a preset correctly sets user permissions</li>
+                        <li>Validation prevents creating users with higher-level presets without sufficient permissions</li>
+                        <li>Form validation catches invalid inputs</li>
+                    </ul>
+                    <p>Create the test file in <code>tests/components/UserCreationForm.test.ts</code>. Use Vue Test Utils for component mounting and testing. Mock the usePermissions composable and API calls. Use Vitest's describe, test, expect, and vi.mock functions. These tests should fail initially since the component doesn't exist yet.</p>
+                </div>
+
+                <div class="prompt-section">
+                    <h4>Implementation Prompt (Make Tests Pass)</h4>
+                    <p>Build the user creation interface with preset selection for the Granular Permission Management System. Create a Vue component that:</p>
+                    <ul>
+                        <li>Displays a dropdown with the five preset options (Super Admin, County Admin, District Admin, School Admin, Teacher)</li>
+                        <li>Shows a description of each preset when selected</li>
+                        <li>Applies the selected preset configuration to the new user's permission record</li>
+                        <li>Validates that the current user has permission to create users with the selected preset</li>
+                    </ul>
+                    <p>Use NuxtUI components for the dropdown and form elements. Create the component in <code>components/admin/UserCreationForm.vue</code>. Reference the permission preset definitions from Step 1. Ensure the interface follows the design framework in DESIGN_FRAMEWORK.md. Implement the component to make the failing tests pass.</p>
+                </div>
+            </div>
+
+            <div class="step-section">
+                <h3>Step 5: Build custom permission builder interface</h3>
+                <p>Implement the custom permission builder with expandable permission groupings, permission checkboxes organized by functional grouping, and permission scope selector. Include permission preview showing which features will be available.</p>
+
+                <h4>Tests</h4>
+                <ul>
+                    <li>Test that all six permission groupings are displayed and expandable</li>
+                    <li>Test that permission checkboxes are correctly organized by functional grouping</li>
+                    <li>Test that permission scope selector allows all four scope options</li>
+                    <li>Test that permission preview accurately shows available features</li>
+                    <li>Test that switching between preset and custom modes works correctly</li>
+                    <li>Test that custom configuration saves correctly</li>
+                </ul>
+
+                <div class="prompt-section">
+                    <h4>Test Prompt (Write Failing Tests First)</h4>
+                    <p>Write Vitest tests for the CustomPermissionBuilder component in <code>components/admin/CustomPermissionBuilder.vue</code>. Test that:</p>
+                    <ul>
+                        <li>All six permission groupings are displayed and expandable</li>
+                        <li>Permission checkboxes are correctly organized by functional grouping</li>
+                        <li>Permission scope selector allows all four scope options</li>
+                        <li>Permission preview accurately shows available features</li>
+                        <li>Switching between preset and custom modes works correctly</li>
+                        <li>Custom configuration saves correctly</li>
+                    </ul>
+                    <p>Create the test file in <code>tests/components/CustomPermissionBuilder.test.ts</code>. Use Vue Test Utils for component mounting and testing. Mock the usePermissions composable and API calls. Use Vitest's describe, test, expect, and vi.mock functions. These tests should fail initially since the component doesn't exist yet.</p>
+                </div>
+
+                <div class="prompt-section">
+                    <h4>Implementation Prompt (Make Tests Pass)</h4>
+                    <p>Implement the custom permission builder interface for creating custom permission configurations. Create a Vue component that:</p>
+                    <ul>
+                        <li>Displays expandable permission groupings (System Management, District Management, School Management, Teacher, User Management, Data Access)</li>
+                        <li>Shows permission checkboxes organized by functional grouping within each grouping</li>
+                        <li>Includes a permission scope selector (System-wide, District-wide, School-wide, Single School)</li>
+                        <li>Provides a permission preview showing which features will be available with the current selection</li>
+                        <li>Allows switching between preset and custom configuration modes</li>
+                    </ul>
+                    <p>Use NuxtUI components for the expandable sections, checkboxes, and selector. Create the component in <code>components/admin/CustomPermissionBuilder.vue</code>. Reference the permission types from Step 1. Ensure the interface follows the design framework in DESIGN_FRAMEWORK.md. Implement the component to make the failing tests pass.</p>
+                </div>
+            </div>
+
+            <div class="step-section">
+                <h3>Step 6: Implement permission modification interface</h3>
+                <p>Create the interface for higher-level admins to edit lower-level user permissions, including the ability to switch between presets and custom configurations.</p>
+
+                <h4>Tests</h4>
+                <ul>
+                    <li>Test that current user's permission configuration is displayed correctly</li>
+                    <li>Test that switching between preset and custom modes works</li>
+                    <li>Test that editing individual permissions in custom mode saves correctly</li>
+                    <li>Test that validation prevents modifying users without sufficient hierarchical permissions</li>
+                    <li>Test that preview shows changes before saving</li>
+                    <li>Test that audit log entry is created after saving changes</li>
+                </ul>
+
+                <div class="prompt-section">
+                    <h4>Test Prompt (Write Failing Tests First)</h4>
+                    <p>Write Vitest tests for the PermissionModificationForm component in <code>components/admin/PermissionModificationForm.vue</code>. Test that:</p>
+                    <ul>
+                        <li>Current user's permission configuration is displayed correctly</li>
+                        <li>Switching between preset and custom modes works</li>
+                        <li>Editing individual permissions in custom mode saves correctly</li>
+                        <li>Validation prevents modifying users without sufficient hierarchical permissions</li>
+                        <li>Preview shows changes before saving</li>
+                        <li>Audit log entry is created after saving changes</li>
+                    </ul>
+                    <p>Create the test file in <code>tests/components/PermissionModificationForm.test.ts</code>. Use Vue Test Utils for component mounting and testing. Mock the usePermissions composable and API calls. Use Vitest's describe, test, expect, and vi.mock functions. These tests should fail initially since the component doesn't exist yet.</p>
+                </div>
+
+                <div class="prompt-section">
+                    <h4>Implementation Prompt (Make Tests Pass)</h4>
+                    <p>Create the permission modification interface for higher-level admins to edit lower-level user permissions. Build a Vue component that:</p>
+                    <ul>
+                        <li>Displays the current user's permission configuration</li>
+                        <li>Allows switching between preset and custom configuration modes</li>
+                        <li>Enables editing individual permissions when in custom mode</li>
+                        <li>Validates that the current user has permission to modify the target user's permissions (hierarchical control)</li>
+                        <li>Shows a preview of changes before saving</li>
+                        <li>Includes an audit log entry for the change</li>
+                    </ul>
+                    <p>Use NuxtUI components for the form elements. Create the component in <code>components/admin/PermissionModificationForm.vue</code>. Use the usePermissions composable from Step 2 for validation. Ensure the interface follows the design framework in DESIGN_FRAMEWORK.md. Implement the component to make the failing tests pass.</p>
+                </div>
+            </div>
+
+            <div class="step-section">
+                <h3>Step 7: Add user management interface with permission display</h3>
+                <p>Build the user management interface showing current permission configuration for each user, with access control indicators showing available features based on current user's permissions.</p>
+
+                <h4>Tests</h4>
+                <ul>
+                    <li>Test that user list shows only users current admin has permission to manage</li>
+                    <li>Test that permission configuration is displayed correctly for each user</li>
+                    <li>Test that access control indicators show correct available features</li>
+                    <li>Test that edit permission links work correctly</li>
+                    <li>Test that filters correctly filter users by role, school, and district</li>
+                    <li>Test that filters respect current admin's scope</li>
+                </ul>
+
+                <div class="prompt-section">
+                    <h4>Test Prompt (Write Failing Tests First)</h4>
+                    <p>Write Vitest tests for the user management interface in <code>pages/admin/users/index.vue</code>. Test that:</p>
+                    <ul>
+                        <li>User list shows only users current admin has permission to manage</li>
+                        <li>Permission configuration is displayed correctly for each user</li>
+                        <li>Access control indicators show correct available features</li>
+                        <li>Edit permission links work correctly</li>
+                        <li>Filters correctly filter users by role, school, and district</li>
+                        <li>Filters respect current admin's scope</li>
+                    </ul>
+                    <p>Create the test file in <code>tests/pages/admin/users.test.ts</code>. Use Vue Test Utils for component mounting and testing. Mock the usePermissions composable and API calls. Use Vitest's describe, test, expect, and vi.mock functions. These tests should fail initially since the page doesn't exist yet.</p>
+                </div>
+
+                <div class="prompt-section">
+                    <h4>Implementation Prompt (Make Tests Pass)</h4>
+                    <p>Build the user management interface with permission display for viewing and managing user permissions. Create a page component that:</p>
+                    <ul>
+                        <li>Lists all users that the current admin has permission to manage</li>
+                        <li>Shows current permission configuration for each user (preset or custom)</li>
+                        <li>Displays access control indicators showing available features based on each user's permissions</li>
+                        <li>Provides links to edit user permissions (using the component from Step 6)</li>
+                        <li>Filters users by role, school, or district based on current admin's scope</li>
+                    </ul>
+                    <p>Use NuxtUI components for the table/list and filters. Create the page in <code>pages/admin/users/index.vue</code>. Use the usePermissions composable from Step 2 to determine which users the current admin can manage. Ensure the interface follows the design framework in DESIGN_FRAMEWORK.md. Implement the page to make the failing tests pass.</p>
+                </div>
+            </div>
+
+            <div class="step-section">
+                <h3>Step 8: Implement audit logging for permission changes</h3>
+                <p>Create the audit log system to track permission changes including timestamp, user who made the change, action performed, and affected records.</p>
+
+                <h4>Tests</h4>
+                <ul>
+                    <li>Test that audit log entries are created with all required fields (timestamp, user, action, affected records)</li>
+                    <li>Test that audit log entries include previous and new permission configurations</li>
+                    <li>Test that API endpoint creates audit log entries correctly</li>
+                    <li>Test that utility function logs permission changes correctly</li>
+                    <li>Test that audit log interface displays entries with correct filters</li>
+                    <li>Test that filters work correctly by user, date range, and action type</li>
+                </ul>
+
+                <div class="prompt-section">
+                    <h4>Test Prompt (Write Failing Tests First)</h4>
+                    <p>Write Vitest tests for the audit logging system. Test that:</p>
+                    <ul>
+                        <li>Audit log entries are created with all required fields (timestamp, user, action, affected records)</li>
+                        <li>Audit log entries include previous and new permission configurations</li>
+                        <li>API endpoint creates audit log entries correctly</li>
+                        <li>Utility function logs permission changes correctly</li>
+                        <li>Audit log interface displays entries with correct filters</li>
+                        <li>Filters work correctly by user, date range, and action type</li>
+                    </ul>
+                    <p>Create test files in <code>tests/unit/audit-logging.test.ts</code> for the utility function and API endpoint, and <code>tests/pages/admin/audit-logs.test.ts</code> for the interface. Mock MongoDB operations. Use Vitest's describe, test, expect, and vi.mock functions. These tests should fail initially since the audit logging system doesn't exist yet.</p>
+                </div>
+
+                <div class="prompt-section">
+                    <h4>Implementation Prompt (Make Tests Pass)</h4>
+                    <p>Implement the audit logging system for tracking permission changes. Create:</p>
+                    <ul>
+                        <li>A MongoDB schema/collection for audit log entries with fields: timestamp, user (who made the change), action, affected records, and previous/new permission configurations</li>
+                        <li>A server API endpoint for creating audit log entries (<code>server/api/audit-logs.post.ts</code>)</li>
+                        <li>A utility function for logging permission changes that can be called from permission modification endpoints</li>
+                        <li>An admin interface for viewing audit logs with filters by user, date range, and action type</li>
+                    </ul>
+                    <p>Ensure all audit logs include the required fields for FERPA compliance. Create the schema in <code>server/models/AuditLog.ts</code>. Create the admin interface in <code>pages/admin/audit-logs/index.vue</code>. Reference the security requirements from spec.html for FERPA-focused audit logging. Implement the audit logging system to make the failing tests pass.</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>

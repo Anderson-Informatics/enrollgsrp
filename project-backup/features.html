@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wayne County PreK Enrollment System - Product Features</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-900);
+            background-color: var(--gray-50);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .doc-nav {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .doc-nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: var(--gray-800);
+            text-decoration: none;
+            border-radius: 0.375rem;
+            font-size: 0.9rem;
+            transition: all 0.15s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--gray-100);
+            color: var(--primary);
+        }
+
+        .nav-link.sub {
+            padding-left: 1.25rem;
+            font-size: 0.85rem;
+        }
+
+        .nav-link.collapsible {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .nav-link.collapsible .nav-text {
+            flex: 1;
+        }
+
+        .nav-link.collapsible::after {
+            content: "▼";
+            font-size: 0.7rem;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+            padding: 0.25rem;
+            user-select: none;
+        }
+
+        .nav-link.collapsible::after:hover {
+            background-color: var(--gray-100);
+            border-radius: 0.25rem;
+        }
+
+        .nav-link.collapsible.expanded::after {
+            transform: rotate(180deg);
+        }
+
+        .nav-sublist {
+            display: none;
+            transition: max-height 0.3s ease;
+        }
+
+        .nav-sublist.expanded {
+            display: block;
+        }
+
+        .nav-link.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .nav-link.doc-active {
+            background-color: var(--gray-100);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            max-width: 900px;
+            padding: 2rem;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--gray-300);
+        }
+
+        h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--gray-800);
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .feature {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature h3 {
+            margin-top: 0;
+            color: var(--primary);
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .feature-section {
+            margin-top: 1.5rem;
+        }
+
+        .feature-section h4 {
+            margin-top: 0;
+        }
+
+        .note {
+            background: var(--gray-100);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 2rem 0;
+            border-radius: 0 0.375rem 0.375rem 0;
+        }
+
+        div[id] {
+            scroll-margin-top: 2rem;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: var(--gray-200);
+            margin: 3rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+
+            .main {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.nav-link.collapsible').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    this.classList.toggle('expanded');
+                    const sublist = this.closest('.nav-item').querySelector('.nav-sublist');
+                    if (sublist) {
+                        sublist.classList.toggle('expanded');
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">PreK Enrollment</div>
+            <nav>
+                <div class="doc-nav">
+                    <div class="doc-nav-title">Documents</div>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="spec.html" class="nav-link">Specification</a></li>
+                        <li class="nav-item"><a href="features.html" class="nav-link doc-active">Features</a></li>
+                        <li class="nav-item"><a href="implementation-plan.html" class="nav-link">Implementation Plan</a></li>
+                        <li class="nav-item"><a href="development-plan.html" class="nav-link">Development Plan</a></li>
+                        <li class="nav-item"><a href="PROGRESS.html" class="nav-link">Progress</a></li>
+                        <li class="nav-item"><a href="FEATURE_STATUS.html" class="nav-link">Feature Status</a></li>
+                        <li class="nav-item"><a href="DAILY_LOG.html" class="nav-link">Daily Log</a></li>
+                        <li class="nav-item"><a href="KANBAN.html" class="nav-link">Kanban Board</a></li>
+                    </ul>
+                </div>
+                <div class="nav-title">Features</div>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#feature-1" class="nav-link collapsible expanded"><span class="nav-text">Features</span></a>
+                        <ul class="nav-list nav-sublist expanded" style="margin-top: 0.5rem;">
+                            <li class="nav-item"><a href="#feature-1" class="nav-link sub">1. Granular Permission Management</a></li>
+                            <li class="nav-item"><a href="#feature-2" class="nav-link sub">2. Authentication System</a></li>
+                            <li class="nav-item"><a href="#feature-3" class="nav-link sub">3. Form Builder</a></li>
+                            <li class="nav-item"><a href="#feature-4" class="nav-link sub">4. County Intake Form</a></li>
+                            <li class="nav-item"><a href="#feature-5" class="nav-link sub">5. Automatic Eligibility Determination</a></li>
+                            <li class="nav-item"><a href="#feature-6" class="nav-link sub">6. Enrollment Priority System</a></li>
+                            <li class="nav-item"><a href="#feature-7" class="nav-link sub">7. Application Lifecycle Management</a></li>
+                            <li class="nav-item"><a href="#feature-8" class="nav-link sub">8. District Enrollment Form</a></li>
+                            <li class="nav-item"><a href="#feature-9" class="nav-link sub">9. Document Upload & Verification</a></li>
+                            <li class="nav-item"><a href="#feature-10" class="nav-link sub">10. PDF Auto-Fill</a></li>
+                            <li class="nav-item"><a href="#feature-11" class="nav-link sub">11. Capacity & Waitlist Management</a></li>
+                            <li class="nav-item"><a href="#feature-12" class="nav-link sub">12. Teacher-Parent Communications</a></li>
+                            <li class="nav-item"><a href="#feature-13" class="nav-link sub">13. Parent Portal & Status Tracking</a></li>
+                            <li class="nav-item"><a href="#feature-14" class="nav-link sub">14. Site Visit Scheduling</a></li>
+                            <li class="nav-item"><a href="#feature-15" class="nav-link sub">15. Ages and Stages Assessment</a></li>
+                            <li class="nav-item"><a href="#feature-16" class="nav-link sub">16. Classroom Assignment</a></li>
+                            <li class="nav-item"><a href="#feature-17" class="nav-link sub">17. Multi-language Support</a></li>
+                            <li class="nav-item"><a href="#feature-18" class="nav-link sub">18. Multi-child Applications</a></li>
+                            <li class="nav-item"><a href="#feature-19" class="nav-link sub">19. Application Transfers</a></li>
+                            <li class="nav-item"><a href="#feature-20" class="nav-link sub">20. Automated Notifications</a></li>
+                            <li class="nav-item"><a href="#feature-21" class="nav-link sub">21. Reporting</a></li>
+                            <li class="nav-item"><a href="#feature-22" class="nav-link sub">22. Data Integration</a></li>
+                            <li class="nav-item"><a href="#feature-23" class="nav-link sub">23. Security & Audit Logging</a></li>
+                            <li class="nav-item"><a href="#feature-24" class="nav-link sub">24. Responsive Web Design</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header>
+                <h1>Wayne County PreK Enrollment System</h1>
+                <p>Product Features Document</p>
+            </header>
+
+        <div class="note">
+            <strong>Note:</strong> This document contains high-level product features extracted from the specification. Features are organized in a sensible implementation order.
+        </div>
+
+        <div class="feature" id="feature-1">
+            <h3>1. Granular Permission Management System</h3>
+            <p><strong>Short Description:</strong> Feature and function-specific permissions for all admin user types (County Admin, District Admin, School Admin, Teacher) with preset permission sets and custom configuration capabilities. Parent users have fixed permissions.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>Super Admin preset provides all permissions enabled for system administrators</li>
+                    <li>County Admin preset includes county-level configuration and district management permissions</li>
+                    <li>District Admin preset includes district-level configuration and school management permissions within their district</li>
+                    <li>School Admin preset includes school management and teacher permissions for their assigned school</li>
+                    <li>Teacher preset includes application processing, document verification, communication, and site visit permissions</li>
+                    <li>Admins can select a preset when creating user accounts or create custom permission configurations</li>
+                    <li>Custom configurations allow selecting individual permissions from logical groupings (System Management, District Management, School Management, Teacher, User Management, Data Access)</li>
+                    <li>Higher-level users can modify permissions for lower-level users (e.g., District Admin can modify School Admin and Teacher permissions)</li>
+                    <li>Permissions can be scoped to system-wide, district-wide, school-wide, or single school level</li>
+                    <li>System enforces permission checks on all data access and feature usage</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>User creation interface with preset dropdown (Super Admin, County Admin, District Admin, School Admin, Teacher)</li>
+                    <li>Custom permission builder with expandable permission groupings</li>
+                    <li>Permission checkboxes organized by functional grouping (System Management, District Management, School Management, Teacher, User Management, Data Access)</li>
+                    <li>Permission scope selector (System-wide, District-wide, School-wide, Single School)</li>
+                    <li>Permission preview showing which features will be available with current selection</li>
+                    <li>User management interface showing current permission configuration for each user</li>
+                    <li>Permission modification interface for higher-level admins to edit lower-level user permissions</li>
+                    <li>Access control indicators showing available features based on current user's permissions</li>
+                    <li>Audit log showing permission changes and who made them</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>Permission Presets</h4>
+                <ul>
+                    <li><strong>Super Admin:</strong> All permissions enabled - complete system control</li>
+                    <li><strong>County Admin:</strong> System management + all district management permissions for all districts</li>
+                    <li><strong>District Admin:</strong> District management + all school management permissions within assigned district</li>
+                    <li><strong>School Admin:</strong> School management + all teacher permissions for assigned school</li>
+                    <li><strong>Teacher:</strong> Application processing, document verification, communication, site visit permissions for assigned school(s)</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>Custom Permission Examples</h4>
+                <ul>
+                    <li><strong>IEP Reviewer:</strong> View applicant data, view document data, verify IEP - scoped to specific schools or district</li>
+                    <li><strong>School Data Viewer:</strong> All data view permissions for school but no user management or modification permissions</li>
+                    <li><strong>Document Verification Specialist:</strong> View applicant data, view document data, verify documents, request corrections</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-2">
+            <h3>2. Authentication System</h3>
+            <p><strong>Short Description:</strong> Flexible authentication supporting local accounts, OAuth integration, and district-specific SAML/SSO for secure identity management.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>Parents choose local username/password or OAuth (Google/Microsoft) during registration</li>
+                    <li>District staff authenticate through their district's SAML/SSO provider</li>
+                    <li>County Admin uses local authentication with optional SSO configuration</li>
+                    <li>Password reset available for local accounts via email verification</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Login screen with authentication method selection</li>
+                    <li>Registration form for parent self-service account creation</li>
+                    <li>Password reset flow with email verification</li>
+                    <li>District configuration interface for SAML/SSO setup</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-3">
+            <h3>3. Form Builder</h3>
+            <p><strong>Short Description:</strong> Dynamic form creation tool with comprehensive field types, conditional logic, validation rules, and multi-language support for building custom enrollment forms.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>County Admins configure the county intake form by adding optional custom fields to core required fields</li>
+                    <li>District Admins create district-specific enrollment forms using drag-and-drop interface</li>
+                    <li>Admins define field properties, validation rules, and conditional display logic</li>
+                    <li>Forms support multiple languages (English, Spanish, Arabic) with RTL layout</li>
+                    <li>Admins preview forms before publishing</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Form builder interface with field palette and drag-and-drop canvas</li>
+                    <li>Field configuration panel for setting properties and validation</li>
+                    <li>Conditional logic builder for show/hide rules</li>
+                    <li>Preview mode to test form behavior</li>
+                    <li>Multi-language toggle for language-specific content</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-4">
+            <h3>4. County Intake Form</h3>
+            <p><strong>Short Description:</strong> Pre-built standardized form with core required fields (date of birth, income, IEP status, housing status, school selection) that automatically determines eligibility and priority.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>Parents complete the intake form as their first step in the application process</li>
+                    <li>System automatically calculates eligibility based on DOB, income, IEP status, and housing status</li>
+                    <li>District custom priority questions display conditionally based on selected schools</li>
+                    <li>Parents rank up to three school preferences</li>
+                    <li>System displays eligibility status, priority level, and any timing restrictions upon submission</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Multi-section form with progress indicator</li>
+                    <li>Core required fields with clear validation indicators</li>
+                    <li>School selection dropdown with ranking interface</li>
+                    <li>Conditional fields that appear based on previous selections</li>
+                    <li>Eligibility status summary displayed after submission</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-5">
+            <h3>5. Automatic Eligibility Determination</h3>
+            <p><strong>Short Description:</strong> System automatically calculates age eligibility, income-based priority, and timing restrictions based on core required fields in the intake form.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>System evaluates date of birth to determine age eligibility and timing restrictions</li>
+                    <li>System calculates Federal Poverty Level (FPL) percentage from income and family size</li>
+                    <li>System assigns priority tier based on housing status, IEP verification, and FPL level</li>
+                    <li>System applies timing restrictions (May 1, August 1, September 2) based on eligibility factors</li>
+                    <li>Eligibility results display to parents and route to appropriate school admins for review</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Eligibility status indicator on parent dashboard</li>
+                    <li>Priority tier display with explanation of factors</li>
+                    <li>Timing restriction notices with effective dates</li>
+                    <li>Admin interface for reviewing flagged applications</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-6">
+            <h3>6. Enrollment Priority System</h3>
+            <p><strong>Short Description:</strong> Multi-tiered priority system (Housing status > IEP > District custom priorities > FPL tiers) with automatic timing restrictions for enrollment holds.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>System automatically assigns priority based on verified factors in the specified order</li>
+                    <li>District/School Admins verify IEP documentation and district custom priority responses</li>
+                    <li>System applies enrollment holds based on FPL tier and timing restrictions</li>
+                    <li>Applications progress through enrollment process based on priority and capacity availability</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Priority level display on applicant records</li>
+                    <li>Verification interface for IEP and custom priority documentation</li>
+                    <li>Timing restriction indicators with hold dates</li>
+                    <li>Priority-based applicant list views for admins</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-7">
+            <h3>7. Application Lifecycle Management</h3>
+            <p><strong>Short Description:</strong> Four-stage enrollment process (Intake → Enrollment Paperwork → Enrolled → Site Visit) with specific actions, transitions, and notifications at each stage.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li><strong>Stage 1 (Intake):</strong> Parents submit county intake form, School Admin assigns teacher, application routes to school</li>
+                    <li><strong>Stage 2 (Enrollment Paperwork):</strong> Parents complete district enrollment form and upload documents, Teacher verifies all materials</li>
+                    <li><strong>Stage 3 (Enrolled):</strong> Teacher marks student as enrolled, assigns to classroom, student begins attending school</li>
+                    <li><strong>Stage 4 (Site Visit):</strong> Teacher configures calendar, Parent schedules visit, Teacher conducts ASQ assessment</li>
+                    <li>Each stage triggers automated notifications to appropriate parties</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Stage indicator showing current position in enrollment process</li>
+                    <li>Available actions list based on current stage</li>
+                    <li>Progress bar showing completion percentage</li>
+                    <li>Stage-specific dashboards with relevant information and tasks</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-8">
+            <h3>8. District Enrollment Form</h3>
+            <p><strong>Short Description:</strong> District-specific enrollment forms created by District Admins using the form builder, completed by parents immediately after intake submission.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>District Admins build custom enrollment forms using the form builder</li>
+                    <li>Parents automatically proceed to district enrollment form after completing intake</li>
+                    <li>Parents complete district-specific questions and upload required documents</li>
+                    <li>Teachers review form completeness and verify all uploaded materials</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>District-specific form with custom fields and sections</li>
+                    <li>Document upload interface with file type validation</li>
+                    <li>Form completion status indicator</li>
+                    <li>Teacher review interface with verification controls</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-9">
+            <h3>9. Document Upload & Verification</h3>
+            <p><strong>Short Description:</strong> Document submission workflow where parents upload required documents and teachers verify each document with status tracking and correction requests.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                    <ul>
+                    <li>Parents upload documents (proof of residency, income verification, immunization records) during enrollment paperwork</li>
+                    <li>System validates file types and converts images to PDF on mobile devices</li>
+                    <li>Teachers review each document and mark as Verified, Needs Correction, or Missing</li>
+                    <li>Teachers request specific corrections with explanations</li>
+                    <li>Parents receive notifications and upload corrected documents</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Document upload interface with drag-and-drop and file type validation</li>
+                    <li>Document status dashboard showing Verified, Pending, or Action Required for each document</li>
+                    <li>Teacher verification interface with status buttons and correction request forms</li>
+                    <li>Notification center for document-related alerts</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-10">
+            <h3>10. PDF Auto-Fill</h3>
+            <p><strong>Short Description:</strong> Automatic population of PDF enrollment forms with applicant data, eliminating manual data entry and reducing errors.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>Admins upload fillable PDF templates and map form fields to system fields</li>
+                    <li>Teachers generate completed PDFs with one click from applicant records</li>
+                    <li>System automatically populates PDF with applicant data including calculated fields</li>
+                    <li>Teachers download or print completed forms for signatures and records</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>PDF template management interface with upload and field mapping</li>
+                    <li>Generate PDF button on applicant records</li>
+                    <li>Preview of populated PDF before download</li>
+                    <li>Batch PDF generation interface for multiple applicants</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-11">
+            <h3>11. Capacity & Waitlist Management</h3>
+            <p><strong>Short Description:</strong> School capacity tracking with automated waitlists that fill based on priority when spots become available.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>District Admins configure capacity for each school in their district</li>
+                    <li>System automatically routes applications to first-choice school with available capacity</li>
+                    <li>Applications for full schools are placed on automated waitlists</li>
+                    <li>When spots open, system fills from waitlist based on priority order</li>
+                    <li>System maintains 10% allocation hold for 0-400% FPL students until September 1</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Capacity configuration interface for District Admins</li>
+                    <li>Waitlist view with priority ordering and position indicators</li>
+                    <li>Capacity status dashboard showing enrollment vs. available spots</li>
+                    <li>Automated waitlist movement notifications</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-12">
+            <h3>12. Teacher-Parent Communications</h3>
+            <p><strong>Short Description:</strong> Multi-channel communication system enabling teachers to contact parents via email, SMS, and logged phone calls with centralized history tracking.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>Teachers send emails or SMS directly from applicant records using templates or custom messages</li>
+                    <li>Parent replies are automatically logged in communication history</li>
+                    <li>Teachers log phone calls and in-person meetings with notes and outcomes</li>
+                    <li>Notification badge alerts teachers to unread replies</li>
+                    <li>System automatically tracks date of last contact for reporting</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Communication panel on applicant records with email, SMS, and phone logging options</li>
+                    <li>Email and SMS template library for quick messaging</li>
+                    <li>Unified communication timeline showing all interactions chronologically</li>
+                    <li>Notification badge in navigation bar for unread replies</li>
+                    <li>Contact activity dashboard for administrators</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-13">
+            <h3>13. Parent Portal & Status Tracking</h3>
+            <p><strong>Short Description:</strong> Real-time application status visibility for parents including current stage, available actions, document verification status, and communication history.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>Parents log in to view their application dashboard</li>
+                    <li>System displays current stage, progress bar, and available actions</li>
+                    <li>Parents view document verification status and respond to correction requests</li>
+                    <li>Parents access communication history with teachers and school staff</li>
+                    <li>Parents receive notifications for key events and status changes</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Application dashboard with stage indicator and progress bar</li>
+                    <li>Available actions list based on current stage</li>
+                    <li>Document status dashboard with verification status for each document</li>
+                    <li>Communication timeline showing all interactions</li>
+                    <li>Notifications center for alerts and status updates</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-14">
+            <h3>14. Site Visit Scheduling</h3>
+            <p><strong>Short Description:</strong> Teacher calendar configuration and parent self-scheduling system for home/site visits after student enrollment.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>Teachers configure availability windows with travel buffer times after student enrollment</li>
+                    <li>Parents receive notification to schedule site visit after student starts attending school</li>
+                    <li>Parents self-schedule from teacher's available time slots</li>
+                    <li>Parents can reschedule up to 24 hours before visit</li>
+                    <li>Teachers conduct visits and log outcomes and next steps</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Teacher calendar interface with availability configuration</li>
+                    <li>Parent scheduling interface showing available time slots</li>
+                    <li>Visit confirmation with location details</li>
+                    <li>Rescheduling interface with time restriction warnings</li>
+                    <li>Post-visit logging interface for outcomes and documents</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-15">
+            <h3>15. Ages and Stages Assessment</h3>
+            <p><strong>Short Description:</strong> ASQ questionnaire completion during site visits to assess child development and set educational goals.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>Teacher conducts 45-minute home visit in private space after student enrollment</li>
+                    <li>Teacher completes Ages and Stages Questionnaire assessment during visit</li>
+                    <li>Teacher discusses child's progress, shares curriculum, and sets goals</li>
+                    <li>Teacher logs visit outcomes and uploads any documents collected</li>
+                    <li>Second visit scheduled after assessment checkpoint for kindergarten transition review</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>ASQ questionnaire interface with assessment categories</li>
+                    <li>Visit documentation form for outcomes and next steps</li>
+                    <li>Document upload interface for materials collected during visit</li>
+                    <li>Assessment history view tracking development over time</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-16">
+            <h3>16. Classroom Assignment</h3>
+            <p><strong>Short Description:</strong> Assignment of enrolled students to specific classrooms based on age, IEP status, and program requirements with capacity management.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>Teachers assign fully enrolled students to classrooms based on age, IEP status, and program requirements</li>
+                    <li>System reports classroom ratios (typically 10:1 or 12:1)</li>
+                    <li>Teachers coordinate orientation scheduling with families</li>
+                    <li>Parents receive classroom assignment notification with teacher contact information</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Classroom assignment interface with student matching criteria</li>
+                    <li>Capacity tracking for each classroom</li>
+                    <li>Assignment notification preview for parents</li>
+                    <li>Orientation scheduling interface</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-17">
+            <h3>17. Multi-language Support</h3>
+            <p><strong>Short Description:</strong> Forms and interface available in English, Spanish, and Arabic with right-to-left layout support for Arabic.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>Users select preferred language during account creation or from settings</li>
+                    <li>System displays all forms, labels, and messages in selected language</li>
+                    <li>Admins configure language-specific content for custom fields</li>
+                    <li>Arabic users see right-to-left layout automatically</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Language selector in header or settings</li>
+                    <li>RTL layout for Arabic language</li>
+                    <li>Language-specific date and number formatting</li>
+                    <li>Multi-language form preview for admins</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-18">
+            <h3>18. Multi-child Applications</h3>
+            <p><strong>Short Description:</strong> Ability for parents to apply for multiple children with pre-filled parent/guardian data from the first application.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>Parents complete application for first child</li>
+                    <li>Parents select option to add another child</li>
+                    <li>System pre-fills parent/guardian and household data from first application</li>
+                    <li>Parents complete child-specific information for each additional child</li>
+                    <li>Each child has a separate application record linked to the same parent account</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>"Add another child" button on application completion</li>
+                    <li>Pre-filled form fields with parent/household data</li>
+                    <li>Child list view on parent dashboard showing all applications</li>
+                    <li>Switch between child applications from dashboard</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-19">
+            <h3>19. Application Transfers</h3>
+            <p><strong>Short Description:</strong> Ability to transfer applicants between schools while preserving all application data, documents, and verification status.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>County Admins can transfer any applicant to any school in the system</li>
+                    <li>District Admins can transfer applicants to another school in their district if selected by parent</li>
+                    <li>System preserves all application data, documents, and verification status during transfer</li>
+                    <li>Receiving school admins and teachers gain access to transferred applicant</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Transfer interface on applicant records for authorized admins</li>
+                    <li>School selection dropdown for transfer destination</li>
+                    <li>Transfer confirmation with data preservation notice</li>
+                    <li>Transfer history log on applicant records</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-20">
+            <h3>20. Automated Notifications</h3>
+            <p><strong>Short Description:</strong> Email and SMS notifications for key events including application submission, document requests, status changes, and site visit reminders.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>System automatically sends notifications based on enrollment stage transitions</li>
+                    <li>Parents receive notifications for application received, placement, document requests, and site visits</li>
+                    <li>Teachers receive notifications for new applications, document submissions, and communication replies</li>
+                    <li>Admins receive notifications for capacity thresholds and system events</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Notification center showing all alerts and status updates</li>
+                    <li>Notification preferences in user settings</li>
+                    <li>Email and SMS delivery status tracking</li>
+                    <li>Notification templates for admins to customize messaging</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-21">
+            <h3>21. Reporting</h3>
+            <p><strong>Short Description:</strong> Enrollment statistics, waitlist reports, demographics reporting, and contact activity metrics for administrators.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>County Admins view system-wide enrollment statistics and demographics</li>
+                    <li>District Admins generate reports for their district including enrollment and waitlist status</li>
+                    <li>School Admins access school-specific reports and classroom data</li>
+                    <li>Admins export reports in various formats for state submissions</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Report dashboard with key metrics and charts</li>
+                    <li>Filter controls for date range, school, district, and status</li>
+                    <li>Export options for CSV and PDF formats</li>
+                    <li>Scheduled report generation for recurring needs</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-22">
+            <h3>22. Data Integration</h3>
+            <p><strong>Short Description:</strong> CSV exports for manual Student Information System import with future API integration support for PowerSchool, MIStar, and Infinite Campus.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>District Admins export enrollment data in CSV format for manual SIS import</li>
+                    <li>System supports field mapping configuration for different SIS formats</li>
+                    <li>Future phase will enable direct API integration with major SIS platforms</li>
+                    <li>Community Based Organizations utilize MiSTAR for 25-26 SY enrollment</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Data export interface with filter options</li>
+                    <li>Field mapping configuration for SIS templates</li>
+                    <li>Export history and status tracking</li>
+                    <li>SIS integration configuration for future API connections</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-23">
+            <h3>23. Security & Audit Logging</h3>
+            <p><strong>Short Description:</strong> FERPA-compliant audit logging for data access, document operations, and enrollment decisions with secure data retention policies.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>System automatically logs all data access events with user and timestamp</li>
+                    <li>Document uploads and downloads are tracked in audit logs</li>
+                    <li>Enrollment decisions and status changes are logged with attribution</li>
+                    <li>Admin configuration changes are recorded for accountability</li>
+                    <li>Authorized admins can review audit logs for compliance and troubleshooting</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Audit log viewer with search and filter capabilities</li>
+                    <li>Event detail views showing full context of logged actions</li>
+                    <li>Export options for audit records</li>
+                    <li>Security incident reporting interface</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature" id="feature-24">
+            <h3>24. Responsive Web Design</h3>
+            <p><strong>Short Description:</strong> Mobile-optimized responsive web application that works on all devices via browser with touch-friendly controls for common parent tasks.</p>
+            
+            <div class="feature-section">
+                <h4>User Flow</h4>
+                <ul>
+                    <li>Users access system from any device with web browser</li>
+                    <li>Interface automatically adapts to screen size and device type</li>
+                    <li>Touch-friendly controls optimized for mobile interactions</li>
+                    <li>Photo-to-PDF converter available on mobile devices for document uploads</li>
+                </ul>
+            </div>
+
+            <div class="feature-section">
+                <h4>UI Overview</h4>
+                <ul>
+                    <li>Responsive layout that adjusts to desktop, tablet, and mobile screens</li>
+                    <li>Touch-optimized buttons and form controls</li>
+                    <li>Mobile-specific navigation patterns</li>
+                    <li>Camera integration for mobile document capture</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Status:</strong> Product features extracted and organized in implementation order. Features progress from foundational (authentication, roles) to core enrollment functionality (forms, eligibility, lifecycle) to supporting capabilities (communications, reporting, integration).
+        </div>
+        </main>
+    </div>
+</body>
+</html>

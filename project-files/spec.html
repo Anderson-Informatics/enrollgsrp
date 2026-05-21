@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wayne County PreK Enrollment System — Specification</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-900);
+            background-color: var(--gray-50);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .doc-nav {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .doc-nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: var(--gray-800);
+            text-decoration: none;
+            border-radius: 0.375rem;
+            font-size: 0.9rem;
+            transition: all 0.15s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--gray-100);
+            color: var(--primary);
+        }
+
+        .nav-link.sub {
+            padding-left: 1.25rem;
+            font-size: 0.85rem;
+        }
+
+        .nav-link.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .nav-link.doc-active {
+            background-color: var(--gray-100);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-link.collapsible {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .nav-link.collapsible .nav-text {
+            flex: 1;
+        }
+
+        .nav-link.collapsible::after {
+            content: "▼";
+            font-size: 0.7rem;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+            padding: 0.25rem;
+            user-select: none;
+        }
+
+        .nav-link.collapsible::after:hover {
+            background-color: var(--gray-100);
+            border-radius: 0.25rem;
+        }
+
+        .nav-link.collapsible.expanded::after {
+            transform: rotate(180deg);
+        }
+
+        .nav-sublist {
+            display: none;
+            transition: max-height 0.3s ease;
+        }
+
+        .nav-sublist.expanded {
+            display: block;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            max-width: 900px;
+            padding: 2rem;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--gray-300);
+        }
+
+        h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            padding-left: 0.5rem;
+            position: relative;
+        }
+
+        h5::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0.2rem;
+            bottom: 0.2rem;
+            width: 3px;
+            background: var(--gray-400);
+            border-radius: 1.5px;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--gray-800);
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        strong {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .user-role {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .user-role h4 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .responsibilities {
+            margin-top: 0.5rem;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            margin-right: 0.5rem;
+        }
+
+        .note {
+            background: var(--gray-100);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 0.375rem 0.375rem 0;
+        }
+
+        .context {
+            background: var(--gray-100);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 0.375rem 0.375rem 0;
+            font-style: italic;
+        }
+
+        div[id] {
+            scroll-margin-top: 2rem;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: var(--gray-200);
+            margin: 3rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+
+            .main {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.nav-link.collapsible').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    this.classList.toggle('expanded');
+                    const sublist = this.closest('.nav-item').querySelector('.nav-sublist');
+                    if (sublist) {
+                        sublist.classList.toggle('expanded');
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">PreK Enrollment</div>
+            <nav>
+                <div class="doc-nav">
+                    <div class="doc-nav-title">Documents</div>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="spec.html" class="nav-link doc-active">Specification</a></li>
+                        <li class="nav-item"><a href="features.html" class="nav-link">Features</a></li>
+                        <li class="nav-item"><a href="implementation-plan.html" class="nav-link">Implementation Plan</a></li>
+                        <li class="nav-item"><a href="development-plan.html" class="nav-link">Development Plan</a></li>
+                        <li class="nav-item"><a href="PROGRESS.html" class="nav-link">Progress</a></li>
+                        <li class="nav-item"><a href="FEATURE_STATUS.html" class="nav-link">Feature Status</a></li>
+                        <li class="nav-item"><a href="DAILY_LOG.html" class="nav-link">Daily Log</a></li>
+                        <li class="nav-item"><a href="KANBAN.html" class="nav-link">Kanban Board</a></li>
+                    </ul>
+                </div>
+                <div class="doc-nav">
+                    <div class="doc-nav-title">Feature Specs</div>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="feature-granular-permission-management.html" class="nav-link">Granular Permission Management</a></li>
+                    </ul>
+                </div>
+                <div class="nav-title">Specification</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#overview" class="nav-link">Overview</a></li>
+                    <li class="nav-item"><a href="#goals" class="nav-link">Goals</a></li>
+                    <li class="nav-item"><a href="#user-roles" class="nav-link">User Roles</a></li>
+                    <li class="nav-item"><a href="#core-features" class="nav-link">Core Features</a></li>
+                    <li class="nav-item"><a href="#technical-stack" class="nav-link">Technical Stack</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header>
+                <h1>Wayne County PreK Enrollment System — Specification</h1>
+                <p>Product Specification Document</p>
+            </header>
+
+            <div class="context">
+                <strong>Context:</strong> Wayne RESA and Subrecipients need a centralized system to manage PreK enrollment, ensuring eligible children receive high-quality preschool programming while complying with Michigan GSRP guidelines and FERPA requirements.
+            </div>
+
+            <section id="overview">
+                <h2>Overview</h2>
+                <p>A web-based enrollment management system for Wayne County PreK programs that streamlines the application process from intake through enrollment. The system serves five user types: County Admins, District Admins, School Admins, Teachers, and Parents. It manages eligibility determination, document verification, waitlist prioritization, communications, and site visit scheduling. The system is not a student information system (SIS) but integrates with existing SIS platforms for data synchronization. It implements granular permission controls to ensure appropriate data access based on organizational hierarchy and compliance requirements.</p>
+            </section>
+
+            <section id="goals">
+                <h2>Goals</h2>
+                <ul>
+                    <li>Streamline the PreK enrollment process from initial application to final enrollment, reducing administrative burden on school staff and improving the experience for families</li>
+                    <li>Automate eligibility determination based on GSRP guidelines (age, income, IEP status, housing status) with accurate priority tier assignment and timing restriction enforcement</li>
+                    <li>Enable efficient document management with upload, verification, and correction request workflows that reduce paperwork and improve processing times</li>
+                    <li>Provide real-time visibility into application status for parents while maintaining appropriate access controls for administrators</li>
+                    <li>Support data integration with existing Student Information Systems (PowerSchool, MIStar, Infinite Campus) to eliminate manual data entry</li>
+                    <li>Ensure FERPA compliance through audit logging, data encryption, and granular permission management across all user roles</li>
+                </ul>
+            </section>
+
+            <section id="user-roles">
+                <h2>User Roles</h2>
+
+                <div class="user-role">
+                    <h4>County Admin</h4>
+                    <p><strong>Can do:</strong> Manage system-wide configuration, create and manage districts and district admins, upload and manage county-level PDF templates, view system-wide reports and analytics, add or remove custom fields to the county intake form (core eligibility fields cannot be removed), configure SSO settings for districts</p>
+                    <p><strong>Cannot do:</strong> Modify permissions of other County Admins or Super Admins, access school-level data without appropriate permissions</p>
+                    <p><strong>Authentication:</strong> Local authentication with option to configure SSO</p>
+                </div>
+
+                <div class="user-role">
+                    <h4>District Admin</h4>
+                    <p><strong>Can do:</strong> Full access to all school sites and students within their district, set up school sites and assign school admins, add teacher users to schools, enable multi-school enrollment support for teachers, create and maintain district-level enrollment forms using form builder, configure SIS integrations, upload district-specific PDF templates, monitor enrollment and waitlist status across district, generate and export reports for state submissions, add or remove custom priority questions to county intake form for their district schools, verify responses to district custom priority questions</p>
+                    <p><strong>Cannot do:</strong> Modify permissions of District Admins or higher-level users, access data from other districts</p>
+                    <p><strong>Authentication:</strong> District-specific SAML/SSO integration</p>
+                </div>
+
+                <div class="user-role">
+                    <h4>School Admin</h4>
+                    <p><strong>Can do:</strong> Manage school information, add/edit/remove teachers at their school, view and manage all applicant information received, coordinate with District Admin for school-level operations, oversee waitlist management for their school, monitor site visit scheduling and completion, generate school-specific reports, verify IEP documentation for applications indicating IEP status, verify district custom priority question responses for applications to their school</p>
+                    <p><strong>Cannot do:</strong> Modify permissions of School Admins or higher-level users, access data from other schools</p>
+                    <p><strong>Authentication:</strong> District-specific SAML/SSO integration</p>
+                </div>
+
+                <div class="user-role">
+                    <h4>Teacher</h4>
+                    <p><strong>Can do:</strong> Process and review applications for assigned school(s), if multi-school enrollment support permission is enabled access applications from multiple schools as configured, review enrollment form for completeness and verify all uploaded documents, mark each document as Verified, Needs Correction, or Missing, generate completed PDF forms for applicants, verify documents and complete enrollment verification during Stage 2, update enrollment status and communicate with parents, manage waitlist positions and openings, configure calendar availability for site visits after student enrollment, schedule and conduct site visits after student has started attending school, complete Ages and Stages Questionnaire (ASQ) assessment during site visits, verify IEP documentation and district custom priority question responses</p>
+                    <p><strong>Cannot do:</strong> Modify permissions of any other users, access applications from schools they are not assigned to</p>
+                    <p><strong>Authentication:</strong> District-specific SAML/SSO integration</p>
+                </div>
+
+                <div class="user-role">
+                    <h4>Parent (Guardian)</h4>
+                    <p><strong>Can do:</strong> Apply to PreK programs at any school site in the system, rank up to three school site preferences, apply for multiple children with pre-filled family data, complete pre-built county intake form with core required fields, provide child's date of birth for age eligibility determination, provide income information for income-based eligibility priority or decline to submit (may trigger enrollment hold until August 1), indicate IEP status and provide documentation if applicable, indicate housing status for priority determination, complete district-specific priority questions that display conditionally based on selected schools, complete any additional custom fields as configured by County Admins, upload required documents, save and resume applications before enrollment paperwork is submitted, complete district enrollment form immediately after intake submission, upload required documents and respond to document correction requests during enrollment paperwork stage, receive notifications for key events and status changes, view real-time application status including current stage and available actions, track document verification status and respond to correction requests, access communication history with teachers and school staff, schedule site visit after student has started attending school</p>
+                    <p><strong>Cannot do:</strong> Access other families' application data, modify system configuration, view applications for schools not selected in their preferences</p>
+                    <p><strong>Authentication:</strong> Hybrid authentication supporting both local username/password and OAuth (Google/Microsoft) options</p>
+                </div>
+            </section>
+
+            <section id="core-features">
+                <h2>Core Features</h2>
+
+                <h3>1. Granular Permission Management</h3>
+                <p>Feature and function-specific permissions for all admin user types (County Admin, District Admin, School Admin, Teacher) with preset permission sets and custom configuration capabilities. Permissions are organized into logical groupings (System Management, District Management, School Management, Teacher, User Management, Data Access) with hierarchical control allowing higher-level users to manage permissions for lower-level users. Parent users have fixed permissions. The system enforces permission checks on all data access and feature usage to ensure FERPA compliance.</p>
+
+                <h3>2. Authentication System</h3>
+                <p>Flexible authentication supporting local accounts with username/password, OAuth integration (Google/Microsoft) for parents, and district-specific SAML/SSO for district staff. Password reset available for local accounts via email verification. District configuration includes setup instructions and required variable inputs (app IDs, credentials) for SAML/SSO integration.</p>
+
+                <h3>3. Form Builder</h3>
+                <p>Dynamic form creation tool with comprehensive field types (text, textarea, number, date, email, phone, address block, single select, radio group, checkbox, multi-select, file upload), conditional logic, validation rules, and multi-language support (English, Spanish, Arabic). Supports composite field groups, repeatable collection fields (household members, income sources), custom collection builder, field templates, form templates, role-based field access, and offline support with auto-sync. All form inputs are sanitized to prevent XSS attacks and SQL injection.</p>
+
+                <h3>4. County Intake Form</h3>
+                <p>Pre-built standardized form with core required fields (date of birth, income questions, IEP status, housing status, school selection/ranking) for automatic eligibility determination. County Admins can add or remove custom fields, but core eligibility fields cannot be removed. System automatically calculates eligibility, priority tier, and timing restrictions based on responses. District Admins can add custom priority questions that display conditionally when schools in their district are selected (e.g., sibling attendance verification). Responses to district custom priority questions must be verified by District or School Admins for priority status to apply.</p>
+
+                <h3>5. Automatic Eligibility Determination</h3>
+                <p>System automatically calculates age eligibility (must turn 4 on or before September 1st; children turning 4 between September 2 - December 1 can enroll after September 2nd if space permits), income-based priority (FPL 0-100% Tier 1, FPL 101-400% Tier 2, FPL 401%+ Tier 3 with enrollment hold until May 1st), and timing restrictions based on core required fields. Priority order: Housing status (homeless/foster care - highest) → Verified IEP → Verified district custom priorities → FPL tiers. If parent declines to submit income information, enrollment placed on hold until August 1st.</p>
+
+                <h3>6. Application Lifecycle Management</h3>
+                <p>Four-stage enrollment process: Stage 1 (Intake) - Parents submit county intake form, School Admin assigns teacher, application routes to school; Stage 2 (Enrollment Paperwork) - Parents complete district enrollment form and upload documents, Teacher verifies all materials; Stage 3 (Enrolled) - Teacher marks student as enrolled, assigns to classroom, student begins attending school; Stage 4 (Site Visit) - Teacher configures calendar, Parent schedules visit, Teacher conducts ASQ assessment. Each stage triggers automated notifications to appropriate parties. Parents have real-time visibility into current stage, available actions, waiting status, progress bar, and stage-specific details.</p>
+
+                <h3>7. District Enrollment Form</h3>
+                <p>District-specific enrollment forms created by District Admins using the form builder, completed by parents immediately after intake submission. Parents complete district-specific questions and upload required documents (proof of residency, income verification, immunization records, custody documents). Teachers review form completeness and verify all uploaded materials.</p>
+
+                <h3>8. Document Upload & Verification</h3>
+                <p>Document submission workflow where parents upload required documents and teachers verify each document with status tracking. System validates file types and converts images to PDF on mobile devices. Teachers review each document and mark as Verified, Needs Correction, or Missing, with ability to request specific corrections with explanations. Parents receive notifications and upload corrected documents. Real-time status display for parents (Verified, Pending, Action Required) with audit trail.</p>
+
+                <h3>9. PDF Auto-Fill</h3>
+                <p>Automatic population of PDF enrollment forms with applicant data, eliminating manual data entry and reducing errors. Admins upload fillable PDF templates and map form fields to system fields. Teachers generate completed PDFs with one click from applicant records. System automatically populates PDF with applicant data including calculated fields. Supports multiple templates, field mapping interface, smart field matching, custom field mapping, multi-value support for repeating fields, and batch processing.</p>
+
+                <h3>10. Capacity & Waitlist Management</h3>
+                <p>School capacity tracking with automated waitlists that fill based on priority when spots become available. District Admins configure capacity for each school in their district. System automatically routes applications to first-choice school with available capacity. Applications for full schools are placed on automated waitlists. When spots open, system fills from waitlist based on priority order. System maintains 10% allocation hold for 0-400% FPL students until September 1.</p>
+
+                <h3>11. Teacher-Parent Communications</h3>
+                <p>Multi-channel communication system enabling teachers to contact parents via email, SMS, and logged phone calls with centralized history tracking. Teachers send emails or SMS directly from applicant records using templates or custom messages. Parent replies are automatically logged in communication history. Teachers log phone calls and in-person meetings with notes and outcomes. Notification badge alerts teachers to unread replies. System automatically tracks date of last contact for reporting. Contact activity dashboard available for administrators.</p>
+
+                <h3>12. Site Visit Scheduling</h3>
+                <p>Teachers configure calendar availability with travel buffer times after student enrollment and during early school year. Parents self-schedule from teacher's available time slots after student has started attending school. Parents can reschedule up to 24 hours before visit if needed. Teachers confirm visit location (home, library, community center). Site visits must be completed in private space, never in public spaces. Initial visit lasts 45 minutes and includes Ages and Stages Questionnaire (ASQ) assessment, discussion of child's progress and development, sharing curriculum and program information, and setting goals for the child.</p>
+
+                <h3>13. Ages and Stages Assessment</h3>
+                <p>Teachers complete Ages and Stages Questionnaire (ASQ) assessment during site visits. Assessment covers child development milestones and helps identify areas where the child may need additional support. Second visit after assessment checkpoint reviews individual child needs and kindergarten transition.</p>
+
+                <h3>14. Classroom Assignment</h3>
+                <p>After student is fully enrolled with all documents verified, teachers assign students to specific classrooms based on age, IEP status, and program requirements. Ensure classroom ratios are maintained (typically 10:1 or 12:1). Parents receive official classroom assignment notification with teacher contact information. Orientation scheduling coordinated by assigned teacher.</p>
+
+                <h3>15. Multi-language Support</h3>
+                <p>Forms support multiple languages (English, Spanish, Arabic) with RTL layout for Arabic. Admins can configure language-specific content for form fields and templates. System detects browser language preference where possible.</p>
+
+                <h3>16. Multi-child Applications</h3>
+                <p>Parents can apply for multiple children with pre-filled family data from first application to reduce data entry. Separate applications per child with shared parent/guardian information automatically populated.</p>
+
+                <h3>17. Application Transfers</h3>
+                <p>County Admins can transfer any applicant to any school. District Admins can transfer applicants to another school in their district if selected by parent. Transfers preserve all application data, documents, and verification status. Students may be enrolled at one school while waitlisted for a higher-ranked school preference.</p>
+
+                <h3>18. Automated Notifications</h3>
+                <p>Email + SMS notifications to parents for key events (application received, placement, site visit, enrollment complete, document requests). Teachers receive notifications for new applications, document submissions, communication replies. Notification center provides centralized view of all alerts.</p>
+
+                <h3>19. Reporting</h3>
+                <p>Enrollment statistics, waitlist reports, demographics reporting, contact activity dashboard, last contact reports showing days since last contact for all applicants, communication volume metrics, response rate tracking. Reports available at system-wide, district-wide, and school-wide levels based on user permissions.</p>
+
+                <h3>20. Data Integration</h3>
+                <p>Phase 1: CSV exports for manual SIS import. Phase 2: Direct API integration with PowerSchool, MIStar (Wayne County custom SIS), and Infinite Campus. For 25-26 SY, Community Based Organizations will utilize MiSTAR for enrollment. Field mapping configuration for SIS integration with synchronization status monitoring and error handling.</p>
+
+                <h3>21. Security & Audit Logging</h3>
+                <p>FERPA-focused audit logging for data access events, document uploads and downloads, enrollment decisions and status changes, and admin configuration changes. All audit logs include timestamp, user, action, and affected records. Sensitive data (SSN, income information) encrypted at rest. CSRF protection on all form submissions. Secure file uploads with virus scanning, type validation, and secure storage. Continuous vulnerability monitoring, annual penetration testing, automated security scanning in CI/CD pipeline. Incident response procedures aligned with FERPA breach notification requirements.</p>
+
+                <h3>22. Responsive Web Design</h3>
+                <p>Mobile-optimized responsive design that works on all devices via browser. Mobile-optimized UI for common parent tasks. No native mobile apps for MVP - consider Progressive Web App (PWA) or native mobile apps in future based on user feedback.</p>
+            </section>
+
+            <section id="technical-stack">
+                <h2>Technical Stack</h2>
+                <ul>
+                    <li><strong>Frontend Framework</strong> — Nuxt.js with TypeScript for Vue-based frontend, server-side rendering for performance and SEO, component-based architecture with Vue 3</li>
+                    <li><strong>UI Framework</strong> — NuxtUI (based on Tailwind CSS) for consistent design system and component library</li>
+                    <li><strong>Database</strong> — MongoDB Atlas document database for flexible schema support, well-suited for form builder data and variable document structures, managed database service with automatic backups and scaling</li>
+                    <li><strong>State Management</strong> — Pinia for shared state that isn't tied to a single page's data</li>
+                    <li><strong>API Architecture</strong> — RESTful JSON API for all client-server communication using Nuxt's server routes (server/api/), standard HTTP methods and status codes, JWT-based authentication for API requests</li>
+                    <li><strong>Hosting & Infrastructure</strong> — Netlify for frontend hosting and deployment, serverless backend functions for API endpoints, CDN for static asset delivery, automatic SSL/TLS certificate management</li>
+                    <li><strong>Caching</strong> — Redis for session storage and application caching, CDN caching for static assets, database query caching for frequently accessed data</li>
+                    <li><strong>Email Provider</strong> — Mailgun integration for transactional emails with email templates, delivery tracking and bounce handling, rich text email support with attachments</li>
+                    <li><strong>SMS Provider</strong> — Twilio integration for SMS notifications with SMS templates and message scheduling, delivery status tracking, character limit enforcement and message splitting</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

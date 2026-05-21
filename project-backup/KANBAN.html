@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wayne County PreK Enrollment System - Kanban Board</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-900);
+            background-color: var(--gray-50);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .doc-nav {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .doc-nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: var(--gray-800);
+            text-decoration: none;
+            border-radius: 0.375rem;
+            font-size: 0.9rem;
+            transition: all 0.15s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--gray-100);
+            color: var(--primary);
+        }
+
+        .nav-link.doc-active {
+            background-color: var(--gray-100);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .main {
+            flex: 1;
+            max-width: 1400px;
+            padding: 2rem;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .sprint-selector {
+            margin-bottom: 2rem;
+        }
+
+        .sprint-selector select {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.375rem;
+            background: white;
+            color: var(--gray-900);
+        }
+
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .kanban-column {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+        }
+
+        .kanban-column h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .task-card {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .task-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            padding-left: 0;
+        }
+
+        .task-card h4::before {
+            display: none;
+        }
+
+        .task-card p {
+            font-size: 0.875rem;
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+        }
+
+        .task-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .task-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .task-checkbox label {
+            font-size: 0.875rem;
+            color: var(--gray-800);
+            cursor: pointer;
+        }
+
+        .note {
+            background: var(--gray-100);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 0.375rem 0.375rem 0;
+        }
+
+        @media (max-width: 1024px) {
+            .kanban-board {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+
+            .main {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">PreK Enrollment</div>
+            <nav>
+                <div class="doc-nav">
+                    <div class="doc-nav-title">Documents</div>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="spec.html" class="nav-link">Specification</a></li>
+                        <li class="nav-item"><a href="features.html" class="nav-link">Features</a></li>
+                        <li class="nav-item"><a href="implementation-plan.html" class="nav-link">Implementation Plan</a></li>
+                        <li class="nav-item"><a href="development-plan.html" class="nav-link">Development Plan</a></li>
+                        <li class="nav-item"><a href="PROGRESS.html" class="nav-link">Progress</a></li>
+                        <li class="nav-item"><a href="FEATURE_STATUS.html" class="nav-link">Feature Status</a></li>
+                        <li class="nav-item"><a href="DAILY_LOG.html" class="nav-link">Daily Log</a></li>
+                        <li class="nav-item"><a href="KANBAN.html" class="nav-link doc-active">Kanban Board</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header>
+                <h1>Sprint Kanban Board</h1>
+                <p>Visual task tracking for current sprint</p>
+            </header>
+
+            <div class="note">
+                <strong>Instructions:</strong> Check the box when a task is complete. Move completed tasks to the "Done" column. Update this file as you progress through the sprint.
+            </div>
+
+            <div class="sprint-selector">
+                <label for="sprint-select"><strong>Current Sprint:</strong></label>
+                <select id="sprint-select">
+                    <option value="1">Sprint 1: Project Setup & Database Schema</option>
+                    <option value="2">Sprint 2: Authentication System</option>
+                    <option value="3">Sprint 3: Granular Permission System (Part 1)</option>
+                    <option value="4">Sprint 4: Granular Permission System (Part 2)</option>
+                    <option value="5">Sprint 5: Form Builder Foundation</option>
+                </select>
+            </div>
+
+            <div class="kanban-board">
+                <div class="kanban-column">
+                    <h3>To Do</h3>
+                    
+                    <div class="task-card">
+                        <h4>Set up MongoDB Atlas connection</h4>
+                        <p>Configure connection string and test connectivity</p>
+                        <div class="task-checkbox">
+                            <input type="checkbox" id="task-1">
+                            <label for="task-1">Complete</label>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <h4>Design and implement database schemas</h4>
+                        <p>Users, roles, permissions, applications collections</p>
+                        <div class="task-checkbox">
+                            <input type="checkbox" id="task-2">
+                            <label for="task-2">Complete</label>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <h4>Set up environment variables</h4>
+                        <p>Configure .env with MongoDB URI and other settings</p>
+                        <div class="task-checkbox">
+                            <input type="checkbox" id="task-3">
+                            <label for="task-3">Complete</label>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <h4>Create base repository structure</h4>
+                        <p>Set up folders for components, composables, server routes</p>
+                        <div class="task-checkbox">
+                            <input type="checkbox" id="task-4">
+                            <label for="task-4">Complete</label>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <h4>Set up Netlify deployment pipeline</h4>
+                        <p>Configure build settings and environment variables</p>
+                        <div class="task-checkbox">
+                            <input type="checkbox" id="task-5">
+                            <label for="task-5">Complete</label>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <h4>Implement basic error handling</h4>
+                        <p>Global error handler and logging setup</p>
+                        <div class="task-checkbox">
+                            <input type="checkbox" id="task-6">
+                            <label for="task-6">Complete</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kanban-column">
+                    <h3>In Progress</h3>
+                    
+                    <div class="task-card">
+                        <h4>Documentation and tracking setup</h4>
+                        <p>Created HTML tracking files and updated navigation</p>
+                        <div class="task-checkbox">
+                            <input type="checkbox" id="task-7" checked>
+                            <label for="task-7">Complete</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kanban-column">
+                    <h3>Done</h3>
+                    
+                    <div class="task-card">
+                        <h4>Documentation review</h4>
+                        <p>Reviewed spec, features, implementation plan, development plan</p>
+                        <div class="task-checkbox">
+                            <input type="checkbox" id="task-8" checked>
+                            <label for="task-8">Complete</label>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <h4>Progress tracking strategy</h4>
+                        <p>Created comprehensive tracking plan</p>
+                        <div class="task-checkbox">
+                            <input type="checkbox" id="task-9" checked>
+                            <label for="task-9">Complete</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Previous Sprints</h2>
+            <p>No previous sprints completed yet.</p>
+        </main>
+    </div>
+</body>
+</html>

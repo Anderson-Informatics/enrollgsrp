@@ -1,0 +1,16 @@
+tools:
+    shell:
+        allow:
+            - ls *
+            - mkdir *
+            - echo *
+            - wc *
+            - head *
+            - tail *
+            - grep *
+paths:
+    allow:
+        - path: /home/anderoy/enrollgsrp/**
+          write: true
+        - path: /home/anderoy/.local/state/poolside/plans/**
+          write: true

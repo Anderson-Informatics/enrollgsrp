@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wayne County PreK Enrollment System - Development Plan</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-900);
+            background-color: var(--gray-50);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .doc-nav {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .doc-nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: var(--gray-800);
+            text-decoration: none;
+            border-radius: 0.375rem;
+            font-size: 0.9rem;
+            transition: all 0.15s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--gray-100);
+            color: var(--primary);
+        }
+
+        .nav-link.sub {
+            padding-left: 1.25rem;
+            font-size: 0.85rem;
+        }
+
+        .nav-link.collapsible {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .nav-link.collapsible .nav-text {
+            flex: 1;
+        }
+
+        .nav-link.collapsible::after {
+            content: "▼";
+            font-size: 0.7rem;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+            padding: 0.25rem;
+            user-select: none;
+        }
+
+        .nav-link.collapsible::after:hover {
+            background-color: var(--gray-100);
+            border-radius: 0.25rem;
+        }
+
+        .nav-link.collapsible.expanded::after {
+            transform: rotate(180deg);
+        }
+
+        .nav-sublist {
+            display: none;
+            transition: max-height 0.3s ease;
+        }
+
+        .nav-sublist.expanded {
+            display: block;
+        }
+
+        .nav-link.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .nav-link.doc-active {
+            background-color: var(--gray-100);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            max-width: 900px;
+            padding: 2rem;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--gray-300);
+        }
+
+        h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--gray-800);
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        strong {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .note {
+            background: var(--gray-100);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 0.375rem 0.375rem 0;
+        }
+
+        .phase-section {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .phase-section h3 {
+            margin-top: 0;
+            color: var(--primary);
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .sprint-item {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .sprint-item h4 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        div[id] {
+            scroll-margin-top: 2rem;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: var(--gray-200);
+            margin: 3rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+
+            .main {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.nav-link.collapsible').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    this.classList.toggle('expanded');
+                    const sublist = this.closest('.nav-item').querySelector('.nav-sublist');
+                    if (sublist) {
+                        sublist.classList.toggle('expanded');
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">PreK Enrollment</div>
+            <nav>
+                <div class="doc-nav">
+                    <div class="doc-nav-title">Documents</div>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="spec.html" class="nav-link">Specification</a></li>
+                        <li class="nav-item"><a href="features.html" class="nav-link">Features</a></li>
+                        <li class="nav-item"><a href="implementation-plan.html" class="nav-link">Implementation Plan</a></li>
+                        <li class="nav-item"><a href="development-plan.html" class="nav-link doc-active">Development Plan</a></li>
+                        <li class="nav-item"><a href="PROGRESS.html" class="nav-link">Progress</a></li>
+                        <li class="nav-item"><a href="FEATURE_STATUS.html" class="nav-link">Feature Status</a></li>
+                        <li class="nav-item"><a href="DAILY_LOG.html" class="nav-link">Daily Log</a></li>
+                        <li class="nav-item"><a href="KANBAN.html" class="nav-link">Kanban Board</a></li>
+                    </ul>
+                </div>
+                <div class="doc-nav">
+                    <div class="doc-nav-title">Feature Specs</div>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="feature-granular-permission-management.html" class="nav-link">Granular Permission Management</a></li>
+                    </ul>
+                </div>
+                <div class="nav-title">Development Plan</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#overview" class="nav-link">Overview</a></li>
+                    <li class="nav-item">
+                        <a href="#sprints" class="nav-link collapsible expanded"><span class="nav-text">Sprint Organization</span></a>
+                        <ul class="nav-list nav-sublist expanded" style="margin-top: 0.5rem;">
+                            <li class="nav-item"><a href="#phase1" class="nav-link sub">Phase 1: Foundation</a></li>
+                            <li class="nav-item"><a href="#phase2" class="nav-link sub">Phase 2: Core Features</a></li>
+                            <li class="nav-item"><a href="#phase3" class="nav-link sub">Phase 3: Advanced</a></li>
+                            <li class="nav-item"><a href="#phase4" class="nav-link sub">Phase 4: Multi-Feature</a></li>
+                            <li class="nav-item"><a href="#phase5" class="nav-link sub">Phase 5: Security</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a href="#workflow" class="nav-link">Development Workflow</a></li>
+                    <li class="nav-item"><a href="#mongodb" class="nav-link">MongoDB Atlas</a></li>
+                    <li class="nav-item"><a href="#netlify" class="nav-link">Netlify Deployment</a></li>
+                    <li class="nav-item"><a href="#risks" class="nav-link">Risk Management</a></li>
+                    <li class="nav-item"><a href="#metrics" class="nav-link">Success Metrics</a></li>
+                    <li class="nav-item"><a href="#next" class="nav-link">Next Steps</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header>
+                <h1>Wayne County PreK Enrollment System</h1>
+                <p>Development Plan - Sprint Scheduling & Timeline</p>
+            </header>
+
+            <section id="overview">
+                <h2>Project Overview</h2>
+                <p>This plan outlines a structured approach to develop the EnrollGSRP MVP over approximately 15 months with a two-person team (you + AI), following the implementation plan's 22 features with MongoDB Atlas and Netlify deployment.</p>
+                
+                <div class="note">
+                    <strong>Timeline:</strong> Now through August 2026 (15 months)<br>
+                    <strong>Team:</strong> You + AI (Cascade)<br>
+                    <strong>Tech Stack:</strong> Nuxt 4, NuxtUI, Tailwind CSS, MongoDB Atlas, Netlify<br>
+                    <strong>Approach:</strong> Agile with 2-week sprints<br>
+                    <strong>Testing:</strong> Comprehensive (unit, integration, E2E with Playwright)
+                </div>
+
+                <h3>Sprint Structure</h3>
+                <ul>
+                    <li><strong>Sprint Duration:</strong> 2 weeks (10 working days per sprint)</li>
+                    <li><strong>Total Sprints:</strong> ~30 sprints (60 weeks)</li>
+                    <li><strong>Buffer:</strong> 2-3 weeks for unforeseen delays</li>
+                    <li><strong>Target Launch:</strong> August 2026</li>
+                </ul>
+            </section>
+
+            <section id="sprints">
+                <h2>Sprint Organization</h2>
+
+                <div class="phase-section" id="phase1">
+                    <h3>Phase 1: Foundation & Infrastructure (Sprints 1-4, 8 weeks)</h3>
+                    
+                    <div class="sprint-item">
+                        <h4>Sprint 1: Project Setup & Database Schema</h4>
+                        <ul>
+                            <li>Set up MongoDB Atlas connection</li>
+                            <li>Design and implement database schemas (users, roles, permissions, applications)</li>
+                            <li>Set up environment variables and configuration</li>
+                            <li>Create base repository structure</li>
+                            <li>Set up Netlify deployment pipeline</li>
+                            <li>Implement basic error handling and logging</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 2: Authentication System</h4>
+                        <ul>
+                            <li>Implement local authentication (username/password)</li>
+                            <li>Set up JWT token management</li>
+                            <li>Implement password reset flow</li>
+                            <li>Create auth middleware and guards</li>
+                            <li>Set up session management</li>
+                            <li>Write authentication tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 3: Granular Permission System (Part 1)</h4>
+                        <ul>
+                            <li>Implement permission schema in MongoDB</li>
+                            <li>Create permission presets (Super Admin, County Admin, District Admin, School Admin, Teacher)</li>
+                            <li>Build permission checking middleware</li>
+                            <li>Implement permission enforcement on API routes</li>
+                            <li>Write permission system tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 4: Granular Permission System (Part 2)</h4>
+                        <ul>
+                            <li>Build UI for user management</li>
+                            <li>Create permission configuration interface</li>
+                            <li>Implement custom permission builder</li>
+                            <li>Add audit logging for permission changes</li>
+                            <li>Integration testing for permission system</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="phase-section" id="phase2">
+                    <h3>Phase 2: Core Enrollment Features (Sprints 5-12, 16 weeks)</h3>
+                    
+                    <div class="sprint-item">
+                        <h4>Sprint 5: Form Builder Foundation</h4>
+                        <ul>
+                            <li>Design form builder data structure</li>
+                            <li>Implement basic field types (text, select, checkbox, date, number)</li>
+                            <li>Create form builder UI components</li>
+                            <li>Build form validation system</li>
+                            <li>Write form builder tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 6: County Intake Form</h4>
+                        <ul>
+                            <li>Implement county intake form with core required fields</li>
+                            <li>Add DOB, income, IEP status, housing status fields</li>
+                            <li>Implement school selection with ranking (up to 3)</li>
+                            <li>Add form validation and submission handling</li>
+                            <li>Write intake form tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 7: Automatic Eligibility Determination</h4>
+                        <ul>
+                            <li>Implement DOB eligibility calculation</li>
+                            <li>Build income-based FPL calculation</li>
+                            <li>Create priority tier assignment logic</li>
+                            <li>Implement priority hierarchy (Housing > IEP > District > FPL)</li>
+                            <li>Build priority verification workflow</li>
+                            <li>Implement timing restriction logic (May 1, August 1, Sept 2)</li>
+                            <li>Create priority display components</li>
+                            <li>Add priority-based sorting for applications</li>
+                            <li>Write eligibility and priority tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 8: Application Lifecycle (Stage 1: Intake)</h4>
+                        <ul>
+                            <li>Implement application routing to schools</li>
+                            <li>Create teacher assignment workflow</li>
+                            <li>Build School Admin dashboard for Stage 1</li>
+                            <li>Implement parent dashboard with Stage 1 visibility</li>
+                            <li>Create real-time status updates for Stage 1</li>
+                            <li>Write Stage 1 lifecycle tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 10: District Enrollment Form</h4>
+                        <ul>
+                            <li>Implement district-specific enrollment forms</li>
+                            <li>Build form completion workflow for parents</li>
+                            <li>Create document upload interface</li>
+                            <li>Implement form submission handling</li>
+                            <li>Write district form tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 11: Document Upload & Verification</h4>
+                        <ul>
+                            <li>Implement document upload with file validation</li>
+                            <li>Set up Netlify Blob for document storage with application-level access control</li>
+                            <li>Create server routes for secure document access with permission checks</li>
+                            <li>Implement document metadata in MongoDB (ownership, school/district associations)</li>
+                            <li>Create teacher verification interface</li>
+                            <li>Implement correction request workflow</li>
+                            <li>Write document verification tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 12: PDF Auto-Fill</h4>
+                        <ul>
+                            <li>Implement PDF template management</li>
+                            <li>Build field mapping interface</li>
+                            <li>Create PDF generation with form data</li>
+                            <li>Implement batch PDF generation</li>
+                            <li>Write PDF generation tests</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="phase-section" id="phase3">
+                    <h3>Phase 3: Advanced Features (Sprints 13-20, 16 weeks)</h3>
+                    
+                    <div class="sprint-item">
+                        <h4>Sprint 13: Capacity & Waitlist Management</h4>
+                        <ul>
+                            <li>Implement capacity configuration per school</li>
+                            <li>Build automated waitlist system</li>
+                            <li>Create waitlist priority ordering</li>
+                            <li>Implement waitlist movement logic</li>
+                            <li>Write capacity management tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 14: Application Lifecycle (Stage 2: Enrollment Paperwork)</h4>
+                        <ul>
+                            <li>Implement enrollment paperwork workflow</li>
+                            <li>Build teacher verification dashboard</li>
+                            <li>Create parent document correction interface</li>
+                            <li>Implement stage transition logic</li>
+                            <li>Write Stage 2 lifecycle tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 15: Teacher-Parent Communications</h4>
+                        <ul>
+                            <li>Implement email sending (via Netlify Functions or third-party)</li>
+                            <li>Build SMS integration (Twilio or similar)</li>
+                            <li>Create communication logging system</li>
+                            <li>Build communication history timeline</li>
+                            <li>Write communication tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 16: Application Lifecycle (Stage 3: Enrolled)</h4>
+                        <ul>
+                            <li>Implement enrollment confirmation workflow</li>
+                            <li>Build classroom assignment interface</li>
+                            <li>Create enrollment status management</li>
+                            <li>Implement attendance tracking setup</li>
+                            <li>Write Stage 3 lifecycle tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 17: Site Visit Scheduling</h4>
+                        <ul>
+                            <li>Implement teacher calendar configuration</li>
+                            <li>Build parent scheduling interface</li>
+                            <li>Create site visit management system</li>
+                            <li>Add calendar integration</li>
+                            <li>Write scheduling tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 18: Ages and Stages Assessment</h4>
+                        <ul>
+                            <li>Implement ASQ assessment form</li>
+                            <li>Build assessment completion interface</li>
+                            <li>Create assessment data storage</li>
+                            <li>Implement assessment reporting</li>
+                            <li>Write ASQ tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 19: Classroom Assignment</h4>
+                        <ul>
+                            <li>Implement classroom assignment workflow</li>
+                            <li>Build classroom capacity tracking</li>
+                            <li>Create classroom management interface</li>
+                            <li>Implement student-classroom mapping</li>
+                            <li>Write classroom assignment tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 20: Application Lifecycle (Stage 4: Site Visit)</h4>
+                        <ul>
+                            <li>Implement site visit completion workflow</li>
+                            <li>Build ASQ result recording</li>
+                            <li>Create site visit status tracking</li>
+                            <li>Implement final stage completion</li>
+                            <li>Write Stage 4 lifecycle tests</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="phase-section" id="phase4">
+                    <h3>Phase 4: Multi-Feature & Polish (Sprints 21-27, 12 weeks)</h3>
+                    
+                    <div class="sprint-item">
+                        <h4>Sprint 21: Multi-language Support</h4>
+                        <ul>
+                            <li>Implement i18n setup with Vue I18n</li>
+                            <li>Add English, Spanish, Arabic translations</li>
+                            <li>Build RTL layout for Arabic</li>
+                            <li>Create language switcher</li>
+                            <li>Write i18n tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 22: Multi-child Applications</h4>
+                        <ul>
+                            <li>Implement family data pre-filling</li>
+                            <li>Build multi-child application workflow</li>
+                            <li>Create sibling linking system</li>
+                            <li>Implement family-based views</li>
+                            <li>Write multi-child tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 23: Application Transfers</h4>
+                        <ul>
+                            <li>Implement transfer request workflow</li>
+                            <li>Build parent transfer interface</li>
+                            <li>Create admin transfer approval</li>
+                            <li>Implement transfer logging</li>
+                            <li>Write transfer tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 24: Automated Notifications</h4>
+                        <ul>
+                            <li>Implement notification system (email/SMS)</li>
+                            <li>Build notification templates</li>
+                            <li>Create notification preferences</li>
+                            <li>Implement event-based triggers</li>
+                            <li>Write notification tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 25: Reporting</h4>
+                        <ul>
+                            <li>Implement basic report generation</li>
+                            <li>Build admin dashboard analytics</li>
+                            <li>Create CSV export functionality</li>
+                            <li>Implement data aggregation</li>
+                            <li>Write reporting tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 26: Data Integration</h4>
+                        <ul>
+                            <li>Implement SIS CSV export format</li>
+                            <li>Build export scheduling</li>
+                            <li>Create export history tracking</li>
+                            <li>Implement data validation</li>
+                            <li>Write integration tests</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="phase-section" id="phase5">
+                    <h3>Phase 5: Security, Testing & Deployment (Sprints 27-30, 8 weeks)</h3>
+                    
+                    <div class="sprint-item">
+                        <h4>Sprint 27: Security & Audit Logging</h4>
+                        <ul>
+                            <li>Implement comprehensive audit logging</li>
+                            <li>Build security audit dashboard</li>
+                            <li>Create role-based access control verification</li>
+                            <li>Implement data encryption at rest</li>
+                            <li>Write security tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 28: E2E Testing Suite</h4>
+                        <ul>
+                            <li>Build comprehensive Playwright test suite</li>
+                            <li>Create test data fixtures</li>
+                            <li>Implement test environment setup</li>
+                            <li>Add visual regression testing</li>
+                            <li>Write E2E tests for critical paths</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 29: Testing & Polish</h4>
+                        <ul>
+                            <li>Fix bugs from E2E testing</li>
+                            <li>Performance optimization</li>
+                            <li>Accessibility audit and fixes</li>
+                            <li>Security hardening</li>
+                            <li>User acceptance testing preparation</li>
+                        </ul>
+                    </div>
+
+                    <div class="sprint-item">
+                        <h4>Sprint 30: Deployment & Launch</h4>
+                        <ul>
+                            <li>Configure production environment</li>
+                            <li>Set up monitoring and alerting</li>
+                            <li>Deploy to production</li>
+                            <li>Conduct final smoke tests</li>
+                            <li>Launch and monitor initial performance</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="workflow">
+                <h2>Development Workflow</h2>
+
+                <h3>Daily Routine</h3>
+                <ul>
+                    <li><strong>Standup:</strong> Quick sync on progress and blockers</li>
+                    <li><strong>Development:</strong> Feature implementation following test-driven development</li>
+                    <li><strong>Testing:</strong> Write tests alongside code (unit → integration → E2E)</li>
+                    <li><strong>Code Review:</strong> Review and refine implementations</li>
+                    <li><strong>Documentation:</strong> Update docs as features are implemented</li>
+                </ul>
+
+                <h3>Sprint Cadence</h3>
+                <ul>
+                    <li><strong>Sprint Planning:</strong> Review backlog, estimate tasks, set sprint goals</li>
+                    <li><strong>Development:</strong> Implement features with continuous testing</li>
+                    <li><strong>Sprint Review:</strong> Demo completed features, gather feedback</li>
+                    <li><strong>Sprint Retrospective:</strong> Reflect on what went well, identify improvements</li>
+                </ul>
+
+                <h3>Testing Strategy</h3>
+                <ul>
+                    <li><strong>Unit Tests:</strong> Test individual components and functions (Vitest)</li>
+                    <li><strong>Integration Tests:</strong> Test API endpoints and database interactions (Vitest)</li>
+                    <li><strong>E2E Tests:</strong> Test user workflows from start to finish (Playwright)</li>
+                    <li><strong>Manual Testing:</strong> Weekly exploratory testing sessions</li>
+                    <li><strong>Security Testing:</strong> Regular security audits and penetration testing</li>
+                </ul>
+            </section>
+
+            <section id="mongodb">
+                <h2>MongoDB Atlas Setup</h2>
+
+                <p><strong>Cluster:</strong> Free tier M0 cluster initially, upgrade as needed</p>
+
+                <h3>Databases</h3>
+                <ul>
+                    <li><code>enrollgsrp</code> - Main application database</li>
+                    <li><code>enrollgsrp_test</code> - Test database</li>
+                    <li><code>enrollgsrp_staging</code> - Staging database</li>
+                </ul>
+
+                <h3>Key Collections</h3>
+                <ul>
+                    <li><code>users</code> - User accounts and authentication</li>
+                    <li><code>roles</code> - Role definitions</li>
+                    <li><code>permissions</code> - Permission definitions</li>
+                    <li><code>applications</code> - Enrollment applications</li>
+                    <li><code>documents</code> - Uploaded documents</li>
+                    <li><code>communications</code> - Communication logs</li>
+                    <li><code>audit_logs</code> - Audit trail</li>
+                </ul>
+            </section>
+
+            <section id="netlify">
+                <h2>Netlify Deployment</h2>
+
+                <h3>Environments</h3>
+                <ul>
+                    <li><strong>Production:</strong> Deploy on merge to main branch</li>
+                    <li><strong>Preview:</strong> Deploy on every pull request</li>
+                    <li><strong>Staging:</strong> Deploy on merge to develop branch</li>
+                </ul>
+
+                <h3>Netlify Functions</h3>
+                <ul>
+                    <li>Server-side API routes for sensitive operations</li>
+                    <li>PDF generation</li>
+                    <li>Email/SMS sending</li>
+                    <li>File upload handling</li>
+                </ul>
+
+                <h3>Configuration</h3>
+                <ul>
+                    <li>Environment variables for MongoDB connection</li>
+                    <li>Build optimization settings</li>
+                    <li>Redirect rules for SPA routing</li>
+                    <li>Headers for security</li>
+                </ul>
+            </section>
+
+            <section id="risks">
+                <h2>Risk Management</h2>
+
+                <h3>Technical Risks</h3>
+                <ul>
+                    <li>MongoDB Atlas free tier limitations → Monitor usage, upgrade proactively</li>
+                    <li>Netlify function timeouts → Optimize function performance, consider dedicated functions</li>
+                    <li>Third-party API rate limits (email/SMS) → Implement queueing, monitor usage</li>
+                </ul>
+
+                <h3>Timeline Risks</h3>
+                <ul>
+                    <li>Feature complexity underestimated → Build buffer into each sprint</li>
+                    <li>Testing takes longer than expected → Allocate 30% of sprint time to testing</li>
+                    <li>Dependencies between features → Plan feature order carefully, implement foundational features first</li>
+                </ul>
+
+                <h3>Quality Risks</h3>
+                <ul>
+                    <li>Insufficient testing → Mandate test coverage minimum (80%)</li>
+                    <li>Security vulnerabilities → Regular security audits, dependency updates</li>
+                    <li>Performance issues → Regular performance monitoring and optimization</li>
+                </ul>
+            </section>
+
+            <section id="metrics">
+                <h2>Success Metrics</h2>
+                <ul>
+                    <li><strong>Feature Completion:</strong> All 22 MVP features implemented and tested</li>
+                    <li><strong>Test Coverage:</strong> Minimum 80% code coverage</li>
+                    <li><strong>Performance:</strong> Page load time < 2 seconds, API response time < 500ms</li>
+                    <li><strong>Security:</strong> No critical vulnerabilities in final security audit</li>
+                    <li><strong>User Acceptance:</strong> Positive feedback from stakeholder demos</li>
+                    <li><strong>Launch Readiness:</strong> All launch checklist items completed</li>
+                </ul>
+            </section>
+
+            <section id="next">
+                <h2>Next Steps</h2>
+                <ol>
+                    <li>Review and approve this plan</li>
+                    <li>Set up MongoDB Atlas cluster and connection</li>
+                    <li>Configure Netlify deployment pipeline</li>
+                    <li>Set up testing infrastructure (Vitest, Playwright)</li>
+                    <li>Begin Sprint 1: Project Setup & Database Schema</li>
+                </ol>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

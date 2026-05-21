@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wayne County PreK Enrollment System - Specification</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-900);
+            background-color: var(--gray-50);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .doc-nav {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .doc-nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: var(--gray-800);
+            text-decoration: none;
+            border-radius: 0.375rem;
+            font-size: 0.9rem;
+            transition: all 0.15s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--gray-100);
+            color: var(--primary);
+        }
+
+        .nav-link.sub {
+            padding-left: 1.25rem;
+            font-size: 0.85rem;
+        }
+
+        .nav-link.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .nav-link.doc-active {
+            background-color: var(--gray-100);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-link.collapsible {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .nav-link.collapsible .nav-text {
+            flex: 1;
+        }
+
+        .nav-link.collapsible::after {
+            content: "▼";
+            font-size: 0.7rem;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+            padding: 0.25rem;
+            user-select: none;
+        }
+
+        .nav-link.collapsible::after:hover {
+            background-color: var(--gray-100);
+            border-radius: 0.25rem;
+        }
+
+        .nav-link.collapsible.expanded::after {
+            transform: rotate(180deg);
+        }
+
+        .nav-sublist {
+            display: none;
+            transition: max-height 0.3s ease;
+        }
+
+        .nav-sublist.expanded {
+            display: block;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            max-width: 900px;
+            padding: 2rem;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--gray-300);
+        }
+
+        h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            padding-left: 0.75rem;
+            position: relative;
+        }
+
+        h4::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0.25rem;
+            bottom: 0.25rem;
+            width: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            padding-left: 0.5rem;
+            position: relative;
+        }
+
+        h5::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0.2rem;
+            bottom: 0.2rem;
+            width: 3px;
+            background: var(--gray-400);
+            border-radius: 1.5px;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--gray-800);
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        strong {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .user-role {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .user-role h4 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .responsibilities {
+            margin-top: 0.5rem;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            margin-right: 0.5rem;
+        }
+
+        .note {
+            background: var(--gray-100);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 0.375rem 0.375rem 0;
+        }
+
+        div[id] {
+            scroll-margin-top: 2rem;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: var(--gray-200);
+            margin: 3rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+
+            .main {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.nav-link.collapsible').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    this.classList.toggle('expanded');
+                    const sublist = this.closest('.nav-item').querySelector('.nav-sublist');
+                    if (sublist) {
+                        sublist.classList.toggle('expanded');
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">PreK Enrollment</div>
+            <nav>
+                <div class="doc-nav">
+                    <div class="doc-nav-title">Documents</div>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="spec.html" class="nav-link doc-active">Specification</a></li>
+                        <li class="nav-item"><a href="features.html" class="nav-link">Features</a></li>
+                        <li class="nav-item"><a href="implementation-plan.html" class="nav-link">Implementation Plan</a></li>
+                        <li class="nav-item"><a href="development-plan.html" class="nav-link">Development Plan</a></li>
+                        <li class="nav-item"><a href="PROGRESS.html" class="nav-link">Progress</a></li>
+                        <li class="nav-item"><a href="FEATURE_STATUS.html" class="nav-link">Feature Status</a></li>
+                        <li class="nav-item"><a href="DAILY_LOG.html" class="nav-link">Daily Log</a></li>
+                        <li class="nav-item"><a href="KANBAN.html" class="nav-link">Kanban Board</a></li>
+                    </ul>
+                </div>
+                <div class="nav-title">Specification</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#overview" class="nav-link">Overview</a></li>
+                    <li class="nav-item"><a href="#user-roles" class="nav-link">User Roles</a></li>
+                    <li class="nav-item"><a href="#granular-permissions" class="nav-link">Granular Permissions</a></li>
+                    <li class="nav-item">
+                        <a href="#application-lifecycle" class="nav-link collapsible"><span class="nav-text">Application Lifecycle</span></a>
+                        <ul class="nav-list nav-sublist" style="margin-top: 0.5rem;">
+                            <li class="nav-item"><a href="#stage-1-intake" class="nav-link sub">Stage 1: Intake</a></li>
+                            <li class="nav-item"><a href="#stage-2-enrollment-paperwork" class="nav-link sub">Stage 2: Enrollment Paperwork</a></li>
+                            <li class="nav-item"><a href="#stage-3-enrolled" class="nav-link sub">Stage 3: Enrolled</a></li>
+                            <li class="nav-item"><a href="#stage-4-site-visit" class="nav-link sub">Stage 4: Site Visit</a></li>
+                            <li class="nav-item"><a href="#parent-visibility" class="nav-link sub">Parent Visibility</a></li>
+                            <li class="nav-item"><a href="#stage-transitions" class="nav-link sub">Stage Transitions</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#requirements" class="nav-link collapsible"><span class="nav-text">Requirements</span></a>
+                        <ul class="nav-list nav-sublist" style="margin-top: 0.5rem;">
+                            <li class="nav-item"><a href="#form-builder" class="nav-link sub">Form Builder</a></li>
+                            <li class="nav-item"><a href="#form-types" class="nav-link sub">Form Types</a></li>
+                            <li class="nav-item"><a href="#pdf-auto-fill" class="nav-link sub">PDF Auto-Fill</a></li>
+                            <li class="nav-item"><a href="#enrollment-priority" class="nav-link sub">Enrollment Priority</a></li>
+                            <li class="nav-item"><a href="#capacity-waitlist" class="nav-link sub">Capacity & Waitlist</a></li>
+                            <li class="nav-item"><a href="#site-visits" class="nav-link sub">Site Visits</a></li>
+                            <li class="nav-item"><a href="#communications" class="nav-link sub">Communications</a></li>
+                            <li class="nav-item"><a href="#data-integration" class="nav-link sub">Data Integration</a></li>
+                            <li class="nav-item"><a href="#application-process" class="nav-link sub">Application Process</a></li>
+                            <li class="nav-item"><a href="#reporting" class="nav-link sub">Reporting</a></li>
+                            <li class="nav-item"><a href="#document-verification" class="nav-link sub">Document Verification</a></li>
+                            <li class="nav-item"><a href="#classroom-assignment" class="nav-link sub">Classroom Assignment</a></li>
+                            <li class="nav-item"><a href="#additional-process" class="nav-link sub">Additional Process</a></li>
+                            <li class="nav-item"><a href="#attendance" class="nav-link sub">Attendance</a></li>
+                            <li class="nav-item"><a href="#sensitive-interviewing" class="nav-link sub">Sensitive Interviewing</a></li>
+                            <li class="nav-item"><a href="#access-control" class="nav-link sub">Access Control</a></li>
+                        <li class="nav-item"><a href="#authentication" class="nav-link sub">Authentication & Identity</a></li>
+                        <li class="nav-item"><a href="#security" class="nav-link sub">Security & Compliance</a></li>
+                        <li class="nav-item"><a href="#technical-arch" class="nav-link sub">Technical Architecture</a></li>
+                        <li class="nav-item"><a href="#operational" class="nav-link sub">Operational Processes</a></li>
+                        <li class="nav-item"><a href="#support" class="nav-link sub">Support & Training</a></li>
+                        <li class="nav-item"><a href="#integration" class="nav-link sub">Integration Details</a></li>
+                        <li class="nav-item"><a href="#other" class="nav-link sub">Other Considerations</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header>
+                <h1>Wayne County PreK Enrollment System</h1>
+                <p>Specification Document - GSRP Guidelines</p>
+            </header>
+
+            <section id="overview">
+                <h2>Overview</h2>
+                <p>A web application for PreK enrollment in Wayne County, Michigan with five distinct user roles and hierarchical access control.</p>
+                
+                <div class="note">
+                    <strong>Guiding Principle:</strong> Wayne RESA staff and Subrecipients will collaborate to achieve full enrollment in Wayne County ensuring the maximum number of eligible children receive high quality preschool programming.
+                </div>
+            </section>
+
+            <section id="user-roles">
+                <h2>User Roles</h2>
+                <p>The system supports five user types with granular, configurable permissions for all admin roles (County Admin, District Admin, School Admin, Teacher). Parent users have fixed permissions based on their role. Each admin user type is available as a preset permission set, and custom permission configurations can be created by combining individual permissions.</p>
+                
+                <div class="user-role">
+                    <h4>1. County Admin (Preset)</h4>
+                    <div class="responsibilities">
+                        <strong>Responsibilities:</strong>
+                        <ul>
+                            <li>Manage overall site configuration and system settings</li>
+                            <li>Set up Districts and assign District Admins</li>
+                            <li>Oversee the entire enrollment system</li>
+                            <li>Upload and manage PDF form templates for automatic form filling</li>
+                            <li>Manage user accounts across all districts</li>
+                            <li>View system-wide reports and analytics</li>
+                            <li>Monitor eligibility determination based on DOB and income criteria</li>
+                            <li>Add or remove custom fields to/from the pre-built county intake form (core required fields like DOB and income cannot be removed)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="user-role">
+                    <h4>2. District Admin (Preset)</h4>
+                    <div class="responsibilities">
+                        <strong>Responsibilities:</strong>
+                        <ul>
+                            <li>Full access to all school sites and students within their district</li>
+                            <li>Set up school sites and assign School Admins</li>
+                            <li>Add teacher users to schools within their district</li>
+                            <li>Enable multi-school enrollment support permission for teachers and manage which schools they can access</li>
+                            <li>Create and maintain district-level enrollment forms using the form builder</li>
+                            <li>Configure integrations with Student Information Systems (API or data export)</li>
+                            <li>Upload district-specific PDF templates</li>
+                            <li>Monitor enrollment and waitlist status across district</li>
+                            <li>Generate and export reports for state submissions</li>
+                            <li>Add or remove custom priority questions to the county intake form that display conditionally when schools in their district are selected (e.g., sibling attendance verification)</li>
+                            <li>Verify responses to district custom priority questions (e.g., verify sibling attendance and ID numbers)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="user-role">
+                    <h4>3. School Admin (Preset)</h4>
+                    <div class="responsibilities">
+                        <strong>Responsibilities:</strong>
+                        <ul>
+                            <li>Manage school information</li>
+                            <li>Add/edit/remove teachers at their school</li>
+                            <li>View and manage all applicant (parent) information received</li>
+                            <li>Coordinate with District Admin for school-level operations</li>
+                            <li>Oversee waitlist management for their school</li>
+                            <li>Monitor site visit scheduling and completion (occurs after student enrollment)</li>
+                            <li>Generate school-specific reports</li>
+                            <li>Verify IEP documentation for applications indicating IEP status (required for priority status)</li>
+                            <li>Verify district custom priority question responses (e.g., verify sibling attendance and ID numbers) for applications to their school</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="user-role">
+                    <h4>4. Teacher (Preset)</h4>
+                    <div class="responsibilities">
+                        <strong>Responsibilities:</strong>
+                        <ul>
+                            <li>Process and review applications for assigned school(s)</li>
+                            <li>If multi-school enrollment support permission is enabled by District Admin, access applications from multiple schools as configured</li>
+                            <li>Review enrollment form for completeness and verify all uploaded documents</li>
+                            <li>Mark each document as Verified, Needs Correction, or Missing</li>
+                            <li>Generate completed PDF forms for applicants</li>
+                            <li>Verify documents and complete enrollment verification during Stage 2 (Enrollment Paperwork)</li>
+                            <li>Update enrollment status and communicate with parents</li>
+                            <li>Manage waitlist positions and openings</li>
+                            <li>Assist families in completing the enrollment process</li>
+                            <li>Configure calendar availability for site visits after student enrollment (Stage 4)</li>
+                            <li>Schedule and conduct site home visits after student has started attending school (Stage 4)</li>
+                            <li>Complete Ages and Stages Questionnaire (ASQ) assessment during site visits</li>
+                            <li>Verify IEP documentation for applications indicating IEP status (required for priority status)</li>
+                            <li>Verify district custom priority question responses (e.g., verify sibling attendance and ID numbers) for applications to their school(s)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="user-role">
+                    <h4>5. Parent (Guardian) - Fixed Permissions</h4>
+                    <div class="responsibilities">
+                        <strong>Responsibilities:</strong>
+                        <ul>
+                            <li>Apply to PreK programs at any school site in the system</li>
+                            <li>Rank up to three school site preferences</li>
+                            <li>Apply for multiple children with pre-filled family data</li>
+                            <li>Complete pre-built county intake form with core required fields (DOB, income, IEP status, housing status, school selection)</li>
+                            <li>Provide child's date of birth for age eligibility determination</li>
+                            <li>Provide income information for income-based eligibility priority or decline to submit (may trigger enrollment hold until August 1)</li>
+                            <li>Indicate IEP status and provide documentation if applicable (required for priority status)</li>
+                            <li>Indicate housing status (homeless, foster care) for priority determination</li>
+                            <li>Complete district-specific priority questions that display conditionally based on selected schools (e.g., sibling attendance verification)</li>
+                            <li>Complete any additional custom fields as configured by County Admins</li>
+                            <li>Application registration with first-choice school (if space available)</li>
+                            <li>Upload required documents (proof of residency, income verification, immunization records)</li>
+                            <li>Save and resume applications before enrollment paperwork is submitted</li>
+                            <li>Complete district enrollment form immediately after intake submission (Stage 2)</li>
+                            <li>Upload required documents and respond to document correction requests during enrollment paperwork stage</li>
+                            <li>Receive notifications for key events and status changes, including any timing restrictions based on eligibility</li>
+                            <li>View real-time application status including current stage, available actions, priority level, and any timing restrictions</li>
+                            <li>Track document verification status and respond to correction requests</li>
+                            <li>Access communication history with teachers and school staff</li>
+                            <li>Schedule site visit after student has started attending school (Stage 4)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="granular-permissions">
+                <h2>Granular Permission System</h2>
+                <p>The system implements a feature and function-specific permission model for all admin user types (County Admin, District Admin, School Admin, Teacher). Parent users have fixed permissions and cannot be configured. Permissions are organized into logical groupings based on functionality, with hierarchical control allowing higher-level users to manage permissions for lower-level groupings.</p>
+
+                <div class="note">
+                    <strong>Permission Presets:</strong> The system includes predefined permission presets for each user type (Super Admin, County Admin, District Admin, School Admin, Teacher). Admins can also create custom permission configurations by selecting individual permissions.
+                </div>
+
+                <h3 id="permission-presets">Permission Presets</h3>
+                
+                <div class="user-role">
+                    <h4>Super Admin (Preset)</h4>
+                    <div class="responsibilities">
+                        <strong>Description:</strong> All permissions enabled. This preset has access to every feature and function in the system, including system-level configuration and management of all other users and permissions.</p>
+                        <p><strong>Use Case:</strong> System administrators and maintainers who need complete control over the system.</p>
+                    </div>
+                </div>
+
+                <div class="user-role">
+                    <h4>County Admin (Preset)</h4>
+                    <div class="responsibilities">
+                        <strong>Description:</strong> All district and school management permissions enabled for all districts, plus county-level configuration permissions. Cannot modify permissions of other County Admins or Super Admins.</p>
+                        <p><strong>Use Case:</strong> County-level administrators who manage multiple districts and system-wide configuration.</p>
+                    </div>
+                </div>
+
+                <div class="user-role">
+                    <h4>District Admin (Preset)</h4>
+                    <div class="responsibilities">
+                        <strong>Description:</strong> All school management permissions enabled for schools within their assigned district, plus district-level configuration permissions. Cannot modify permissions of District Admins or higher-level users.</p>
+                        <p><strong>Use Case:</strong> District-level administrators who manage schools within their district.</p>
+                    </div>
+                </div>
+
+                <div class="user-role">
+                    <h4>School Admin (Preset)</h4>
+                    <div class="responsibilities">
+                        <strong>Description:</strong> All teacher-level permissions for their assigned school, plus school management permissions. Cannot modify permissions of School Admins or higher-level users.</p>
+                        <p><strong>Use Case:</strong> School-level administrators who manage teachers and operations at their school.</p>
+                    </div>
+                </div>
+
+                <div class="user-role">
+                    <h4>Teacher (Preset)</h4>
+                    <div class="responsibilities">
+                        <strong>Description:</strong> Application processing, document verification, communication, and site visit permissions for assigned school(s). Cannot modify permissions of any other users.</p>
+                        <p><strong>Use Case:</strong> Teachers who process applications and work with families.</p>
+                    </div>
+                </div>
+
+                <h3 id="permission-groupings">Permission Groupings</h3>
+                <p>Permissions are organized into logical groupings that align with user types and functional areas. Each grouping contains specific permissions for that functional area.</p>
+
+                <h4 id="system-management-permissions">1. System Management Permissions</h4>
+                <p>These permissions control system-level configuration and management. Available to County Admins and Super Admins.</p>
+                <ul>
+                    <li><strong>manage_system_settings:</strong> Modify system-wide configuration settings</li>
+                    <li><strong>manage_districts:</strong> Create, edit, and delete districts</li>
+                    <li><strong>assign_district_admins:</strong> Create and assign District Admin accounts to districts</li>
+                    <li><strong>view_system_reports:</strong> Access system-wide reports and analytics</li>
+                    <li><strong>modify_county_intake_form:</strong> Add or remove custom fields to the county intake form</li>
+                    <li><strong>manage_pdf_templates_county:</strong> Upload and manage county-level PDF templates</li>
+                    <li><strong>configure_sso_districts:</strong> Configure SAML/SSO settings for districts</li>
+                </ul>
+
+                <h4 id="district-management-permissions">2. District Management Permissions</h4>
+                <p>These permissions control district-level operations and school management within a district. Available to District Admins, County Admins, and Super Admins.</p>
+                <ul>
+                    <li><strong>view_all_district_data:</strong> View all data for schools within assigned district(s)</li>
+                    <li><strong>manage_schools:</strong> Create, edit, and delete schools within assigned district(s)</li>
+                    <li><strong>assign_school_admins:</strong> Create and assign School Admin accounts to schools</li>
+                    <li><strong>manage_teachers_district:</strong> Create and manage Teacher accounts for schools in assigned district(s)</li>
+                    <li><strong>configure_teacher_multischool:</strong> Enable multi-school access for teachers and configure which schools they can access</li>
+                    <li><strong>create_district_forms:</strong> Create and maintain district-level enrollment forms using form builder</li>
+                    <li><strong>configure_sis_integration:</strong> Configure integrations with Student Information Systems (API or data export)</li>
+                    <li><strong>manage_pdf_templates_district:</strong> Upload and manage district-specific PDF templates</li>
+                    <li><strong>monitor_district_enrollment:</strong> Monitor enrollment and waitlist status across district</li>
+                    <li><strong>generate_district_reports:</strong> Generate and export reports for district and state submissions</li>
+                    <li><strong>modify_district_priority_questions:</strong> Add or remove custom priority questions to county intake form for district schools</li>
+                    <li><strong>verify_district_priorities:</strong> Verify responses to district custom priority questions</li>
+                    <li><strong>manage_district_capacity:</strong> Configure capacity for schools within district</li>
+                    <li><strong>transfer_applicants_district:</strong> Transfer applicants between schools within district</li>
+                </ul>
+
+                <h4 id="school-management-permissions">3. School Management Permissions</h4>
+                <p>These permissions control school-level operations and teacher management. Available to School Admins, District Admins, County Admins, and Super Admins.</p>
+                <ul>
+                    <li><strong>manage_school_info:</strong> Edit school information and settings for assigned school(s)</li>
+                    <li><strong>manage_teachers_school:</strong> Add, edit, and remove Teacher accounts at assigned school(s)</li>
+                    <li><strong>view_all_school_applicants:</strong> View all applicant information for assigned school(s)</li>
+                    <li><strong>assign_applications_teachers:</strong> Assign applications to specific teachers at assigned school(s)</li>
+                    <li><strong>manage_school_waitlist:</strong> Oversee waitlist management for assigned school(s)</li>
+                    <li><strong>monitor_site_visits_school:</strong> Monitor site visit scheduling and completion for assigned school(s)</li>
+                    <li><strong>generate_school_reports:</strong> Generate school-specific reports for assigned school(s)</li>
+                    <li><strong>manage_school_capacity:</strong> Configure capacity for assigned school(s)</li>
+                    <li><strong>transfer_applicants_school:</strong> Transfer applicants from assigned school(s) to other schools (if parent selected)</li>
+                </ul>
+
+                <h4 id="teacher-permissions">4. Teacher Permissions</h4>
+                <p>These permissions control application processing, document verification, communication, and site visit operations. Available to Teachers, School Admins, District Admins, County Admins, and Super Admins.</p>
+                <ul>
+                    <li><strong>view_assigned_applications:</strong> View applications for assigned school(s)</li>
+                    <li><strong>process_applications:</strong> Process and review applications for assigned school(s)</li>
+                    <li><strong>review_enrollment_forms:</strong> Review enrollment forms for completeness for assigned school(s)</li>
+                    <li><strong>verify_documents:</strong> Verify uploaded documents and mark as Verified, Needs Correction, or Missing</li>
+                    <li><strong>request_document_corrections:</strong> Request specific document corrections with explanations</li>
+                    <li><strong>generate_pdfs:</strong> Generate auto-filled PDF enrollment forms for applicants</li>
+                    <li><strong>update_enrollment_status:</strong> Update enrollment status for assigned applications</li>
+                    <li><strong>manage_waitlist_positions:</strong> Manage waitlist positions and openings for assigned school(s)</li>
+                    <li><strong>communicate_parents:</strong> Send emails and SMS to parents, log phone calls and meetings</li>
+                    <li><strong>configure_site_visit_calendar:</strong> Configure calendar availability for site visits</li>
+                    <li><strong>conduct_site_visits:</strong> Schedule and conduct site visits and complete ASQ assessments</li>
+                    <li><strong>assign_classrooms:</strong> Assign enrolled students to specific classrooms</li>
+                    <li><strong>verify_iep:</strong> Verify IEP documentation for applications indicating IEP status</li>
+                    <li><strong>verify_district_priorities_school:</strong> Verify district custom priority question responses for applications to assigned school(s)</li>
+                </ul>
+
+                <h4 id="user-management-permissions">5. User Management Permissions</h4>
+                <p>These permissions control the ability to create, modify, and manage user accounts and their permissions. These are hierarchical - higher-level users can manage permissions for lower-level users.</p>
+                <ul>
+                    <li><strong>manage_district_admins:</strong> Create, edit, and delete District Admin accounts; modify District Admin permissions (County Admin and Super Admin only)</li>
+                    <li><strong>manage_school_admins:</strong> Create, edit, and delete School Admin accounts; modify School Admin permissions (District Admin, County Admin, and Super Admin only)</li>
+                    <li><strong>manage_teachers:</strong> Create, edit, and delete Teacher accounts; modify Teacher permissions (School Admin, District Admin, County Admin, and Super Admin only)</li>
+                    <li><strong>view_all_users:</strong> View all user accounts within scope (district for District Admins, school for School Admins, all for County Admins)</li>
+                    <li><strong>deactivate_users:</strong> Deactivate user accounts within scope</li>
+                    <li><strong>reset_user_passwords:</strong> Reset passwords for local authentication accounts within scope</li>
+                </ul>
+
+                <h4 id="data-access-permissions">6. Data Access Permissions</h4>
+                <p>These permissions control access to different types of data. These can be granted independently to create specialized roles.</p>
+                <ul>
+                    <li><strong>view_applicant_data:</strong> View applicant information and application details</li>
+                    <li><strong>view_document_data:</strong> View uploaded documents and verification status</li>
+                    <li><strong>view_communication_data:</strong> View communication history between staff and parents</li>
+                    <li><strong>view_enrollment_data:</strong> View enrollment status and classroom assignments</li>
+                    <li><strong>view_reporting_data:</strong> View reports and analytics data</li>
+                    <li><strong>view_audit_logs:</strong> View audit log entries (County Admin and Super Admin only)</li>
+                    <li><strong>export_data:</strong> Export data from the system (scope varies by role)</li>
+                </ul>
+
+                <h3 id="custom-permission-configurations">Custom Permission Configurations</h3>
+                <p>Admins can create custom permission configurations by selecting individual permissions from the groupings above. This allows for specialized roles such as:</p>
+
+                <div class="user-role">
+                    <h4>Example: IEP Reviewer (Custom)</h4>
+                    <div class="responsibilities">
+                        <strong>Description:</strong> A District or School user who can only review and approve IEPs for some or all schools, but cannot modify permissions of any other users.</p>
+                        <p><strong>Permissions:</strong> view_applicant_data, view_document_data, verify_iep</p>
+                        <p><strong>Scope:</strong> Can be scoped to specific schools or entire district</p>
+                    </div>
+                </div>
+
+                <div class="user-role">
+                    <h4>Example: School Data Viewer (Custom)</h4>
+                    <div class="responsibilities">
+                        <strong>Description:</strong> A School admin who has all data access as another school user, but cannot modify permissions of teachers or create users.</p>
+                        <p><strong>Permissions:</strong> view_all_school_applicants, view_applicant_data, view_document_data, view_communication_data, view_enrollment_data, view_reporting_data, generate_school_reports</p>
+                        <p><strong>Excluded:</strong> manage_teachers_school, manage_school_admins, assign_applications_teachers</p>
+                    </div>
+                </div>
+
+                <div class="user-role">
+                    <h4>Example: Document Verification Specialist (Custom)</h4>
+                    <div class="responsibilities">
+                        <strong>Description:</strong> A user who can only verify documents but cannot process applications or communicate with parents.</p>
+                        <p><strong>Permissions:</strong> view_applicant_data, view_document_data, verify_documents, request_document_corrections</p>
+                        <p><strong>Scope:</strong> Can be scoped to specific schools or entire district</p>
+                    </div>
+                </div>
+
+                <h3 id="permission-hierarchy">Permission Hierarchy</h3>
+                <p>Higher-level users have the ability to control permissions for lower-level groupings:</p>
+                <ul>
+                    <li><strong>Super Admin:</strong> Can modify permissions for County Admins, District Admins, School Admins, and Teachers</li>
+                    <li><strong>County Admin:</strong> Can modify permissions for District Admins, School Admins, and Teachers within their county</li>
+                    <li><strong>District Admin:</strong> Can modify permissions for School Admins and Teachers within their district</li>
+                    <li><strong>School Admin:</strong> Can modify permissions for Teachers at their school</li>
+                    <li><strong>Teacher:</strong> Cannot modify permissions for any other users</li>
+                </ul>
+
+                <h3 id="permission-scope">Permission Scope</h3>
+                <p>Permissions can be scoped to limit data access:</p>
+                <ul>
+                    <li><strong>System-wide:</strong> Access to all data across all districts (Super Admin, County Admin)</li>
+                    <li><strong>District-wide:</strong> Access to all data within assigned district(s) (District Admin)</li>
+                    <li><strong>School-wide:</strong> Access to all data within assigned school(s) (School Admin, Teacher with multi-school access)</li>
+                    <li><strong>Single School:</strong> Access to data for a single school (Teacher without multi-school access)</li>
+                </ul>
+
+                <div class="note">
+                    <strong>Important:</strong> Any feature or function that touches or accesses data in the system has a corresponding configurable permission. This ensures maximum flexibility in defining user roles and access levels while maintaining security and compliance with FERPA requirements.
+                </div>
+            </section>
+
+            <section id="application-lifecycle">
+                <h2>Application Lifecycle</h2>
+                <p>The enrollment process follows a four-stage lifecycle that guides families from initial application through final enrollment. Each stage has specific actions, roles, and transition criteria.</p>
+
+                <h3 id="stage-1-intake">Stage 1: Intake</h3>
+                <p><strong>Purpose:</strong> Initial application submission and routing to appropriate school for processing, with automatic eligibility determination based on DOB, income, IEP status, housing status, and district custom priority criteria.</p>
+                <ul>
+                    <li><strong>Form Source:</strong> Pre-built county intake form with core required fields (DOB, income, IEP status, housing status, school selection/ranking) plus optional custom fields configured by County Admins and district-specific priority questions configured by District Admins</li>
+                    <li><strong>Entry Point:</strong> Parents complete the county intake form as their first step in the system</li>
+                    <li><strong>Core Required Fields:</strong> School selection/ranking (up to 3 choices), DOB, and income questions are core required fields; school options can be modified by County or District Admins as needed</li>
+                    <li><strong>Eligibility Determination:</strong>
+                        <ul>
+                            <li><strong>Date of Birth (DOB):</strong> Core required field that determines age eligibility and potential timing restrictions
+                                <ul>
+                                    <li>Eligible: Child turns 4 on or before September 1st (no timing restriction)</li>
+                                    <li>Conditionally Eligible with Hold: Child turns 4 between September 2 - December 1 (enrollment on hold until September 2nd if space permits)</li>
+                                </ul>
+                            </li>
+                            <li><strong>Income Questions:</strong> Core required fields that determine income-based eligibility priority and potential timing restrictions
+                                <ul>
+                                    <li>FPL 0-100%: Priority Tier 1 (no timing restriction)</li>
+                                    <li>FPL 101-400%: Priority Tier 2 (no timing restriction)</li>
+                                    <li>FPL 401%+: Priority Tier 3 (enrollment on hold until May 1st)</li>
+                                    <li>Income Declined: Enrollment on hold until August 1st</li>
+                                </ul>
+                            </li>
+                            <li><strong>IEP Status:</strong> Core required field for priority determination
+                                <ul>
+                                    <li>IEP must be verified by district or school admin for high priority status to apply</li>
+                                    <li>Verified IEP provides high priority regardless of FPL level</li>
+                                </ul>
+                            </li>
+                            <li><strong>Housing Status:</strong> Core required field for priority determination
+                                <ul>
+                                    <li>Homeless or foster care status provides highest priority regardless of FPL level</li>
+                                </ul>
+                            </li>
+                            <li><strong>District Custom Priority Questions:</strong> Conditional fields that display based on school selection
+                                <ul>
+                                    <li>Only display when schools in a district are selected in the school ranking field</li>
+                                    <li>Examples: Sibling attendance at ranked school (with verification of sibling name and ID number)</li>
+                                    <li>Responses must be verified by District Admins or School Admins for priority status to apply</li>
+                                    <li>Verified district custom priorities are placed between IEP and FPL tiers</li>
+                                </ul>
+                            </li>
+                            <li><strong>Priority Order:</strong> Housing status (highest) → Verified IEP → Verified district custom priorities → FPL tiers</li>
+                            <li>System automatically calculates eligibility, priority, and any timing restrictions based on core field responses and verified district custom priorities</li>
+                            <li>Eligible applications proceed to enrollment paperwork (subject to timing restrictions); ineligible applications are flagged for review</li>
+                        </ul>
+                    </li>
+                    <li><strong>Custom Fields:</strong> County Admins may add optional custom fields to the intake form for county-specific data collection needs; these are in addition to core eligibility fields</li>
+                    <li><strong>Application Registration:</strong> Upon submission, application is automatically registered with the parent's highest-ranked school choice that has available capacity; if first choice has no capacity, routes to next available choice</li>
+                    <li><strong>Routing:</strong> Received applications are routed to School Admins for teacher assignment, IEP verification, and district custom priority verification</li>
+                    <li><strong>Parent Actions:</strong>
+                        <ul>
+                            <li>Complete county intake form with core required fields and any custom fields added by County Admins</li>
+                            <li>Provide child's date of birth for age eligibility determination (core required)</li>
+                            <li>Provide income information for income-based eligibility priority (core required) or decline to submit (triggers August 1 hold)</li>
+                            <li>Rank up to three school site preferences (core required)</li>
+                            <li>Complete district-specific priority questions that display conditionally based on selected schools</li>
+                            <li>Indicate IEP status (core required); if IEP, provide documentation for verification</li>
+                            <li>Indicate housing status (core required) for priority determination</li>
+                            <li>Complete any additional custom fields as configured by County Admins</li>
+                            <li>Upload initial required documents</li>
+                            <li>Save and resume application before enrollment paperwork submission</li>
+                        </ul>
+                    </li>
+                    <li><strong>School Admin Actions:</strong>
+                        <ul>
+                            <li>View all applications routed to their school</li>
+                            <li>Assign applications to specific teachers</li>
+                            <li>Monitor application volume and capacity</li>
+                            <li>Review eligibility determinations for any flagged applications</li>
+                            <li>Verify IEP documentation for applications indicating IEP status (required for priority status)</li>
+                            <li>Verify district custom priority question responses (e.g., verify sibling attendance and ID numbers) for applications to their school</li>
+                        </ul>
+                    </li>
+                    <li><strong>District Admin Actions:</strong>
+                        <ul>
+                            <li>Verify IEP documentation for applications indicating IEP status (if School Admin has not completed verification)</li>
+                            <li>Verify district custom priority question responses for applications to schools in their district</li>
+                        </ul>
+                    </li>
+                    <li><strong>Transition to Stage 2:</strong> When School Admin assigns a teacher to the application (subject to timing restrictions)</li>
+                    <li><strong>Notifications:</strong> Parent receives confirmation of application submission with eligibility status, priority level, and any timing restrictions; School Admin receives notification of new application</li>
+                </ul>
+
+                <h3 id="stage-2-enrollment-paperwork">Stage 2: Enrollment Paperwork</h3>
+                <p><strong>Purpose:</strong> Complete district-specific enrollment forms and verify all required documentation. Parents can proceed directly from intake to enrollment paperwork if they qualify based on income factors, giving teachers more time to set up their calendars for later site visits.</p>
+                <ul>
+                    <li><strong>Form Source:</strong> District Admin-built enrollment form</li>
+                    <li><strong>Timing:</strong> Parents begin enrollment paperwork immediately after Stage 1 (Intake) if they qualify based on income factors; no site visit required first</li>
+                    <li><strong>Parent Actions:</strong>
+                        <ul>
+                            <li>Complete district enrollment form immediately after intake submission</li>
+                            <li>Upload required documents: proof of residency, income verification, immunization records, custody documents</li>
+                            <li>Respond to teacher requests for document corrections</li>
+                            <li>Receive notifications about document verification status</li>
+                        </ul>
+                    </li>
+                    <li><strong>Teacher Actions:</strong>
+                        <ul>
+                            <li>Review enrollment form for completeness</li>
+                            <li>Verify all uploaded documents</li>
+                            <li>Mark each document as Verified, Needs Correction, or Missing</li>
+                            <li>Request specific corrections with explanations</li>
+                            <li>Communicate with parents via email, SMS, or logged phone calls</li>
+                            <li>Generate auto-filled PDF enrollment forms</li>
+                        </ul>
+                    </li>
+                    <li><strong>Document Verification:</strong>
+                        <ul>
+                            <li>Proof of residency</li>
+                            <li>Income verification</li>
+                            <li>Immunization records</li>
+                            <li>Custody documents (if applicable)</li>
+                        </ul>
+                    <li><strong>Transition to Stage 3:</strong> When teacher completes verification of enrollment form AND all required documents are marked as Verified</li>
+                    <li><strong>Notifications:</strong> Parent receives notifications when action is required (corrections needed); Parent receives confirmation when paperwork is complete; Teacher receives notification when parent submits documents</li>
+                </ul>
+
+                <h3 id="stage-3-enrolled">Stage 3: Enrolled</h3>
+                    <p><strong>Purpose:</strong> Final enrollment status with ongoing communication and data integration for school operations. Students are now fully enrolled and can begin attending school, with site visits and Ages and Stages assessments scheduled after enrollment.</p>
+                <ul>
+                    <li><strong>Transition Criteria:</strong> All paperwork verified and documents approved by teacher</li>
+                    <li><strong>Teacher Actions:</strong>
+                        <ul>
+                            <li>Mark student as fully enrolled</li>
+                            <li>Assign to specific classroom based on age, IEP status, and program requirements</li>
+                            <li>Coordinate orientation scheduling</li>
+                            <li>Continue communication with family as school year approaches</li>
+                            <li>Begin calendar setup for site visits (Ages and Stages assessments) which will occur after student starts attending</li>
+                        </ul>
+                    </li>
+                    <li><strong>District/School Admin Actions:</strong>
+                        <ul>
+                            <li>Run integration with Student Information System (SIS) or export data for import</li>
+                            <li>Monitor enrollment capacity and waitlist status</li>
+                            <li>Manage classroom assignments and teacher allocations</li>
+                        </ul>
+                    </li>
+                    <li><strong>Data Integration:</strong>
+                        <ul>
+                            <li>Phase 1: CSV exports for manual SIS import</li>
+                            <li>Phase 2: Direct API integration with PowerSchool, MIStar, Infinite Campus</li>
+                            <li>For 25-26 SY, Community Based Organizations will utilize MiSTAR for enrollment</li>
+                        </ul>
+                    </li>
+                    <li><strong>Parent Actions:</strong>
+                        <ul>
+                            <li>Receive official classroom assignment notification</li>
+                            <li>Receive teacher contact information</li>
+                            <li>Attend orientation as scheduled</li>
+                            <li>Student begins attending school</li>
+                            <li>Communicate with teacher as needed before school year begins</li>
+                        </ul>
+                    </li>
+                    <li><strong>Ongoing Communication:</strong> School Admins and teachers can communicate with enrolled families throughout the pre-school period via email, SMS, and logged communications</li>
+                    <li><strong>Dual Status Scenario:</strong>
+                        <ul>
+                            <li>Students may be enrolled at one school while waitlisted for a higher-ranked school preference</li>
+                            <li>If a seat opens at the higher-ranked school, completed documentation can be easily transferred</li>
+                            <li>Transfer process preserves all verified documents and enrollment data</li>
+                        </ul>
+                    </li>
+                    <li><strong>Transition to Stage 4:</strong> Site visit scheduling occurs after student has started attending school, giving teachers adequate time to configure their calendars</li>
+                    <li><strong>Notifications:</strong> Parent receives classroom assignment notification; Parent receives orientation details; Parent receives communications from teacher/school as school year approaches</li>
+                </ul>
+
+                <h3 id="stage-4-site-visit">Stage 4: Site Visit</h3>
+                <p><strong>Purpose:</strong> Teacher conducts home/site visit to complete Ages and Stages Questionnaire (ASQ) assessment, build relationship, and support the child's development. This stage occurs after the student has started attending school, giving teachers adequate time to configure their calendars and availability.</p>
+                <ul>
+                    <li><strong>Prerequisites:</strong> Student must be enrolled and attending school; teacher must have availability configured in their calendar</li>
+                    <li><strong>Teacher Calendar Setup:</strong>
+                        <ul>
+                            <li>Teachers define availability windows with travel buffer times (configured after enrollment and during early school year)</li>
+                            <li>Set recurring or one-time availability slots</li>
+                            <li>Configure default visit duration (45 minutes)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Parent Actions:</strong>
+                        <ul>
+                            <li>Receive notification to schedule site visit after student has started attending school</li>
+                            <li>Self-schedule from teacher's available time slots</li>
+                            <li>Reschedule up to 24 hours before visit if needed</li>
+                            <li>Confirm visit location (home, library, community center)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Teacher Actions:</strong>
+                        <ul>
+                            <li>Conduct 45-minute home visit in private space</li>
+                            <li>Complete Ages and Stages Questionnaire (ASQ) assessment</li>
+                            <li>Discuss child's progress and development</li>
+                            <li>Share curriculum and program information</li>
+                            <li>Set goals for the child</li>
+                            <li>Log visit outcomes and next steps</li>
+                            <li>Upload documents received from parents during the visit (photo-to-PDF conversion available on mobile devices)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Visit Requirements:</strong>
+                        <ul>
+                            <li>Must be completed in private space (family home, library, community building)</li>
+                            <li>Never in public spaces</li>
+                            <li>Initial visit covers ASQ assessment, curriculum sharing, goal setting, and development discussion</li>
+                            <li>Second visit (after assessment checkpoint) reviews child needs and kindergarten transition</li>
+                        </ul>
+                    </li>
+                    <li><strong>Timing:</strong> Site visits are scheduled after the student has begun attending school, allowing teachers time to set up calendars and build rapport with the student in the classroom setting first</li>
+                    <li><strong>Notifications:</strong> Parent receives visit reminder; Teacher receives notification of scheduled visit; Parent receives confirmation after visit completion</li>
+                </ul>
+
+                <h3 id="parent-visibility">Parent Visibility and Status Tracking</h3>
+                <p>Parents have real-time visibility into their application status throughout the enrollment process. The parent portal displays:</p>
+                <ul>
+                    <li><strong>Current Stage Indicator:</strong> Clear visual indicator showing which stage the application is in (Intake, Enrollment Paperwork, Enrolled, Site Visit)</li>
+                    <li><strong>Available Actions:</strong> Dynamic list of actions the parent can complete at the current stage (e.g., "Upload documents," "Complete form," "Schedule site visit")</li>
+                    <li><strong>Waiting For:</strong> Clear statement of what the parent is waiting for (e.g., "Waiting for teacher assignment," "Waiting for document verification," "Waiting for classroom assignment", "Waiting for site visit scheduling")</li>
+                    <li><strong>Progress Bar:</strong> Visual progress indicator showing completion percentage through the enrollment lifecycle</li>
+                    <li><strong>Stage-Specific Details:</strong>
+                        <ul>
+                            <li><strong>Intake Stage:</strong> Shows form completion status, document upload status, and notification when teacher is assigned</li>
+                            <li><strong>Enrollment Paperwork Stage:</strong> Shows enrollment form completion, document verification status for each required document, and action items for corrections</li>
+                            <li><strong>Enrolled Stage:</strong> Shows classroom assignment, teacher contact information, orientation details, and any pre-school communications</li>
+                            <li><strong>Site Visit Stage:</strong> Shows assigned teacher, available time slots for scheduling (after student starts attending), scheduled visit date/time, and visit location confirmation</li>
+                        </ul>
+                    </li>
+                    <li><strong>Document Status Dashboard:</strong> Real-time status for each required document (Verified, Pending, Action Required) with clear instructions for any needed corrections</li>
+                    <li><strong>Communication History:</strong> Timeline of all communications with teachers and school staff</li>
+                    <li><strong>Notifications Center:</strong> Centralized view of all notifications and alerts related to the application</li>
+                </ul>
+
+                <h3 id="stage-transitions">Stage Transitions Summary</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                    <thead>
+                        <tr style="background: var(--gray-100); border-bottom: 2px solid var(--gray-200);">
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid var(--gray-200);">From</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid var(--gray-200);">To</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid var(--gray-200);">Trigger</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid var(--gray-200);">Who Initiates</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid var(--gray-200);">Intake</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--gray-200);">Enrollment Paperwork</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--gray-200);">Teacher assignment</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--gray-200);">School Admin</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid var(--gray-200);">Enrollment Paperwork</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--gray-200);">Enrolled</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--gray-200);">Form and documents verified</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--gray-200);">Teacher</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid var(--gray-200);">Enrolled</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--gray-200);">Site Visit</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--gray-200);">Student starts attending school; teacher calendar configured</td>
+                            <td style="padding: 0.75rem; border: 1px solid var(--gray-200);">Teacher/School Admin</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="requirements">
+                <h2>Refined Requirements</h2>
+
+                <div id="form-builder">
+                    <h3>Form Builder</h3>
+
+                    <h4 id="form-types">Form Types</h4>
+                    <ul>
+                        <li><strong>County Intake Form:</strong> Pre-built standardized form with core required fields (date of birth, income questions, IEP status, housing status, school selection/ranking) for automatic eligibility determination; County Admins can add or remove custom fields, but core eligibility fields cannot be removed</li>
+                        <li><strong>District Custom Priority Questions:</strong> District Admins can add custom priority questions to the county intake form that display conditionally when schools in their district are selected (e.g., sibling attendance verification); these questions are verified by district or school admins and affect priority placement between IEP and 0-100% FPL</li>
+                        <li><strong>District Enrollment Form:</strong> District Admins use form builder to create district-specific enrollment forms</li>
+                        <li>Forms support multi-language: English, Spanish, Arabic</li>
+                    </ul>
+
+                    <h4>Supported Field Types</h4>
+                    <p>The form builder must support the following field types:</p>
+                    <ul>
+                        <li><strong>Text Input</strong> - Single-line text field for names, general text entry</li>
+                        <li><strong>Textarea</strong> - Multi-line text field for longer responses</li>
+                        <li><strong>Number</strong> - Numeric input with optional min/max constraints</li>
+                        <li><strong>Date</strong> - Date picker with validation</li>
+                        <li><strong>Email</strong> - Email field with format validation</li>
+                        <li><strong>Phone</strong> - Phone number field with formatting and validation</li>
+                        <li><strong>Address Block</strong> - Composite field containing street, city, state, ZIP (auto-formatted)</li>
+                        <li><strong>Single Select Dropdown</strong> - Single choice from a dropdown list</li>
+                        <li><strong>Radio Group</strong> - Single choice from radio button options</li>
+                        <li><strong>Checkbox</strong> - Single boolean toggle</li>
+                        <li><strong>Multi-select Checkbox Group</strong> - Multiple choices from checkbox options</li>
+                        <li><strong>File Upload</strong> - Document/image upload with type and size restrictions; includes built-in photo-to-PDF converter for mobile devices when users upload images</li>
+                    </ul>
+
+                    <h4>Composite Field Groups</h4>
+                    <p>Related fields can be grouped into logical sections:</p>
+                    <ul>
+                        <li><strong>Address Block Group</strong> - Street, City, State, ZIP fields treated as a single unit</li>
+                        <li><strong>Contact Information Group</strong> - Phone, Email, Relationship grouped together</li>
+                        <li><strong>Household Member Group</strong> - First Name, Last Name, Relationship, Age grouped for each household member</li>
+                        <li><strong>Income Source Group</strong> - Income type, amount, frequency grouped for each income entry</li>
+                    </ul>
+
+                    <h4>Repeatable (Collection) Fields</h4>
+                    <p>Fields that can have multiple entries of the same type:</p>
+                    <ul>
+                        <li><strong>Household Members</strong> - List of household member objects, each containing: first name, last name, relationship to child, age</li>
+                        <li><strong>Income Sources</strong> - List of income entries, each containing: income type, amount, frequency, verification method</li>
+                        <li><strong>Additional Phone Numbers</strong> - List of phone entries with type (home, cell, work) and number</li>
+                        <li><strong>Race/Ethnicity Options</strong> - Multi-select with "Other" text option and ability to select multiple races</li>
+                        <li><strong>Emergency Contacts</strong> - List of contact entries with name, relationship, phone, email</li>
+                        <li><strong>Custom Collections</strong> - Users can define their own collection types with any combination of field types (text, number, date, dropdown, etc.) - each collection can have any number of fields, and users can add/remove fields within their custom collection definition</li>
+                    </ul>
+
+                    <h4>Custom Collection Builder</h4>
+                    <p>Advanced feature allowing administrators to create custom repeatable collections:</p>
+                    <ul>
+                        <li><strong>Collection Name</strong> - User-defined name for the collection (e.g., "Vehicles", "Pets", "Previous Schools")</li>
+                        <li><strong>Collection Fields</strong> - Add any number of fields to the collection template using standard field types</li>
+                        <li><strong>Field Configuration</strong> - Each field within a custom collection supports the same properties as regular fields (label, placeholder, required, validation rules)</li>
+                        <li><strong>Minimum/Maximum Entries</strong> - Set limits on how many items a parent must/can add</li>
+                        <li><strong>Collection-Level Validation</strong> - Rules that apply across all entries in the collection</li>
+                    </ul>
+
+                    <h4>Field Properties and Configuration</h4>
+                    <ul>
+                        <li><strong>Label</strong> - Field display name (supports multi-language)</li>
+                        <li><strong>Placeholder</strong> - Hint text showing expected format</li>
+                        <li><strong>Required</strong> - Boolean flag for mandatory fields</li>
+                        <li><strong>Help Text</strong> - Additional guidance displayed below the field</li>
+                        <li><strong>Validation Rules</strong> - Pattern matching, min/max length, custom error messages</li>
+                        <li><strong>Conditional Logic</strong> - Display logic based on selected values in any previous question in the form (show/hide, enable/disable, requiring additional fields when specific options are chosen)</li>
+                        <li><strong>Default Values</strong> - Pre-populated values for new forms</li>
+                        <li><strong>Read-only</strong> - Non-editable field for display-only scenarios</li>
+                    </ul>
+
+                    <h4>Conditional Logic Details</h4>
+                    <p>Advanced display and validation rules based on previous field selections:</p>
+                    <ul>
+                        <li><strong>Show/Hide Rules</strong> - Field appears only when specific conditions on previous answers are met</li>
+                        <li><strong>Enable/Disable Rules</strong> - Field is visible but editable only when conditions are met</li>
+                        <li><strong>Value-Based Triggers</strong> - Conditions can check for specific values, ranges, or patterns from dropdowns, radio buttons, checkboxes, or text inputs</li>
+                        <li><strong>Compound Conditions</strong> - Multiple criteria combined with AND/OR operators (e.g., show field when income is below 200% FPL AND housing status is homeless)</li>
+                        <li><strong>Field Dependencies</strong> - Required state can change based on previous selections</li>
+                        <li><strong>Dynamic Dropdowns</strong> - Options in dropdowns can filter based on prior selections</li>
+                    </ul>
+
+                    <h4>Validation Capabilities</h4>
+                    <ul>
+                        <li>Required field validation with custom error messages</li>
+                        <li>Email format validation with MX record checking (optional)</li>
+                        <li>Phone number validation with format enforcement</li>
+                        <li>Number range validation (min/max values)</li>
+                        <li>Date range validation</li>
+                        <li>Custom regex pattern validation</li>
+                        <li>File type and size validation for uploads</li>
+                        <li>Cross-field validation (e.g., end date must be after start date)</li>
+                    </ul>
+
+                    <h4>Form Structure and Organization</h4>
+                    <ul>
+                        <li><strong>Sections</strong> - Visual grouping of related fields with optional description</li>
+                        <li><strong>Field Ordering</strong> - Drag-and-drop reordering of fields and groups</li>
+                        <li><strong>Form Versioning</strong> - Ability to create new versions while preserving existing submissions</li>
+                        <li><strong>Preview Mode</strong> - Real-time preview of form as it will appear to users</li>
+                        <li><strong>Field Duplication</strong> - Copy existing fields to reuse configuration</li>
+                    </ul>
+
+                    <h4>Multi-language Support</h4>
+                    <ul>
+                        <li>All field labels, placeholders, help text, and validation messages support English, Spanish, and Arabic</li>
+                        <li>Language-specific formatting (e.g., date formats: MM/DD/YYYY vs DD/MM/YYYY)</li>
+                        <li>Right-to-left (RTL) layout support for Arabic</li>
+                    </ul>
+
+                    <h4>Advanced Form Features</h4>
+                    <p>Additional capabilities that make this a production-ready form builder:</p>
+                    
+                    <h5>Calculations & Computed Fields</h5>
+                    <ul>
+                        <li><strong>Auto-calculation</strong> - Fields can compute values from other field values (e.g., income-to-FPL ratio, age from birthdate)</li>
+                        <li><strong>Score Generation</strong> - Calculate eligibility scores based on multiple criteria</li>
+                        <li><strong>Dynamic Text</strong> - Display calculated or conditional text based on form responses</li>
+                        <li><strong>Visibility Control</strong> - Computed fields can be configured as visible to applicants, visible to admins only, or hidden entirely (backend calculation only)</li>
+                    </ul>
+
+                    <h5>Branching & Progress Navigation</h5>
+                    <ul>
+                        <li><strong>Progress Indicators</strong> - Visual progress bar showing completion percentage</li>
+                        <li><strong>Section-based Branching</strong> - Skip entire sections based on previous answers</li>
+                        <li><strong>Save & Resume</strong> - Users can save progress and return later via secure link</li>
+                        <li><strong>Draft Management</strong> - Auto-save drafts with configurable expiration</li>
+                    </ul>
+
+                    <h5>Form Analytics & Insights</h5>
+                    <ul>
+                        <li><strong>Completion Tracking</strong> - Monitor form abandonment points and completion rates</li>
+                        <li><strong>Field-level Analytics</strong> - See which options are most commonly selected</li>
+                        <li><strong>Time-to-Complete Metrics</strong> - Average time spent on each section</li>
+                    </ul>
+
+                    <h5>Email Notifications</h5>
+                    <ul>
+                        <li><strong>Configurable Alerts</strong> - Email notifications on form submission or status changes</li>
+                        <li><strong>Data Export Templates</strong> - Pre-defined export formats for reporting</li>
+                    </ul>
+
+                    <h5>Accessibility & Usability</h5>
+                    <ul>
+                        <li><strong>WCAG 2.1 Compliance</strong> - Screen reader support, keyboard navigation, contrast ratios</li>
+                        <li><strong>Mobile-First Design</strong> - Touch-friendly controls, appropriate input types for mobile keyboards</li>
+                        <li><strong>Auto-focus Management</strong> - Logical tab order and focus handling</li>
+                        <li><strong>Error Summary</strong> - List of all validation errors at top of form with links to fix</li>
+                    </ul>
+
+                    <h5>Template Library & Reusability</h5>
+                    <ul>
+                        <li><strong>Field Templates</strong> - Save configured fields as reusable templates</li>
+                        <li><strong>Form Templates</strong> - Clone entire forms with modifications</li>
+                        <li><strong>Shared Component Library</strong> - Districts can share custom field collections</li>
+                    </ul>
+
+                    <h5>Security & Data Protection</h5>
+                    <ul>
+                        <li><strong>Input Sanitization</strong> - All form inputs are sanitized to prevent XSS attacks and SQL injection</li>
+                        <li><strong>Encrypted Storage</strong> - Sensitive data (SSN, income information) encrypted at rest</li>
+                        <li><strong>CSRF Protection</strong> - Cross-site request forgery tokens on all form submissions</li>
+                        <li><strong>Secure File Uploads</strong> - Virus scanning, type validation, and secure storage for uploaded documents</li>
+                    </ul>
+
+                    <h5>Audit Trail & Version Control</h5>
+                    <ul>
+                        <li><strong>Form Change Logging</strong> - All modifications to form structure logged with user, timestamp, and change details</li>
+                        <li><strong>Submission History</strong> - Track all edits to form submissions with user attribution</li>
+                        <li><strong>Form Version History</strong> - Complete history of form versions with ability to view and restore previous versions</li>
+                    </ul>
+
+                    <h5>Performance Optimization</h5>
+                    <ul>
+                        <li><strong>Lazy Loading</strong> - Collection entries loaded on-demand to improve initial form load time</li>
+                        <li><strong>Large Collection Pagination</strong> - For collections with many entries, pagination or virtualization</li>
+                        <li><strong>Async Validation</strong> - Server-side validation feedback without page reload</li>
+                    </ul>
+
+                    <h5>Offline Support</h5>
+                    <ul>
+                        <li><strong>Offline Capability</strong> - Forms cache locally to work when internet is unavailable</li>
+                        <li><strong>Auto Sync</strong> - Pending submissions automatically sync when connectivity is restored</li>
+                        <li><strong>Conflict Resolution</strong> - Smart merging when offline changes conflict with server data</li>
+                    </ul>
+
+                    <h5>Role-Based Field Access</h5>
+                    <ul>
+                        <li><strong>Field-Level Permissions</strong> - Control which roles can view or edit specific fields</li>
+                        <li><strong>Teacher-Editable Fields</strong> - Option to make fields editable only by teachers during review</li>
+                        <li><strong>Read-Only for Parents</strong> - Fields that display calculated or reviewed info as read-only to parents</li>
+                    </ul>
+                </div>
+
+                <div id="pdf-auto-fill">
+                    <h3>Automatic PDF Form Filling</h3>
+                    <p>The system automatically populates PDF enrollment forms with applicant data, eliminating manual data entry and reducing errors.</p>
+                    
+                    <h4>PDF Template Management</h4>
+                    <ul>
+                        <li><strong>Template Upload</strong> - Admins can upload fillable PDF templates for each form type</li>
+                        <li><strong>Field Mapping Interface</strong> - Visual mapping of form fields to PDF form fields</li>
+                        <li><strong>Multiple Templates</strong> - Support for different PDF forms (county intake, district enrollment, etc.)</li>
+                        <li><strong>Template Versioning</strong> - Manage multiple versions of PDF templates over time</li>
+                    </ul>
+
+                    <h4>Automatic Field Population</h4>
+                    <ul>
+                        <li><strong>Smart Field Matching</strong> - Automatic matching of form fields to PDF fields by name or label</li>
+                        <li><strong>Custom Field Mapping</strong> - Manual mapping for fields that don't auto-match</li>
+                        <li><strong>Multi-value Support</strong> - Repeating fields (household members, income sources) populated into PDF tables</li>
+                        <li><strong>Calculated Fields</strong> - Auto-calculated values (age, income-to-FPL ratio) included in PDF output</li>
+                    </ul>
+
+                    <h4>PDF Generation & Access</h4>
+                    <ul>
+                        <li><strong>One-Click Generation</strong> - Generate completed PDF with single click from applicant record</li>
+                        <li><strong>Batch Processing</strong> - Generate PDFs for multiple applicants at once</li>
+                        <li><strong>Access Control</strong> - Teachers and admins can download completed forms for their assigned schools</li>
+                        <li><strong>Audit Trail</strong> - Log all PDF generations with user, timestamp, and applicant information</li>
+                    </ul>
+                </div>
+
+                <div id="enrollment-priority">
+                    <h3>Enrollment Priority (GSRP Guidelines)</h3>
+                    <p><strong>Enrollment Priority Order (highest to lowest):</strong></p>
+                    <ol>
+                        <li><strong>Housing Status Priority:</strong> Homeless or foster care status (regardless of FPL) - Highest priority</li>
+                        <li><strong>IEP Status:</strong> Has verified IEP (verified by district or school admin) regardless of FPL</li>
+                        <li><strong>District Custom Priorities:</strong> Verified district-specific priority factors (e.g., sibling attendance at ranked school) - inserted between IEP and FPL tiers; configured and verified by District Admins</li>
+                        <li><strong>Income Priority - Tier 1:</strong> 0-100% Federal Poverty Level (FPL)</li>
+                        <li><strong>Income Priority - Tier 2:</strong> 101–400% Federal Poverty Level (FPL)</li>
+                        <li><strong>Income Priority - Tier 3:</strong> 401% and above - Over-income</li>
+                    </ol>
+                    <p><strong>Timing Restrictions:</strong></p>
+                    <ul>
+                        <li><strong>FPL 401%+:</strong> Enrollment placed on hold until May 1st</li>
+                        <li><strong>Income Information Declined:</strong> If parent declines to submit income information, enrollment placed on hold until August 1st</li>
+                        <li><strong>Late Birth Date (Sept 2 - Dec 1):</strong> If student turns 4 between September 2 and December 1, enrollment placed on hold until September 2nd</li>
+                    </ul>
+                    <p><strong>Age Eligibility:</strong></p>
+                    <ul>
+                        <li>Children must turn 4 on or before September 1st for standard enrollment</li>
+                        <li>Children turning 4 between September 2 - December 1 can be enrolled after September 2nd if space permits</li>
+                    </ul>
+                </div>
+
+                <div id="eligibility-determination">
+                    <h3>Automatic Eligibility Determination</h3>
+                    <p>The pre-built county intake form includes core required fields that automatically determine a child's eligibility for enrollment consideration. County Admins may add optional custom fields for additional data collection, but the core eligibility fields cannot be removed:</p>
+                    <h4>Core Required Fields (Cannot Be Removed)</h4>
+                    <h5>Date of Birth (DOB) Eligibility</h5>
+                    <ul>
+                        <li><strong>Core Required Field:</strong> Child's date of birth is a mandatory field that cannot be removed from the intake form</li>
+                        <li><strong>Automatic Calculation:</strong> System automatically calculates age based on DOB and current date</li>
+                        <li><strong>Eligibility Rules:</strong>
+                            <ul>
+                                <li>Eligible: Child turns 4 on or before September 1st of the enrollment year</li>
+                                <li>Conditionally Eligible with Timing Restriction: Child turns 4 between September 2 - December 1 (enrollment placed on hold until September 2nd if space permits)</li>
+                                <li>Ineligible: Child does not meet age requirements (application flagged for manual review)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h5>School Selection/Ranking</h5>
+                    <ul>
+                        <li><strong>Core Required Field:</strong> School selection and ranking (up to 3 choices) is a mandatory field that cannot be removed</li>
+                        <li><strong>Configurable Options:</strong> School options can be modified by County or District Admins as needed (e.g., adding/removing schools, updating capacity)</li>
+                        <li><strong>Conditional Display:</strong> District custom priority questions display only when schools in that district are selected in this field</li>
+                    </ul>
+                    <h5>Income-Based Eligibility Priority</h5>
+                    <ul>
+                        <li><strong>Core Required Fields:</strong> Household income and family size questions are mandatory and cannot be removed</li>
+                        <li><strong>Automatic Calculation:</strong> System automatically calculates Federal Poverty Level (FPL) percentage based on income and family size</li>
+                        <li><strong>Priority Assignment (within eligible age group):</strong>
+                            <ul>
+                                <li>Highest Priority: Homeless or foster care status (regardless of FPL)</li>
+                                <li>High Priority: Verified IEP (verified by district or school admin, regardless of FPL)</li>
+                                <li>District Custom Priorities: Verified district-specific factors (e.g., sibling attendance) - between IEP and FPL tiers</li>
+                                <li>Priority Tier 1: 0-100% FPL</li>
+                                <li>Priority Tier 2: 101-400% FPL</li>
+                                <li>Priority Tier 3: 401%+ FPL (over-income, enrollment on hold until May 1st)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Income Decline:</strong> If parent declines to submit income information, enrollment placed on hold until August 1st</li>
+                    </ul>
+                    <h5>IEP Status Verification</h5>
+                    <ul>
+                        <li><strong>Core Required Field:</strong> IEP status indicator on intake form</li>
+                        <li><strong>Verification Process:</strong> IEP must be verified by district or school admin for priority status to apply</li>
+                        <li><strong>Priority Impact:</strong> Verified IEP provides high priority regardless of FPL level</li>
+                    </ul>
+                    <h5>Housing Status</h5>
+                    <ul>
+                        <li><strong>Core Required Fields:</strong> Housing status questions on intake form</li>
+                        <li><strong>Priority Impact:</strong> Homeless or foster care status provides highest priority regardless of FPL level</li>
+                    </ul>
+                    <h4>District Custom Priority Questions</h4>
+                    <ul>
+                        <li><strong>Configuration:</strong> District Admins can add custom priority questions to the county intake form (e.g., sibling attendance at ranked school)</li>
+                        <li><strong>Conditional Display:</strong> These questions only display when schools in the district are selected in the school ranking field</li>
+                        <li><strong>Verification Required:</strong> Responses to district custom priority questions must be verified by District Admins or School Admins for priority status to apply</li>
+                        <li><strong>Priority Placement:</strong> Verified district custom priorities are placed between IEP and FPL tiers in the priority order</li>
+                        <li><strong>Example:</strong> Sibling attendance question - if parent indicates sibling attends a ranked school, they provide the school name, sibling's name, and ID number; admin verifies sibling enrollment for priority status</li>
+                    </ul>
+                    <h4>Optional Custom Fields</h4>
+                    <ul>
+                        <li>County Admins may add optional custom fields to the intake form for county-specific data collection needs</li>
+                        <li>Custom fields are in addition to core eligibility fields and do not affect automatic eligibility determination</li>
+                        <li>Custom fields can be removed or modified by County Admins as needed</li>
+                    </ul>
+                    <h4>Combined Eligibility Status</h4>
+                    <ul>
+                        <li>System evaluates DOB, school selection, income, IEP status, housing status, and district custom priorities together from core required fields</li>
+                        <li>Applications that meet age eligibility requirements proceed to enrollment paperwork regardless of other factors</li>
+                        <li>Priority is determined by housing status, IEP verification, district custom priorities (verified), and income level in that order</li>
+                        <li>Timing restrictions are automatically applied based on FPL level, income submission status, and birth date</li>
+                        <li>Applications that fail age eligibility are flagged for manual review by County Admins</li>
+                        <li>Eligibility status, priority level, and any timing restrictions are displayed to parents upon submission and in their application dashboard</li>
+                    </ul>
+                </div>
+
+                <div id="capacity-waitlist">
+                    <h3>Capacity & Waitlist (GSRP Guidelines)</h3>
+                    <ul>
+                        <li>Each school has fixed capacity for final enrollments</li>
+                        <li>High-demand schools maintain automated waitlists</li>
+                        <li>Providers must hold 10% of allocation (1-2 students per classroom) for 0-400% FPL students until September 1</li>
+                        <li>When spots open, waitlist automatically fills based on priority</li>
+                        <li>Waitlist must be maintained and reported to Spring Early Childhood Collection</li>
+                        <li>Subrecipients must refer waitlisted families to (313) 410-4588 or FindPREK.org</li>
+                    </ul>
+                </div>
+
+                <div id="site-visits">
+                    <h3>Site Visits & Home Visits</h3>
+
+                    <h4>Workflow</h4>
+                    <ul>
+                        <li><strong>Assignment</strong> - Applications are assigned to specific teachers by School Admin during Stage 1 (Intake)</li>
+                        <li><strong>Notification</strong> - Assigned teacher receives notification via preferred channel (email or SMS) with link to view the application</li>
+                        <li><strong>Calendar Setup</strong> - Teachers define their availability including travel buffer times after the student is enrolled and attending school (Stage 4)</li>
+                        <li><strong>Parent Scheduling</strong> - After student starts attending school, parents can self-schedule site visits based on teacher's available time slots</li>
+                    </ul>
+
+                    <h4>Teacher Calendar & Availability</h4>
+                    <ul>
+                        <li><strong>Availability Slots</strong> - Teachers set recurring and one-time availability windows</li>
+                        <li><strong>Travel Buffer Time</strong> - Configurable before/after buffers to prevent back-to-back bookings that would be impossible to travel between</li>
+                        <li><strong>Duration Settings</strong> - Default 45-minute visit duration with option for longer initial assessments</li>
+                        <li><strong>Location Preferences</strong> - Option to set preferred visit locations (home, library, community center)</li>
+                        <li><strong>Recurring Availability</strong> - Set up repeating weekly availability patterns</li>
+                    </ul>
+
+                    <h4>Parent Interaction</h4>
+                    <ul>
+                        <li><strong>Self-Scheduling</strong> - Parents view available time slots and select their preferred time</li>
+                        <li><strong>Rescheduling</strong> - Parents can reschedule up to 24 hours before the visit</li>
+                        <li><strong>Notifications</strong> - Automated reminders sent before scheduled visits</li>
+                        <li><strong>Location Confirmation</strong> - Parents specify or confirm visit location (home address or meeting place)</li>
+                    </ul>
+
+                    <h4>Home Visit Requirements:</h4>
+                    <ul>
+                        <li>Completed in a private space (family home, local library, or community building - never public spaces)</li>
+                        <li>Occurs after student has started attending school, allowing teachers time to build rapport in classroom setting first</li>
+                        <li>Initial visit lasts 45 minutes and includes:
+                            <ul>
+                                <li>Ages and Stages Questionnaire (ASQ) assessment</li>
+                                <li>Discussion of child's progress and development</li>
+                                <li>Sharing curriculum and program information</li>
+                                <li>Setting goals for the child</li>
+                            </ul>
+                        </li>
+                        <li>Second visit after assessment checkpoint reviews individual child needs and kindergarten transition</li>
+                    </ul>
+
+                    <h4>Follow-up & Documentation:</h4>
+                    <ul>
+                        <li><strong>Post-Visit Notes</strong> - Teachers document visit outcomes and next steps</li>
+                        <li><strong>Document Tracking</strong> - System tracks which documents were collected during visit</li>
+                        <li><strong>Next Steps</strong> - Automated prompts for follow-up actions (ASQ review, placement decisions)</li>
+                    </ul>
+                </div>
+
+                <div id="communications">
+                    <h3>Communications</h3>
+                    
+                    <h4>Teacher-Parent Communication Channels</h4>
+                    <p>Teachers can communicate with parents through multiple channels directly from the platform:</p>
+                    
+                    <h5>Email Communication</h5>
+                    <ul>
+                        <li><strong>Direct Email Sending</strong> - Teachers can send emails to parents directly from the applicant record</li>
+                        <li><strong>Email Templates</strong> - Pre-built templates for common communications (document requests, appointment reminders, follow-ups)</li>
+                        <li><strong>Rich Text Editor</strong> - Full formatting options including attachments</li>
+                        <li><strong>Email Tracking</strong> - System tracks sent emails with timestamp and status</li>
+                        <li><strong>Email Reply Handling</strong> - Parent email replies are automatically:
+                            <ul>
+                                <li>Forwarded to the teacher's registered email address</li>
+                                <li>Logged in the application under the applicant's communication history</li>
+                                <li>Marked as "replied" in the teacher's sent email list</li>
+                            </ul>
+                        </li>
+                        <li><strong>Bulk Email</strong> - Teachers can send emails to multiple parents (e.g., for school announcements) with appropriate filtering</li>
+                    </ul>
+
+                    <h5>SMS Communication</h5>
+                    <ul>
+                        <li><strong>Direct SMS Sending</strong> - Teachers can send text messages to parents directly from the applicant record</li>
+                        <li><strong>SMS Templates</strong> - Pre-built templates for quick messaging (visit confirmations, quick updates)</li>
+                        <li><strong>Character Counter</strong> - Display remaining characters to avoid message splitting</li>
+                        <li><strong>SMS Reply Handling</strong> - Parent text replies are automatically:
+                            <ul>
+                                <li>Logged in the application under the applicant's communication history</li>
+                                <li>Flagged with notification badge in the navigation bar</li>
+                                <li>Marked as "replied" in the teacher's sent SMS list</li>
+                            </ul>
+                        </li>
+                        <li><strong>SMS Delivery Status</strong> - Track delivery/read status where available</li>
+                    </ul>
+
+                    <h5>Notification/Alert Tracker</h5>
+                    <ul>
+                        <li><strong>Navbar Indicator</strong> - Persistent notification badge in the navigation bar showing unread replies</li>
+                        <li><strong>Real-time Updates</strong> - Notifications update via polling or WebSocket connections</li>
+                        <li><strong>Notification Types</strong> - Differentiate between email replies, SMS replies, and other alerts</li>
+                        <li><strong>Quick View</strong> - Dropdown from navbar shows recent replies with direct links to applicant records</li>
+                        <li><strong>Mark as Read</strong> - Teachers can mark notifications as read individually or in bulk</li>
+                    </ul>
+
+                    <h5>External Communication Logging</h5>
+                    <ul>
+                        <li><strong>Phone Call Logging</strong> - Teachers can manually log phone conversations with parents:
+                            <ul>
+                                <li>Date and time of call</li>
+                                <li>Duration</li>
+                                <li>Summary of discussion</li>
+                                <li>Outcome/next steps</li>
+                                <li>With whom the call was made (parent name)</li>
+                            </ul>
+                        </li>
+                        <li><strong>In-Person Meeting Logging</strong> - Log face-to-face meetings with parents</li>
+                        <li><strong>Other Communication Types</strong> - Generic logging for letters, voicemails, or other contact methods</li>
+                        <li><strong>Evidence Attachment</strong> - Optional file attachment for meeting notes or documentation</li>
+                    </ul>
+
+                    <h5>Communication History & Timeline</h5>
+                    <ul>
+                        <li><strong>Unified Timeline</strong> - All communication types displayed chronologically on applicant record</li>
+                        <li><strong>Filter by Type</strong> - Filter communication history by email, SMS, phone, meeting, or all types</li>
+                        <li><strong>Search Functionality</strong> - Search within communication history for specific keywords</li>
+                        <li><strong>Export Option</strong> - Export communication history for individual applicants or in bulk</li>
+                    </ul>
+
+                    <h4>Automated Notifications</h4>
+                    <ul>
+                        <li>Email + SMS notifications to parents for key events</li>
+                        <li>Notifications for: application received, placement, site visit, enrollment complete, document requests</li>
+                        <li>Teachers receive notifications for: new applications, document submissions, communication replies</li>
+                    </ul>
+
+                    <h4>Date of Last Contact Tracking</h4>
+                    <ul>
+                        <li><strong>Automatic Tracking</strong> - System automatically records "date of last contact" for each applicant</li>
+                        <li><strong>Contact Source</strong> - Field indicates whether last contact was email, SMS, phone, or in-person</li>
+                        <li><strong>Admin Reporting</strong> - Reports show "days since last contact" for all applicants</li>
+                        <li><strong>Stale Application Identification</strong> - Applications with no contact for 7+ days flagged for follow-up</li>
+                        <li><strong>Active vs. Stale Status</strong> - Color coding in lists (green = contacted within 7 days, yellow = 8-14 days, red = 15+ days)</li>
+                        <li><strong>Follow-up Reminders</strong> - Optional automated reminders for teachers to follow up on stale applications</li>
+                    </ul>
+
+                    <h4>Reporting for Administrators</h4>
+                    <ul>
+                        <li><strong>Contact Activity Dashboard</strong> - Overview of all communication activity by school, teacher, or date range</li>
+                        <li><strong>Last Contact Reports</strong> - Exportable reports showing date of last contact for all applicants</li>
+                        <li><strong>Communication Volume Metrics</strong> - Emails sent, SMS sent, calls logged by teacher and time period</li>
+                        <li><strong>Response Rate Tracking</strong> - Parent response rates by communication channel</li>
+                        <li><strong>Audit Trail</strong> - Complete log of all communication actions for compliance</li>
+                    </ul>
+                </div>
+
+                <div id="data-integration">
+                    <h3>Data Integration</h3>
+                    <ul>
+                        <li>Phase 1: CSV exports</li>
+                        <li>Phase 2: PowerSchool, MIStar (Wayne County custom SIS), Infinite Campus</li>
+                    </ul>
+                    <p><strong>Note:</strong> For 25-26 SY, Community Based Organizations will utilize MiSTAR for enrollment.</p>
+                </div>
+
+                <div id="application-process">
+                    <h3>Application Process</h3>
+                    <p>The detailed four-stage application lifecycle is documented in the <a href="#application-lifecycle">Application Lifecycle</a> section above. This section covers additional process details and edge cases.</p>
+                    <ul>
+                        <li><strong>Edit Window:</strong> Parents can edit application until enrollment paperwork is submitted (end of Stage 2)</li>
+                        <li><strong>Final Enrollment:</strong> Teacher approval marks the student as fully enrolled (transition to Stage 3)</li>
+                        <li><strong>Duplicate Prevention:</strong> System prevents duplicate applications for the same child</li>
+                        <li><strong>Application Transfers:</strong>
+                            <ul>
+                                <li>County Admins can transfer any applicant to any school</li>
+                                <li>District Admins can transfer applicants to another school in their district if selected by parent</li>
+                                <li>Transfers preserve all application data, documents, and verification status</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h4>Head Start Referral Process</h4>
+                    <ul>
+                        <li>Families who are Head Start income eligible must be informed of their eligibility</li>
+                        <li>Parent/guardian must initial on application acknowledging Head Start eligibility</li>
+                        <li>After acknowledgment, GSRP has met obligation - family chooses program</li>
+                    </ul>
+                </div>
+
+                <div id="reporting">
+                    <h3>Reporting</h3>
+                    <ul>
+                        <li>Enrollment statistics</li>
+                        <li>Waitlist reports</li>
+                        <li>Demographics reporting</li>
+                    </ul>
+                </div>
+
+                <div id="additional-process">
+                    <h3>Additional Process Details</h3>
+                    <ul>
+                        <li>Applications accepted year-round</li>
+                        <li>Document requirements specified (proof of residency, income verification, immunization records)</li>
+                        <li>Multi-child applications: Separate applications per child with pre-filled parent/guardian data from first application</li>
+                    </ul>
+                </div>
+
+                <div id="attendance">
+                    <h3>Attendance Policy</h3>
+                    <ul>
+                        <li>Providers required to take attendance daily</li>
+                        <li>Due diligence documentation required within first 2 days of absence</li>
+                        <li>Students absent 2 weeks (8 consecutive days for 4-day, 10 for 5-day) without notice are removed and placed on waitlist</li>
+                        <li>Absent students placed at top of waitlist for their site</li>
+                        <li>Long-term absence policies must be in family handbook</li>
+                    </ul>
+                </div>
+
+                <div id="sensitive-interviewing">
+                    <h3>Sensitive Interviewing</h3>
+                    <ul>
+                        <li>In-person interviewing required - parents should not fill out sensitive information alone</li>
+                        <li>Confidentiality strictly maintained</li>
+                        <li>Helps build relational foundation for appropriate services</li>
+                    </ul>
+                </div>
+
+                <div id="document-verification">
+                    <h3>Document Verification Workflow</h3>
+                    <h4>Upload & Submission</h4>
+                    <ul>
+                        <li>Parents upload required documents (proof of residency, income verification, immunization records) during application</li>
+                        <li>Documents accept common formats (PDF, JPG, PNG) with size limits</li>
+                        <li>System validates file types and displays upload confirmation</li>
+                        <li>Built-in photo-to-PDF converter available on mobile devices for both parents and teachers when uploading images</li>
+                    </ul>
+
+                    <h4>Review Process</h4>
+                    <ul>
+                        <li><strong>Teacher Review</strong> - Assigned teacher reviews documents during Stage 2 (Enrollment Paperwork)</li>
+                        <li><strong>Verification Status</strong> - Each document marked as Verified, Needs Correction, or Missing</li>
+                        <li><strong>Request Corrections</strong> - Teachers can request specific corrections with explanation</li>
+                        <li><strong>Document Types</strong> - Proof of residency, income verification, immunization records, custody documents</li>
+                    </ul>
+                    
+                    <h4>Status Tracking</h4>
+                    <ul>
+                        <li>Real-time status display for parents (Verified, Pending, Action Required)</li>
+                        <li>Audit trail of all document verifications with timestamps and reviewer information</li>
+                        <li>Automatic notifications to parents when action is required</li>
+                    </ul>
+                </div>
+
+                <div id="classroom-assignment">
+                    <h3>Classroom Assignment</h3>
+                    <h4>Assignment Process</h4>
+                    <ul>
+                        <li><strong>Eligibility Confirmation</strong> - Student must be fully enrolled with all documents verified</li>
+                        <li><strong>Classroom Matching</strong> - Assign based on age, IEP status, and program requirements</li>
+                        <li><strong>Teacher Selection</strong> - Preferential placement with current teacher when possible</li>
+                        <li><strong>Capacity Management</strong> - Ensure classroom ratios are maintained (typically 10:1 or 12:1)</li>
+                    </ul>
+                    
+                    <h4>Assignment Details</h4>
+                    <ul>
+                        <li><strong>Program Type</strong> - Extended day (5-day) or Half-day (4-day) based on availability</li>
+                        <li><strong>Start Date</strong> - Coordinated with family schedule and program orientation</li>
+                        <li><strong>Sibling Placement</strong> - Priority to keep siblings in same school when possible</li>
+                    </ul>
+                    
+                    <h4>Communication</h4>
+                    <ul>
+                        <li>Parents receive official classroom assignment notification</li>
+                        <li>Teacher contact information provided with assignment</li>
+                        <li>Orientation scheduling coordinated by assigned teacher</li>
+                    </ul>
+                </div>
+
+                <div id="access-control">
+                    <h3>Access Control</h3>
+                    <ul>
+                        <li>Teachers have school-limited access (only see their assigned school's applicants)</li>
+                        <li>Parent portal: Comprehensive view (application status, documents, communications)</li>
+                    </ul>
+                </div>
+
+                <div id="authentication">
+                    <h3>Authentication & Identity Management</h3>
+
+                    <h4>Authentication Methods</h4>
+                    <ul>
+                        <li><strong>Parent Accounts:</strong> Hybrid authentication supporting both local username/password and OAuth (Google/Microsoft) options</li>
+                        <li><strong>District/School Admins:</strong> Multi-tenant SAML/SSO integration per district
+                            <ul>
+                                <li>District configuration includes setup instructions and required variable inputs (app IDs, credentials)</li>
+                                <li>Each district can configure their own SAML/SSO provider</li>
+                            </ul>
+                        </li>
+                        <li><strong>County Admin:</strong> Local authentication with option to configure SSO</li>
+                    </ul>
+
+                    <h4>Password Requirements</h4>
+                    <ul>
+                        <li>Minimum 8 characters</li>
+                        <li>Must include uppercase, lowercase, number, and special character</li>
+                        <li>Applies to local authentication accounts only</li>
+                    </ul>
+
+                    <h4>Account Creation Workflow</h4>
+                    <ul>
+                        <li><strong>District Admins:</strong> Create accounts for all users within their district (School Admins, Teachers)</li>
+                        <li><strong>School Admins:</strong> Create teacher accounts for their school</li>
+                        <li><strong>County Admin:</strong> Creates initial District Admin accounts and manages overall system configuration</li>
+                        <li><strong>Parent Accounts:</strong> Self-registration with email verification</li>
+                    </ul>
+
+                    <h4>Password Reset</h4>
+                    <ul>
+                        <li>Password reset functionality available only for parent accounts using local authentication</li>
+                        <li>OAuth and SAML/SSO accounts handle password resets through their respective identity providers</li>
+                        <li>Email-based self-service reset with security verification for local accounts</li>
+                    </ul>
+                </div>
+
+                <div id="security">
+                    <h3>Security & Compliance</h3>
+
+                    <h4>Audit Logging</h4>
+                    <ul>
+                        <li>FERPA-focused audit logging for:
+                            <ul>
+                                <li>Data access events (who viewed which applicant records)</li>
+                                <li>Document uploads and downloads</li>
+                                <li>Enrollment decisions and status changes</li>
+                                <li>Admin configuration changes</li>
+                            </ul>
+                        </li>
+                        <li>All audit logs include timestamp, user, action, and affected records</li>
+                    </ul>
+
+                    <h4>Data Retention</h4>
+                    <ul>
+                        <li>Indefinite retention of all application and enrollment data</li>
+                        <li>Automatic archival of records older than 5 years to cold storage</li>
+                        <li>Archived data remains accessible but with retrieval time considerations</li>
+                    </ul>
+
+                    <h4>Backup & Recovery</h4>
+                    <ul>
+                        <li>Real-time replication with point-in-time recovery (managed by database provider)</li>
+                        <li>Automated daily backups with 30-day retention</li>
+                        <li>Cross-region backup replication for disaster recovery</li>
+                    </ul>
+
+                    <h4>Security Testing</h4>
+                    <ul>
+                        <li>Continuous vulnerability monitoring of dependencies and application code</li>
+                        <li>Annual penetration testing by third-party security firm</li>
+                        <li>Automated security scanning in CI/CD pipeline</li>
+                    </ul>
+
+                    <h4>Incident Response</h4>
+                    <ul>
+                        <li>Incident response procedures aligned with FERPA breach notification requirements</li>
+                        <li>Documented escalation procedures for security incidents</li>
+                        <li>Breach notification to affected parties per FERPA guidelines</li>
+                    </ul>
+                </div>
+
+                <div id="technical-arch">
+                    <h3>Technical Architecture</h3>
+
+                    <h4>Database</h4>
+                    <ul>
+                        <li>MongoDB document database for flexible schema support</li>
+                        <li>Well-suited for form builder data and variable document structures</li>
+                        <li>Managed database service with automatic backups and scaling</li>
+                    </ul>
+
+                    <h4>API Architecture</h4>
+                    <ul>
+                        <li>RESTful JSON API for all client-server communication</li>
+                        <li>Standard HTTP methods and status codes</li>
+                        <li>JWT-based authentication for API requests</li>
+                        <li>API versioning for backward compatibility</li>
+                    </ul>
+
+                    <h4>Hosting & Infrastructure</h4>
+                    <ul>
+                        <li>Netlify for frontend hosting and deployment</li>
+                        <li>Serverless backend functions for API endpoints</li>
+                        <li>CDN for static asset delivery</li>
+                        <li>Automatic SSL/TLS certificate management</li>
+                    </ul>
+
+                    <h4>Frontend Framework</h4>
+                    <ul>
+                        <li>Nuxt.js with TypeScript for Vue-based frontend</li>
+                        <li>Server-side rendering for performance and SEO</li>
+                        <li>Component-based architecture with Vue 3</li>
+                        <li>TypeScript for type safety</li>
+                    </ul>
+
+                    <h4>Caching Strategy</h4>
+                    <ul>
+                        <li>Redis for session storage and application caching</li>
+                        <li>CDN caching for static assets (CSS, JS, images)</li>
+                        <li>Database query caching for frequently accessed data</li>
+                        <li>Cache invalidation strategy for real-time data updates</li>
+                    </ul>
+                </div>
+
+                <div id="operational">
+                    <h3>Operational Processes</h3>
+
+                    <h4>Deployment Strategy</h4>
+                    <ul>
+                        <li>Manual deployments by County Admin team only</li>
+                        <li>Deployment process documented with rollback procedures</li>
+                        <li>Staging environment for testing before production deployment</li>
+                        <li>Database migrations run as part of deployment process</li>
+                    </ul>
+
+                    <h4>Monitoring & Alerting</h4>
+                    <ul>
+                        <li>Application performance monitoring (APM) for response times and error rates</li>
+                        <li>Error tracking and aggregation with stack traces</li>
+                        <li>Uptime monitoring with alerting for downtime</li>
+                        <li>Dashboard for key metrics (active users, form submissions, error rates)</li>
+                    </ul>
+
+                    <h4>Maintenance Windows</h4>
+                    <ul>
+                        <li>Rolling updates with no planned downtime</li>
+                        <li>Zero-database-downtime migrations where possible</li>
+                        <li>Advance notice for any required maintenance windows</li>
+                        <li>Maintenance mode with user notification if downtime is unavoidable</li>
+                    </ul>
+
+                    <h4>System Configuration</h4>
+                    <ul>
+                        <li>Environment variables for sensitive configuration (API keys, database URLs)</li>
+                        <li>Admin UI for non-sensitive settings (feature flags, default values)</li>
+                        <li>District Admins can manage SSO/SAML app IDs and related credentials through district configuration</li>
+                        <li>Configuration changes logged with audit trail</li>
+                    </ul>
+
+                    <h4>Error Handling</h4>
+                    <ul>
+                        <li>User-friendly error messages displayed to end users</li>
+                        <li>Technical error details logged server-side for debugging</li>
+                        <li>Graceful degradation with retry mechanisms for transient failures</li>
+                        <li>Error recovery workflows with admin notification for critical issues</li>
+                        <li>Error categorization by severity (info, warning, error, critical) if implementation complexity allows</li>
+                    </ul>
+                </div>
+
+                <div id="support">
+                    <h3>Support & Training</h3>
+
+                    <h4>User Onboarding</h4>
+                    <ul>
+                        <li><strong>MVP:</strong> Email welcome guide with links to documentation for new users</li>
+                        <li><strong>Future:</strong> Interactive in-app tutorial/walkthrough for first login</li>
+                        <li>Role-specific onboarding guides for County Admin, District Admin, School Admin, Teacher, and Parent</li>
+                    </ul>
+
+                    <h4>Documentation</h4>
+                    <ul>
+                        <li>Role-specific user guides for each user type</li>
+                        <li>FAQ section addressing common questions and issues</li>
+                        <li>Administrator documentation for system configuration</li>
+                        <li>Documentation versioned alongside application releases</li>
+                    </ul>
+
+                    <h4>Help Desk Support</h4>
+                    <ul>
+                        <li>Email support available for County Admin only</li>
+                        <li>District Admins and School Admins route issues through County Admin</li>
+                        <li>Support ticket tracking and resolution documentation</li>
+                        <li>Knowledge base for self-service troubleshooting</li>
+                    </ul>
+
+                    <h4>Training Materials</h4>
+                    <ul>
+                        <li>PDF guides for each user role (County Admin, District Admin, School Admin, Teacher, Parent)</li>
+                        <li>Quick reference cards for common tasks</li>
+                        <li>Training materials updated with each major release</li>
+                    </ul>
+
+                    <h4>Troubleshooting</h4>
+                    <ul>
+                        <li>FAQ page addressing common issues</li>
+                        <li>Self-service diagnostic tools for users to check system status</li>
+                        <li>Error code reference with suggested resolutions</li>
+                        <li>Escalation path to support team for unresolved issues</li>
+                    </ul>
+                </div>
+
+                <div id="integration">
+                    <h3>Integration Details</h3>
+
+                    <h4>Webhook Mechanism</h4>
+                    <ul>
+                        <li><strong>Current:</strong> No webhook support (simplest implementation)</li>
+                        <li><strong>Future:</strong> Basic webhooks for key events (application submitted, status changed) with retry logic</li>
+                    </ul>
+
+                    <h4>SMS Provider</h4>
+                    <ul>
+                        <li>Twilio integration for SMS notifications</li>
+                        <li>Support for SMS templates and message scheduling</li>
+                        <li>Delivery status tracking where available</li>
+                        <li>Character limit enforcement and message splitting</li>
+                    </ul>
+
+                    <h4>Email Provider</h4>
+                    <ul>
+                        <li>Mailgun integration for transactional emails</li>
+                        <li>Email templates for common communications</li>
+                        <li>Delivery tracking and bounce handling</li>
+                        <li>Rich text email support with attachments</li>
+                    </ul>
+
+                    <h4>Data Migration</h4>
+                    <ul>
+                        <li><strong>MVP:</strong> CSV import/export for bulk data operations</li>
+                        <li><strong>Future:</strong> Full ETL pipeline with scheduled syncs, JSON import/export, and API endpoints for programmatic access</li>
+                        <li>Import validation with error reporting</li>
+                        <li>Export filtering by date range, status, or other criteria</li>
+                    </ul>
+
+                    <h4>Third-Party SIS Integration</h4>
+                    <ul>
+                        <li><strong>MVP:</strong> CSV export only for manual import into Student Information Systems</li>
+                        <li><strong>Future:</strong> REST API integration with PowerSchool, MIStar, and Infinite Campus</li>
+                        <li>Community Based Organizations will utilize MiSTAR for 25-26 SY enrollment</li>
+                        <li>Field mapping configuration for SIS integration</li>
+                        <li>Synchronization status monitoring and error handling</li>
+                    </ul>
+                </div>
+
+                <div id="other">
+                    <h3>Other Considerations</h3>
+
+                    <h4>Mobile Strategy</h4>
+                    <ul>
+                        <li><strong>MVP:</strong> Responsive web application only (works on all devices via browser)</li>
+                        <li><strong>Future:</strong> Consider Progressive Web App (PWA) or native mobile apps based on user feedback and requirements</li>
+                        <li>Mobile-optimized UI for common parent tasks</li>
+                    </ul>
+
+                    <h4>Disaster Recovery</h4>
+                    <ul>
+                        <li>Rely on database provider's disaster recovery capabilities</li>
+                        <li>Automated backups and replication managed by database service</li>
+                        <li>Recovery procedures documented and tested annually</li>
+                    </ul>
+
+                    <h4>Service Level Agreements</h4>
+                    <ul>
+                        <li>No formal SLA commitment for MVP (best effort availability)</li>
+                        <li>System uptime monitored internally</li>
+                        <li>Future consideration for formal SLA based on operational requirements</li>
+                    </ul>
+
+                    <h4>Privacy & Consent Management</h4>
+                    <ul>
+                        <li>Compliance with FERPA requirements for educational records</li>
+                        <li>Simplest implementation meeting FERPA standards</li>
+                        <li>Consent collection during account creation</li>
+                        <li>Privacy policy accessible to all users</li>
+                        <li>Data access rights per FERPA guidelines</li>
+                    </ul>
+
+                    <h4>Budget Considerations</h4>
+                    <ul>
+                        <li>No budget tracking built into the application</li>
+                        <li>External budget management systems used for financial tracking</li>
+                        <li>System focuses on enrollment operations rather than financial management</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="note">
+                <strong>Status:</strong> Specification complete with all technical, security, operational, and integration requirements documented. Ready for implementation planning.
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Collapsible navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const collapsibleLinks = document.querySelectorAll('.nav-link.collapsible');
+
+            collapsibleLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sublist = this.nextElementSibling;
+
+                    if (sublist && sublist.classList.contains('nav-sublist')) {
+                        this.classList.toggle('collapsed');
+                        sublist.classList.toggle('collapsed');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
