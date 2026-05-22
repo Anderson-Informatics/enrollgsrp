@@ -1,8 +1,9 @@
 [build]
   command = "pnpm build"
-  publish = ".output/public"
+  publish = "dist"
 
 [build.environment]
+  NITRO_PRESET = "netlify"
   NODE_VERSION = "24"
 
 [[headers]]
