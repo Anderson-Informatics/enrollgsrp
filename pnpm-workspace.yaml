@@ -3,6 +3,7 @@ allowBuilds:
   '@tailwindcss/oxide': false
   bcrypt: true
   esbuild: false
+  sharp: true
   unrs-resolver: false
   vue-demi: false
 
