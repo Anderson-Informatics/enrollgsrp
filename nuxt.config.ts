@@ -21,10 +21,6 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    // Server-only runtime config
-    mongodbUri: process.env.MONGODB_URI,
-    mongodbDbName: process.env.MONGODB_DB_NAME || 'enrollgsrp',
-    
     // Public runtime config (exposed to client)
     public: {
       appUrl: process.env.APP_URL || 'http://localhost:3000'

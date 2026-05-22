@@ -1,16 +1,17 @@
 import mongoose from 'mongoose'
 
 export default defineNitroPlugin(async (nitroApp) => {
-  const config = useRuntimeConfig()
+  const mongodbUri = process.env.MONGODB_URI
+  const mongodbDbName = process.env.MONGODB_DB_NAME || 'enrollgsrp'
 
-  if (!config.mongodbUri) {
+  if (!mongodbUri) {
     console.warn('MONGODB_URI not configured - MongoDB connection skipped')
     return
   }
 
   try {
-    await mongoose.connect(config.mongodbUri, {
-      dbName: config.mongodbDbName || 'enrollgsrp'
+    await mongoose.connect(mongodbUri, {
+      dbName: mongodbDbName
     })
 
     nitroApp.hooks.hook('close', async () => {
