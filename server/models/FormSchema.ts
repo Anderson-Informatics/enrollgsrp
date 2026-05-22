@@ -1,20 +1,20 @@
 import type { Document } from 'mongoose'
 import mongoose, { Schema } from 'mongoose'
 
-export type FieldType =
-  | 'text'
-  | 'number'
-  | 'email'
-  | 'phone'
-  | 'date'
-  | 'select'
-  | 'multiselect'
-  | 'checkbox'
-  | 'radio'
-  | 'textarea'
-  | 'file'
-  | 'address'
-  | 'ssn'
+export type FieldType
+  = | 'text'
+    | 'number'
+    | 'email'
+    | 'phone'
+    | 'date'
+    | 'select'
+    | 'multiselect'
+    | 'checkbox'
+    | 'radio'
+    | 'textarea'
+    | 'file'
+    | 'address'
+    | 'ssn'
 
 export type ValidationType = 'required' | 'min' | 'max' | 'pattern' | 'minLength' | 'maxLength' | 'custom'
 
@@ -38,7 +38,7 @@ export interface IFormField {
   description?: string
   placeholder?: string
   defaultValue?: string | number | boolean | string[]
-  options?: Array<{ value: string; label: string }>
+  options?: Array<{ value: string, label: string }>
   validations: IValidation[]
   conditionalLogic?: IConditionalLogic[]
   order: number

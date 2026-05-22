@@ -85,7 +85,7 @@ describe('GET /api/admin/form-schemas (requires form_schemas:read)', () => {
   })
 
   it('supports pagination', async () => {
-    const res = await apiRequest<{ schemas: unknown[]; page: number; limit: number }>('/api/admin/form-schemas?page=1&limit=10', {
+    const res = await apiRequest<{ schemas: unknown[], page: number, limit: number }>('/api/admin/form-schemas?page=1&limit=10', {
       headers: { Authorization: `Bearer ${superAdminToken}` }
     })
     expect(res.status).toBe(200)

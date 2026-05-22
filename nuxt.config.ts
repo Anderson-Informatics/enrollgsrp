@@ -21,6 +21,10 @@ export default defineNuxtConfig({
     fallback: 'light'
   },
 
+  ui: {
+    icons: ['heroicons']
+  },
+
   runtimeConfig: {
     // Public runtime config (exposed to client)
     public: {
@@ -37,9 +41,5 @@ export default defineNuxtConfig({
         braceStyle: '1tbs'
       }
     }
-  },
-
-  ui: {
-    icons: ['heroicons']
   }
 })
