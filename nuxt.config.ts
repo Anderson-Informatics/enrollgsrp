@@ -5,17 +5,15 @@ export default defineNuxtConfig({
     '@nuxt/ui'
   ],
 
+  imports: {
+    dirs: ['../composables']
+  },
+
   devtools: {
     enabled: true
   },
 
   css: ['~/assets/css/main.css'],
-
-  routeRules: {
-    '/': { prerender: true }
-  },
-
-  compatibilityDate: '2025-01-15',
 
   colorMode: {
     preference: 'light',
@@ -31,6 +29,8 @@ export default defineNuxtConfig({
     }
   },
 
+  compatibilityDate: '2025-01-15',
+
   eslint: {
     config: {
       stylistic: {
@@ -38,5 +38,9 @@ export default defineNuxtConfig({
         braceStyle: '1tbs'
       }
     }
+  },
+
+  ui: {
+    icons: ['heroicons']
   }
 })

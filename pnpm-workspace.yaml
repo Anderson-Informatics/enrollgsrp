@@ -1,6 +1,12 @@
 allowBuilds:
   '@parcel/watcher': false
   '@tailwindcss/oxide': false
+  bcrypt: true
   esbuild: false
   unrs-resolver: false
   vue-demi: false
+
+pnpm:
+  overrides:
+    vite: 5.4.11
+    '@nuxt/vite': 5.4.11

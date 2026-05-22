@@ -282,111 +282,229 @@
             <div class="sprint-selector">
                 <label for="sprint-select"><strong>Current Sprint:</strong></label>
                 <select id="sprint-select">
-                    <option value="1">Sprint 1: Project Setup & Database Schema</option>
-                    <option value="2">Sprint 2: Authentication System</option>
-                    <option value="3">Sprint 3: Granular Permission System (Part 1)</option>
-                    <option value="4">Sprint 4: Granular Permission System (Part 2)</option>
-                    <option value="5">Sprint 5: Form Builder Foundation</option>
+                    <option value="1">Sprint 1: Project Setup &amp; Database Schema ✓</option>
+                    <option value="2">Sprint 2: Authentication System ✓</option>
+                    <option value="3">Sprint 3: Granular Permission System (Part 1) ✓</option>
+                    <option value="4">Sprint 4: Granular Permission System (Part 2) ✓</option>
+                    <option value="5" selected>Sprint 5: Form Builder Foundation</option>
                 </select>
             </div>
 
             <div class="kanban-board">
                 <div class="kanban-column">
-                    <h3>To Do</h3>
-                    
-                    <div class="task-card">
-                        <h4>Set up MongoDB Atlas connection</h4>
-                        <p>Configure connection string and test connectivity</p>
-                        <div class="task-checkbox">
-                            <input type="checkbox" id="task-1">
-                            <label for="task-1">Complete</label>
-                        </div>
-                    </div>
+                    <h3>To Do — Sprint 5</h3>
 
                     <div class="task-card">
-                        <h4>Design and implement database schemas</h4>
-                        <p>Users, roles, permissions, applications collections</p>
+                        <h4>Form builder UI</h4>
+                        <p>Drag-and-drop field editor for county/school admins to configure form templates</p>
                         <div class="task-checkbox">
-                            <input type="checkbox" id="task-2">
-                            <label for="task-2">Complete</label>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <h4>Set up environment variables</h4>
-                        <p>Configure .env with MongoDB URI and other settings</p>
-                        <div class="task-checkbox">
-                            <input type="checkbox" id="task-3">
-                            <label for="task-3">Complete</label>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <h4>Create base repository structure</h4>
-                        <p>Set up folders for components, composables, server routes</p>
-                        <div class="task-checkbox">
-                            <input type="checkbox" id="task-4">
-                            <label for="task-4">Complete</label>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <h4>Set up Netlify deployment pipeline</h4>
-                        <p>Configure build settings and environment variables</p>
-                        <div class="task-checkbox">
-                            <input type="checkbox" id="task-5">
-                            <label for="task-5">Complete</label>
-                        </div>
-                    </div>
-
-                    <div class="task-card">
-                        <h4>Implement basic error handling</h4>
-                        <p>Global error handler and logging setup</p>
-                        <div class="task-checkbox">
-                            <input type="checkbox" id="task-6">
-                            <label for="task-6">Complete</label>
+                            <input type="checkbox" id="task-s5-4">
+                            <label for="task-s5-4">Complete</label>
                         </div>
                     </div>
                 </div>
 
                 <div class="kanban-column">
                     <h3>In Progress</h3>
-                    
-                    <div class="task-card">
-                        <h4>Documentation and tracking setup</h4>
-                        <p>Created HTML tracking files and updated navigation</p>
-                        <div class="task-checkbox">
-                            <input type="checkbox" id="task-7" checked>
-                            <label for="task-7">Complete</label>
-                        </div>
-                    </div>
+                    <p style="color: #6b7280; font-size: 0.9rem;">No tasks in progress</p>
                 </div>
 
                 <div class="kanban-column">
-                    <h3>Done</h3>
-                    
+                    <h3>Done — Sprint 5</h3>
                     <div class="task-card">
-                        <h4>Documentation review</h4>
-                        <p>Reviewed spec, features, implementation plan, development plan</p>
-                        <div class="task-checkbox">
-                            <input type="checkbox" id="task-8" checked>
-                            <label for="task-8">Complete</label>
-                        </div>
+                        <h4>Dynamic form schema design</h4>
+                        <p>Defined FormSchema Mongoose model with 13 field types, validations, conditional logic, and ordering</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
                     </div>
-
                     <div class="task-card">
-                        <h4>Progress tracking strategy</h4>
-                        <p>Created comprehensive tracking plan</p>
-                        <div class="task-checkbox">
-                            <input type="checkbox" id="task-9" checked>
-                            <label for="task-9">Complete</label>
-                        </div>
+                        <h4>Form schema CRUD API</h4>
+                        <p>GET/POST/PATCH/DELETE routes for form schemas, protected by form_schemas permissions</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>County intake form seed</h4>
+                        <p>Seeded default Wayne County Pre-K intake form schema with 15 fields on server startup</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Integration tests for Sprint 5 routes</h4>
+                        <p>5 test files covering all CRUD endpoints with permission enforcement (23 tests)</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
                     </div>
                 </div>
             </div>
 
             <h2>Previous Sprints</h2>
-            <p>No previous sprints completed yet.</p>
+
+            <h3>UI Gap Patch (post-Sprint 4) ✓</h3>
+            <div class="kanban-board" style="margin-bottom: 2rem;">
+                <div class="kanban-column">
+                    <h3>Done</h3>
+                    <div class="task-card">
+                        <h4>Auth pages + route guard</h4>
+                        <p><code>app/pages/login.vue</code>, <code>app/pages/register.vue</code>, <code>app/middleware/auth.global.ts</code> — full frontend auth flow</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Layout refactor + user header</h4>
+                        <p><code>app/layouts/default.vue</code> (sidebar + logout + user display), <code>app/layouts/auth.vue</code>; <code>app.vue</code> simplified to NuxtLayout wrapper</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Bearer token fix via useApi composable</h4>
+                        <p><code>composables/useApi.ts</code> — all admin pages now send <code>Authorization: Bearer</code>; was completely missing before</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Audit Log viewer page</h4>
+                        <p><code>app/pages/admin/audit-log.vue</code> — paginated table, resource type filter, refresh button</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Create User page</h4>
+                        <p><code>app/pages/admin/users/create.vue</code> + Create User button on users index</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Access-control-aware navigation</h4>
+                        <p>Admin section (Users + Audit Log) only shown to users with <code>users:read</code> permission</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>useAuth persistence + Nuxt auto-import fix</h4>
+                        <p>User info now persists in cookie across reloads; root <code>composables/</code> added to <code>imports.dirs</code></p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Sprint 4: Granular Permission System (Part 2) ✓</h3>
+            <div class="kanban-board" style="margin-bottom: 2rem;">
+                <div class="kanban-column">
+                    <h3>Done</h3>
+                    <div class="task-card">
+                        <h4>User management CRUD API</h4>
+                        <p><code>GET /api/admin/users</code> (search/filter/paginate), <code>GET /api/admin/users/:id</code>, <code>PATCH /api/admin/users/:id</code></p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Permission override API + audit log</h4>
+                        <p><code>PATCH /api/admin/users/:id/permissions</code> — validates codes, writes audit log entry; <code>GET /api/admin/audit-log</code>; <code>GET /api/admin/permissions</code></p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Permission seeder plugin</h4>
+                        <p><code>server/plugins/seed-permissions.ts</code> — bulkWrite upsert of all 33 permission codes on server startup</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Admin user management UI</h4>
+                        <p><code>app/pages/admin/users/index.vue</code> (searchable table) + <code>[id].vue</code> (profile editor + permission matrix)</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Model type-cast fixes + Sprint 4 integration tests</h4>
+                        <p>AuditLog and Permission model casts fixed; 20 new integration tests; total: 45 unit + 44 integration</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Sprint 3: Granular Permission System (Part 1) ✓</h3>
+            <div class="kanban-board" style="margin-bottom: 2rem;">
+                <div class="kanban-column">
+                    <h3>Done</h3>
+                    <div class="task-card">
+                        <h4>Permission code catalog &amp; role presets</h4>
+                        <p><code>server/utils/permissions.ts</code> — 6 roles, 35 permission codes, wildcard expansion for super_admin</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Permission check helpers</h4>
+                        <p><code>hasPermission</code>, <code>hasAnyPermission</code>, <code>hasAllPermissions</code> with <code>*</code> wildcard — 18 unit tests</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>requirePermission server helper</h4>
+                        <p><code>server/utils/require-permission.ts</code> — live DB lookup so revocations take immediate effect</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Role → permissions on registration</h4>
+                        <p>Registration endpoint seeds <code>user.permissions</code> from role preset</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Protected admin route</h4>
+                        <p><code>GET /api/admin/users</code> enforces <code>users:read</code> — 4 integration tests</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Integration test framework</h4>
+                        <p><code>vitest.integration.config.ts</code>, setup, helpers — 24 integration tests total; <code>pnpm test:unit</code> / <code>test:integration</code> / <code>test:all</code></p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Sprint 1 bug fixes (caught by integration tests)</h4>
+                        <p>MongoDB plugin location fix, health endpoint truthfulness, auth middleware prefix bug</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Sprint 2: Authentication System ✓</h3>
+            <div class="kanban-board" style="margin-bottom: 2rem;">
+                <div class="kanban-column">
+                    <h3>Done</h3>
+                    <div class="task-card">
+                        <h4>JWT token generation &amp; verification</h4>
+                        <p><code>server/utils/jwt.ts</code> — 8 unit tests</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Password hashing (bcrypt)</h4>
+                        <p><code>server/utils/password.ts</code> — 6 unit tests</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Register &amp; login endpoints</h4>
+                        <p><code>POST /api/auth/register</code>, <code>POST /api/auth/login</code> — 10 integration tests</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Auth middleware</h4>
+                        <p>Bearer token validation on all <code>/api/*</code> routes except public list — 6 integration tests</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Sprint 1: Project Setup &amp; Database Schema ✓</h3>
+            <div class="kanban-board" style="margin-bottom: 2rem;">
+                <div class="kanban-column">
+                    <h3>Done</h3>
+                    <div class="task-card">
+                        <h4>MongoDB Atlas connection + Nitro plugin</h4>
+                        <p><code>server/plugins/mongodb.ts</code>, runtimeConfig wiring, <code>.env.example</code></p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Mongoose schemas (10 collections)</h4>
+                        <p>User, Application, School, District, Document, Communication, AuditLog, Classroom, SiteVisit, Permission, Role</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Health endpoint, logger, error handler</h4>
+                        <p><code>GET /api/health</code> — 4 integration tests; logger and error-handler utilities — 13 unit tests</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                    <div class="task-card">
+                        <h4>Netlify deployment config</h4>
+                        <p><code>netlify.toml</code> with build settings</p>
+                        <div class="task-checkbox"><input type="checkbox" checked disabled><label>Complete</label></div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 </body>

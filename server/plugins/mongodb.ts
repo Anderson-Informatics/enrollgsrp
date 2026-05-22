@@ -1,26 +1,22 @@
-import { MongoClient, Db } from 'mongodb'
-
-let client: MongoClient | null = null
-let db: Db | null = null
+import mongoose from 'mongoose'
 
 export default defineNitroPlugin(async (nitroApp) => {
   const config = useRuntimeConfig()
-  
+
   if (!config.mongodbUri) {
     console.warn('MONGODB_URI not configured - MongoDB connection skipped')
     return
   }
 
-  client = new MongoClient(config.mongodbUri)
-  
   try {
-    await client.connect()
-    db = client.db(config.mongodbDbName || 'enrollgsrp')
-    
-    nitroApp.hooks.hook('close', async () => {
-      await client?.close()
+    await mongoose.connect(config.mongodbUri, {
+      dbName: config.mongodbDbName || 'enrollgsrp'
     })
-    
+
+    nitroApp.hooks.hook('close', async () => {
+      await mongoose.disconnect()
+    })
+
     console.log('MongoDB connected successfully')
   } catch (error) {
     console.error('MongoDB connection failed:', error)
@@ -28,9 +24,9 @@ export default defineNitroPlugin(async (nitroApp) => {
   }
 })
 
-export function getMongoDb(): Db {
-  if (!db) {
+export function getMongoose() {
+  if (!mongoose.connection.readyState) {
     throw new Error('MongoDB not initialized')
   }
-  return db
+  return mongoose
 }

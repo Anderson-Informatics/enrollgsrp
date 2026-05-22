@@ -1,242 +1,257 @@
 # Database Schema Documentation
 
-## Collections Overview
+## Technology Stack
+
+This project uses **Mongoose** as the ODM (Object Data Modeling) library for MongoDB. Mongoose provides:
+- Schema validation and type safety
+- Built-in middleware for pre/post hooks
+- Automatic timestamps
+- Query builder API
+- Population for referenced documents
+- Better TypeScript support
+
+## Mongoose Models
+
+All database collections are defined as Mongoose models in `server/models/`:
+- `User.ts` - User accounts and authentication
+- `Role.ts` - Role definitions with permission sets
+- `Permission.ts` - Individual permission codes
+- `District.ts` - School district information
+- `School.ts` - School information within districts
+- `Application.ts` - Student enrollment applications
+- `Document.ts` - Uploaded documents for applications
+- `Communication.ts` - Communication logs
+- `SiteVisit.ts` - Site visit scheduling and ASQ results
+- `Classroom.ts` - Classroom assignments
+- `AuditLog.ts` - Audit trail for compliance
+
+## Collection Schemas
 
 ### Users Collection
 ```javascript
 {
-  _id: ObjectId,
-  email: String (unique, indexed),
-  passwordHash: String,
-  firstName: String,
-  lastName: String,
-  role: String, // 'super_admin', 'county_admin', 'district_admin', 'school_admin', 'teacher', 'parent'
-  districtId: ObjectId (ref: Districts, optional),
-  schoolId: ObjectId (ref: Schools, optional),
-  permissions: [String], // Array of permission codes
-  isActive: Boolean (default: true),
-  createdAt: Date,
-  updatedAt: Date,
-  lastLoginAt: Date
+  email: String (unique, indexed, lowercase, trim)
+  passwordHash: String (required)
+  firstName: String (required, trim)
+  lastName: String (required, trim)
+  role: Enum ['super_admin', 'county_admin', 'district_admin', 'school_admin', 'teacher', 'parent']
+  districtId: ObjectId (ref: Districts, optional)
+  schoolId: ObjectId (ref: Schools, optional)
+  permissions: [String]
+  isActive: Boolean (default: true)
+  lastLoginAt: Date (optional)
+  createdAt: Date (automatic)
+  updatedAt: Date (automatic)
 }
 ```
 
-### Roles Collection (for granular permissions)
+### Roles Collection
 ```javascript
 {
-  _id: ObjectId,
-  name: String, // 'County Admin', 'District Admin', 'School Admin', 'Teacher'
-  permissions: [String], // Array of permission codes
-  isDefault: Boolean,
-  createdAt: Date,
-  updatedAt: Date
+  name: String (unique, required)
+  permissions: [String]
+  isDefault: Boolean (default: false)
+  createdAt: Date (automatic)
+  updatedAt: Date (automatic)
 }
 ```
 
 ### Permissions Collection
 ```javascript
 {
-  _id: ObjectId,
-  code: String (unique), // 'users.create', 'applications.view', etc.
-  name: String,
-  description: String,
-  category: String, // 'users', 'applications', 'reports', etc.
-  createdAt: Date
+  code: String (unique, required)
+  name: String (required)
+  description: String (required)
+  category: String (required)
+  createdAt: Date (automatic)
 }
 ```
 
 ### Districts Collection
 ```javascript
 {
-  _id: ObjectId,
-  name: String,
-  code: String (unique),
+  name: String (required)
+  code: String (unique, required)
   address: {
-    street: String,
-    city: String,
-    state: String,
-    zip: String
-  },
-  contactEmail: String,
-  contactPhone: String,
-  isActive: Boolean (default: true),
-  createdAt: Date,
-  updatedAt: Date
+    street: String (required)
+    city: String (required)
+    state: String (required)
+    zip: String (required)
+  }
+  contactEmail: String (required)
+  contactPhone: String (required)
+  isActive: Boolean (default: true)
+  createdAt: Date (automatic)
+  updatedAt: Date (automatic)
 }
 ```
 
 ### Schools Collection
 ```javascript
 {
-  _id: ObjectId,
-  districtId: ObjectId (ref: Districts, indexed),
-  name: String,
-  code: String (unique),
+  districtId: ObjectId (ref: Districts, required, indexed)
+  name: String (required)
+  code: String (unique, required)
   address: {
-    street: String,
-    city: String,
-    state: String,
-    zip: String
-  },
-  contactEmail: String,
-  contactPhone: String,
-  capacity: Number, // Total capacity
-  currentEnrollment: Number,
-  isActive: Boolean (default: true),
-  createdAt: Date,
-  updatedAt: Date
+    street: String (required)
+    city: String (required)
+    state: String (required)
+    zip: String (required)
+  }
+  contactEmail: String (required)
+  contactPhone: String (required)
+  capacity: Number (required)
+  currentEnrollment: Number (default: 0)
+  isActive: Boolean (default: true)
+  createdAt: Date (automatic)
+  updatedAt: Date (automatic)
 }
 ```
 
 ### Applications Collection
 ```javascript
 {
-  _id: ObjectId,
-  applicationNumber: String (unique, indexed),
-  parentId: ObjectId (ref: Users, indexed),
+  applicationNumber: String (unique, indexed, required)
+  parentId: ObjectId (ref: Users, indexed, required)
   child: {
-    firstName: String,
-    lastName: String,
-    dateOfBirth: Date,
-    gender: String,
-    race: [String],
-    ethnicity: String,
-    iepStatus: Boolean,
-    iepDocument: ObjectId (ref: Documents, optional),
-    housingStatus: String, // 'stable', 'homeless', 'foster_care'
-  },
+    firstName: String (required)
+    lastName: String (required)
+    dateOfBirth: Date (required)
+    gender: String (required)
+    race: [String] (required)
+    ethnicity: String (required)
+    iepStatus: Boolean (required)
+    iepDocument: ObjectId (ref: Documents, optional)
+    housingStatus: Enum ['stable', 'homeless', 'foster_care'] (required)
+  }
   household: {
     parents: [{
-      firstName: String,
-      lastName: String,
-      relationship: String,
-      email: String,
-      phone: String,
-      income: Number,
-      incomeFrequency: String,
-      employmentStatus: String
-    }],
-    householdSize: Number,
-    annualIncome: Number
-  },
+      firstName: String (required)
+      lastName: String (required)
+      relationship: String (required)
+      email: String (required)
+      phone: String (required)
+      income: Number (required)
+      incomeFrequency: String (required)
+      employmentStatus: String (required)
+    }]
+    householdSize: Number (required)
+    annualIncome: Number (required)
+  }
   schoolPreferences: [{
-    schoolId: ObjectId (ref: Schools),
-    priority: Number // 1, 2, 3
-  }],
-  assignedSchoolId: ObjectId (ref: Schools, optional),
+    schoolId: ObjectId (ref: Schools, required)
+    priority: Number (required)
+  }]
+  assignedSchoolId: ObjectId (ref: Schools, optional)
   eligibility: {
-    ageEligible: Boolean,
-    fplPercentage: Number,
-    priorityTier: Number, // 1, 2, 3
-    timingRestriction: Date, // Date when enrollment can begin
-    holdReason: String
-  },
-  stage: String, // 'intake', 'enrollment_paperwork', 'enrolled', 'site_visit'
+    ageEligible: Boolean (required)
+    fplPercentage: Number (required)
+    priorityTier: Number (required)
+    timingRestriction: Date (optional)
+    holdReason: String (optional)
+  }
+  stage: Enum ['intake', 'enrollment_paperwork', 'enrolled', 'site_visit'] (required)
   stageHistory: [{
-    stage: String,
-    status: String,
-    timestamp: Date,
-    notes: String
-  }],
-  assignedTeacherId: ObjectId (ref: Users, optional),
+    stage: String (required)
+    status: String (required)
+    timestamp: Date (required)
+    notes: String (optional)
+  }]
+  assignedTeacherId: ObjectId (ref: Users, optional)
   documents: [{
-    documentId: ObjectId (ref: Documents),
-    documentType: String,
-    status: String, // 'pending', 'verified', 'action_required', 'rejected'
-    verificationDate: Date,
-    verifiedBy: ObjectId (ref: Users),
-    notes: String
-  }],
-  status: String, // 'draft', 'submitted', 'under_review', 'approved', 'waitlisted', 'enrolled', 'withdrawn'
-  submittedAt: Date,
-  createdAt: Date,
-  updatedAt: Date
+    documentId: ObjectId (ref: Documents, required)
+    documentType: String (required)
+    status: Enum ['pending', 'verified', 'action_required', 'rejected'] (required)
+    verificationDate: Date (optional)
+    verifiedBy: ObjectId (ref: Users, optional)
+    notes: String (optional)
+  }]
+  status: Enum ['draft', 'submitted', 'under_review', 'approved', 'waitlisted', 'enrolled', 'withdrawn'] (required)
+  submittedAt: Date (optional)
+  createdAt: Date (automatic)
+  updatedAt: Date (automatic)
 }
 ```
 
 ### Documents Collection
 ```javascript
 {
-  _id: ObjectId,
-  applicationId: ObjectId (ref: Applications, indexed),
-  uploadedBy: ObjectId (ref: Users),
-  fileName: String,
-  fileType: String, // 'birth_certificate', 'income_verification', 'iep', 'proof_of_residency', etc.
-  mimeType: String,
-  fileSize: Number,
-  storagePath: String, // Path in storage service
-  uploadedAt: Date,
-  expiresAt: Date
+  applicationId: ObjectId (ref: Applications, indexed, required)
+  uploadedBy: ObjectId (ref: Users, required)
+  fileName: String (required)
+  fileType: String (required)
+  mimeType: String (required)
+  fileSize: Number (required)
+  storagePath: String (required)
+  uploadedAt: Date (default: Date.now)
+  expiresAt: Date (optional)
 }
 ```
 
 ### Communications Collection
 ```javascript
 {
-  _id: ObjectId,
-  applicationId: ObjectId (ref: Applications, indexed),
-  from: ObjectId (ref: Users),
-  to: ObjectId (ref: Users),
-  type: String, // 'email', 'sms', 'phone_log', 'in_app'
-  subject: String (optional),
-  message: String,
-  status: String, // 'sent', 'delivered', 'failed', 'pending'
-  sentAt: Date,
-  createdAt: Date
+  applicationId: ObjectId (ref: Applications, indexed, required)
+  from: ObjectId (ref: Users, required)
+  to: ObjectId (ref: Users, required)
+  type: Enum ['email', 'sms', 'phone_log', 'in_app'] (required)
+  subject: String (optional)
+  message: String (required)
+  status: Enum ['sent', 'delivered', 'failed', 'pending'] (required)
+  sentAt: Date (optional)
+  createdAt: Date (automatic)
+  updatedAt: Date (automatic)
 }
 ```
 
 ### SiteVisits Collection
 ```javascript
 {
-  _id: ObjectId,
-  applicationId: ObjectId (ref: Applications, indexed),
-  teacherId: ObjectId (ref: Users),
-  scheduledDate: Date,
-  scheduledTime: String,
-  status: String, // 'scheduled', 'completed', 'cancelled', 'rescheduled'
+  applicationId: ObjectId (ref: Applications, indexed, required)
+  teacherId: ObjectId (ref: Users, indexed, required)
+  scheduledDate: Date (indexed, required)
+  scheduledTime: String (required)
+  status: Enum ['scheduled', 'completed', 'cancelled', 'rescheduled'] (required)
   asqResults: {
-    communication: Number,
-    grossMotor: Number,
-    fineMotor: Number,
-    problemSolving: Number,
-    personalSocial: Number,
-    overallScore: Number,
-    notes: String
-  },
-  createdAt: Date,
-  updatedAt: Date
+    communication: Number
+    grossMotor: Number
+    fineMotor: Number
+    problemSolving: Number
+    personalSocial: Number
+    overallScore: Number
+    notes: String (optional)
+  }
+  createdAt: Date (automatic)
+  updatedAt: Date (automatic)
 }
 ```
 
 ### Classrooms Collection
 ```javascript
 {
-  _id: ObjectId,
-  schoolId: ObjectId (ref: Schools, indexed),
-  name: String,
-  teacherId: ObjectId (ref: Users),
-  capacity: Number,
-  currentStudents: Number,
-  gradeLevel: String,
-  isActive: Boolean (default: true),
-  createdAt: Date,
-  updatedAt: Date
+  schoolId: ObjectId (ref: Schools, indexed, required)
+  name: String (required)
+  teacherId: ObjectId (ref: Users, required)
+  capacity: Number (required)
+  currentStudents: Number (default: 0)
+  gradeLevel: String (required)
+  isActive: Boolean (default: true)
+  createdAt: Date (automatic)
+  updatedAt: Date (automatic)
 }
 ```
 
 ### AuditLogs Collection
 ```javascript
 {
-  _id: ObjectId,
-  userId: ObjectId (ref: Users, optional for system actions),
-  action: String, // 'create', 'read', 'update', 'delete'
-  resourceType: String, // 'application', 'user', 'document', etc.
-  resourceId: ObjectId,
-  details: Object,
-  ipAddress: String,
-  userAgent: String,
-  timestamp: Date
+  userId: ObjectId (ref: Users, optional)
+  action: Enum ['create', 'read', 'update', 'delete'] (required)
+  resourceType: String (required)
+  resourceId: ObjectId (required)
+  details: Mixed (required)
+  ipAddress: String (optional)
+  userAgent: String (optional)
+  timestamp: Date (default: Date.now, expires: 60 days)
 }
 ```
 
@@ -274,10 +289,11 @@
 - `userId`
 - `resourceType`
 - `resourceId`
-- `timestamp` (TTL for cleanup)
+- `timestamp` (TTL for 60-day cleanup)
 
 ## Relationships
 
+Mongoose `populate()` is used for relationships:
 - Users → Districts (many-to-one via districtId)
 - Users → Schools (many-to-one via schoolId)
 - Users → Roles (many-to-many via permissions array)
@@ -289,3 +305,44 @@
 - Applications → SiteVisits (one-to-many)
 - Classrooms → Schools (many-to-one)
 - Classrooms → Users (many-to-one via teacherId)
+
+## Mongoose Middleware
+
+Pre/post hooks will be implemented for:
+- **Pre-save**: Audit logging, data validation
+- **Pre-delete**: Cascade deletion checks
+- **Post-save**: Trigger notifications, update related documents
+- **Post-find**: Permission filtering
+
+## Usage Examples
+
+### Creating a User
+```typescript
+import User from '~/server/models/User'
+
+const user = await User.create({
+  email: 'user@example.com',
+  passwordHash: 'hashed_password',
+  firstName: 'John',
+  lastName: 'Doe',
+  role: 'district_admin',
+  permissions: ['applications.view', 'applications.create']
+})
+```
+
+### Querying with Population
+```typescript
+const application = await Application.findById(appId)
+  .populate('parentId')
+  .populate('assignedSchoolId')
+  .populate('documents.documentId')
+```
+
+### Using Middleware
+```typescript
+ApplicationSchema.pre('save', function() {
+  // Audit log entry before save
+  // Validation checks
+  // Data transformation
+})
+```

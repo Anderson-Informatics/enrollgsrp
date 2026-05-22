@@ -8,23 +8,40 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "typecheck": "nuxt typecheck"
+    "lint:fix": "eslint . --fix",
+    "typecheck": "nuxt typecheck",
+    "test": "vitest",
+    "test:unit": "vitest --run",
+    "test:integration": "vitest --config vitest.integration.config.ts --run",
+    "test:all": "pnpm test:unit && pnpm test:integration",
+    "test:coverage": "vitest --coverage"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.108",
     "@iconify-json/simple-icons": "^1.2.83",
     "@nuxt/ui": "^4.7.1",
+    "bcrypt": "^5.1.1",
     "fs-extra": "^11.3.5",
     "html-to-docx": "^1.8.0",
-    "mongodb": "^6.10.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
     "nuxt": "^4.4.6",
     "tailwindcss": "^4.3.0"
   },
   "devDependencies": {
+    "@iconify-json/heroicons": "^1.2.3",
     "@nuxt/eslint": "^1.15.2",
+    "@nuxt/test-utils": "^4.0.3",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.10.1",
+    "@vitest/ui": "^4.1.7",
+    "@vue/test-utils": "^2.4.10",
     "eslint": "^10.4.0",
+    "happy-dom": "^20.9.0",
+    "playwright-core": "^1.60.0",
     "typescript": "^6.0.3",
+    "vitest": "^4.1.7",
     "vue-tsc": "^3.3.0"
   },
   "packageManager": "pnpm@11.1.3"

@@ -276,39 +276,26 @@
             <section id="last-7-days">
                 <h2>Last 7 Days</h2>
                 <div class="log-entry">
-                    <h3>May 21, 2026</h3>
-                    <div class="log-date">Wednesday</div>
-                    
+                    <h3>May 22, 2026 (afternoon)</h3>
+                    <div class="log-date">Thursday</div>
+
                     <div class="log-section">
-                        <h4>Completed</h4>
+                        <h4>Completed — Sprint 5: Form Builder Foundation (80%)</h4>
                         <ul>
-                            <li>Updated implementation-plan.html to align with spec.html and features.html (merged from 24 to 22 features)</li>
-                            <li>Merged Feature 5 (Enrollment Priority System) into Feature 4 (Automatic Eligibility Determination)</li>
-                            <li>Merged Feature 13 (Parent Portal & Status Tracking) into Feature 6 (Application Lifecycle Management)</li>
-                            <li>Removed scope limitations from Form Builder, Reporting, and Data Integration features</li>
-                            <li>Updated development-plan.html to reflect 22-feature structure (merged sprints, renumbered from 30 to 29 sprints)</li>
-                            <li>Updated FEATURE_STATUS.html to reflect 22 features</li>
-                            <li>Started Sprint 1: Project Setup & Database Schema</li>
-                            <li>Added MongoDB driver dependency to package.json</li>
-                            <li>Created .env.example template with MongoDB and app configuration</li>
-                            <li>Created database-schema.md documentation with all collections and relationships</li>
-                            <li>Created MongoDB connection utility (server/utils/mongodb.ts)</li>
-                            <li>Updated nuxt.config.ts with runtimeConfig for environment variables</li>
-                            <li>Created TypeScript types for database collections (types/database.ts)</li>
-                            <li>Created health check API endpoint (server/api/health.get.ts)</li>
-                            <li>Created error handler utility (server/utils/error-handler.ts)</li>
-                            <li>Created logger utility (server/utils/logger.ts)</li>
-                            <li>Created Netlify deployment configuration (netlify.toml)</li>
-                            <li>Updated .gitignore with IDE exceptions</li>
-                            <li>Created placeholder composable for MongoDB (composables/useMongoDb.ts)</li>
-                            <li>Completed Sprint 1: Project Setup & Database Schema</li>
+                            <li><strong>FormSchema Mongoose model</strong> — defined with 13 field types (text, number, email, phone, date, select, multiselect, checkbox, radio, textarea, file, address, ssn), validations, conditional logic, and ordering</li>
+                            <li><strong>Permission catalog update</strong> — added form_schemas:read, form_schemas:write, form_schemas:delete to PERMISSION_CODES and role presets (county_admin, district_admin, school_admin)</li>
+                            <li><strong>Form schema CRUD API</strong> — GET/POST/PATCH/DELETE routes at /api/admin/form-schemas with permission enforcement and audit logging</li>
+                            <li><strong>County intake form seeder</strong> — plugin seeds default Wayne County Pre-K intake form with 15 fields (child info, parent info, household, school preferences)</li>
+                            <li><strong>Integration tests</strong> — 5 test files covering all CRUD endpoints with permission enforcement (23 tests total)</li>
                         </ul>
                     </div>
 
                     <div class="log-section">
-                        <h4>In Progress</h4>
+                        <h4>Test totals</h4>
                         <ul>
-                            <li>Documentation alignment across all project files</li>
+                            <li>Unit tests: 45 passing</li>
+                            <li>Integration tests: 67 passing (15 test files)</li>
+                            <li>Build: passing | Lint: clean | Typecheck: clean</li>
                         </ul>
                     </div>
 
@@ -318,12 +305,230 @@
                     </div>
 
                     <div class="log-section">
-                        <h4>Tomorrow</h4>
+                        <h4>Tomorrow / Next session</h4>
                         <ul>
-                            <li>Begin Sprint 2: Authentication System</li>
-                            <li>Implement user registration and login</li>
-                            <li>Set up JWT token handling</li>
-                            <li>Create authentication middleware</li>
+                            <li>Complete Sprint 5: Build form builder UI for county/school admins (drag-and-drop field editor)</li>
+                            <li>Write unit tests for FormSchema model and utilities</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="log-entry">
+                    <h3>May 22, 2026</h3>
+                    <div class="log-date">Thursday</div>
+
+                    <div class="log-section">
+                        <h4>Completed — Bug Fixes</h4>
+                        <ul>
+                            <li>Fixed SelectItem empty string error in audit-log.vue (changed value from '' to null)</li>
+                            <li>Added heroicons icon collection to nuxt.config.ts ui.icons configuration</li>
+                            <li>Added /api/_nuxt_icon to public API routes in auth middleware to allow icon loading without authentication</li>
+                        </ul>
+                    </div>
+
+                    <div class="log-section">
+                        <h4>Test totals</h4>
+                        <ul>
+                            <li>Unit tests: 45 passing</li>
+                            <li>Integration tests: 44 passing (10 test files)</li>
+                            <li>Build: passing | Lint: clean | Typecheck: clean</li>
+                        </ul>
+                    </div>
+
+                    <div class="log-section">
+                        <h4>Blockers</h4>
+                        <p>None</p>
+                    </div>
+
+                    <div class="log-section">
+                        <h4>Tomorrow / Next session</h4>
+                        <ul>
+                            <li>Continue Sprint 5: Form Builder Foundation — design FormSchema Mongoose model with field types, validations, conditional logic</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="log-entry">
+                    <h3>May 21, 2026 (night)</h3>
+                    <div class="log-date">Wednesday</div>
+
+                    <div class="log-section">
+                        <h4>Completed — UI Gap Patch (post-Sprint 4)</h4>
+                        <ul>
+                            <li><strong>Authentication UI</strong></li>
+                            <li><code>app/pages/login.vue</code> — email/password form, error display, link to register</li>
+                            <li><code>app/pages/register.vue</code> — first name, last name, email, password, account type select</li>
+                            <li><code>app/middleware/auth.global.ts</code> — global route guard: unauthenticated users redirected to <code>/login</code>, authenticated users redirected away from auth pages</li>
+                            <li><strong>Layout architecture refactor</strong></li>
+                            <li><code>app/layouts/default.vue</code> — extracted sidebar + header from <code>app.vue</code>; includes logout button, user display name/initials, access-control-aware Admin nav section</li>
+                            <li><code>app/layouts/auth.vue</code> — minimal centered wrapper for login/register pages</li>
+                            <li><code>app/app.vue</code> — simplified to <code>&lt;UApp&gt;&lt;NuxtLayout&gt;&lt;NuxtPage /&gt;&lt;/NuxtLayout&gt;&lt;/UApp&gt;</code></li>
+                            <li><strong>Bearer token fix (critical bug)</strong></li>
+                            <li>Created <code>composables/useApi.ts</code> — wraps <code>$fetch.create()</code> with <code>Authorization: Bearer &lt;token&gt;</code> via <code>onRequest</code> hook; uses <code>new Headers()</code> to safely set header regardless of existing header type</li>
+                            <li>Updated all admin pages (<code>admin/users/index.vue</code>, <code>admin/users/[id].vue</code>) to use <code>$api</code> instead of bare <code>$fetch</code></li>
+                            <li><strong>New admin pages</strong></li>
+                            <li><code>app/pages/admin/audit-log.vue</code> — paginated audit log table with resource type filter and refresh; previously API-only with no UI</li>
+                            <li><code>app/pages/admin/users/create.vue</code> — create user form with role selection</li>
+                            <li>Added Create User button to <code>admin/users/index.vue</code></li>
+                            <li><strong>useAuth improvements</strong></li>
+                            <li>User info now persisted in <code>auth_user_info</code> cookie so display name/initials survive hard page reloads</li>
+                            <li>Added <code>AuthUser</code> interface exported from <code>types/auth.ts</code></li>
+                            <li><strong>Infrastructure fixes</strong></li>
+                            <li>Removed <code>'/': { prerender: true }</code> from <code>nuxt.config.ts</code> (auth-gated app cannot prerender root)</li>
+                            <li>Added root <code>composables/</code> to <code>imports.dirs</code> in <code>nuxt.config.ts</code> so <code>useAuth</code>/<code>useApi</code> are properly auto-imported in Nuxt 4 <code>app/</code> srcDir layout</li>
+                            <li>Fixed <code>pageTitle</code> computation: now uses <code>startsWith</code> so sub-routes like <code>/admin/users/123</code> correctly show "Users" in header</li>
+                        </ul>
+                    </div>
+
+                    <div class="log-section">
+                        <h4>Test totals</h4>
+                        <ul>
+                            <li>Unit tests: 45 passing</li>
+                            <li>Integration tests: 44 passing (10 test files)</li>
+                            <li>Build: passing | Lint: clean | Typecheck: clean</li>
+                        </ul>
+                    </div>
+
+                    <div class="log-section">
+                        <h4>Blockers</h4>
+                        <p>None</p>
+                    </div>
+
+                    <div class="log-section">
+                        <h4>Tomorrow / Next session</h4>
+                        <ul>
+                            <li>Begin Sprint 5: Form Builder Foundation — dynamic form schema, field types, school-specific configuration</li>
+                            <li>Remaining known UI gap (deferred — requires backend change): permission scope selector (System-wide / District / School / Single School) needs <code>User.permissions</code> schema change from <code>string[]</code> to <code>{code, scope, scopeId}[]</code></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="log-entry">
+                    <h3>May 21, 2026 (evening)</h3>
+                    <div class="log-date">Wednesday</div>
+
+                    <div class="log-section">
+                        <h4>Completed — Sprint 4: Granular Permission System (Part 2)</h4>
+                        <ul>
+                            <li><strong>API: User management CRUD</strong></li>
+                            <li><code>GET /api/admin/users</code> — upgraded with search, role filter, and pagination</li>
+                            <li><code>GET /api/admin/users/:id</code> — full user detail, <code>passwordHash</code> excluded</li>
+                            <li><code>PATCH /api/admin/users/:id</code> — update role (reseeds permissions automatically) and isActive flag</li>
+                            <li><code>PATCH /api/admin/users/:id/permissions</code> — grant/revoke individual permission codes, validates against catalog, writes audit log entry</li>
+                            <li><code>GET /api/admin/audit-log</code> — paginated audit log with optional <code>resourceType</code> filter</li>
+                            <li><code>GET /api/admin/permissions</code> — full catalog of all 33 permission codes with name and category</li>
+                            <li><strong>Permission seeder</strong>: <code>server/plugins/seed-permissions.ts</code> populates Permission collection on server startup via bulkWrite upsert</li>
+                            <li><strong>Audit log utility</strong>: <code>server/utils/audit-log.ts</code> — fire-and-forget permission change logging (never blocks the main request)</li>
+                            <li><strong>Bug fix in all other models</strong>: Applied <code>as mongoose.Model&lt;T&gt;</code> type cast to <code>AuditLog</code> and <code>Permission</code> models (matching <code>User</code> pattern) to resolve Mongoose union-type TS error</li>
+                            <li><strong>UI: User management pages</strong></li>
+                            <li><code>app/pages/admin/users/index.vue</code> — searchable, role-filterable, paginated user table with status and role badges</li>
+                            <li><code>app/pages/admin/users/[id].vue</code> — user profile editor (role + active toggle) and per-permission checkbox matrix grouped by category; live feedback, immediate effect</li>
+                            <li>Added Admin nav link (<code>i-heroicons-shield-check</code>) to sidebar in <code>app.vue</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="log-section">
+                        <h4>Test totals</h4>
+                        <ul>
+                            <li>Unit tests: 45 passing</li>
+                            <li>Integration tests: 44 passing (10 test files)</li>
+                        </ul>
+                    </div>
+
+                    <div class="log-section">
+                        <h4>Blockers</h4>
+                        <p>None</p>
+                    </div>
+
+                    <div class="log-section">
+                        <h4>Tomorrow / Next session</h4>
+                        <ul>
+                            <li>Begin Sprint 5: Form Builder Foundation — dynamic form schema, field types, school-specific configuration</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="log-entry">
+                    <h3>May 21, 2026 (afternoon/evening)</h3>
+                    <div class="log-date">Wednesday</div>
+
+                    <div class="log-section">
+                        <h4>Completed</h4>
+                        <ul>
+                            <li><strong>Sprint 3 (Part 1) — Granular Permission System</strong></li>
+                            <li>Built permission code catalog and role presets in <code>server/utils/permissions.ts</code> (super_admin, county_admin, district_admin, school_admin, teacher, parent)</li>
+                            <li>Implemented <code>hasPermission</code>, <code>hasAnyPermission</code>, <code>hasAllPermissions</code> with <code>*</code> wildcard support (TDD, 18 unit tests)</li>
+                            <li>Built <code>requirePermission</code> server helper (<code>server/utils/require-permission.ts</code>) that re-fetches user permissions for live revocation</li>
+                            <li>Wired role → permissions on registration in <code>server/api/auth/register.post.ts</code></li>
+                            <li>Added sample protected route <code>GET /api/admin/users</code> requiring <code>users:read</code></li>
+                            <li><strong>Integration testing infrastructure</strong></li>
+                            <li>Created <code>vitest.integration.config.ts</code>, <code>tests/integration/setup.ts</code>, <code>tests/integration/helpers.ts</code></li>
+                            <li>Wrote 24 integration tests against running dev server (health, register, login, auth middleware, permission enforcement)</li>
+                            <li>Added <code>pnpm test:unit</code>, <code>pnpm test:integration</code>, <code>pnpm test:all</code> scripts</li>
+                            <li><strong>Sprint 1 bugs caught and fixed by new integration tests</strong></li>
+                            <li>Moved Nitro mongodb plugin from <code>server/utils/</code> → <code>server/plugins/</code> (was never auto-discovered, mongoose never connected)</li>
+                            <li>Health endpoint now reports real <code>mongoose.connection.readyState</code> instead of hardcoded <code>connected</code></li>
+                            <li>Fixed auth middleware: <code>'/'.startsWith('/')</code> matched everything, making all routes public; restricted to <code>/api/*</code> with exact-prefix public routes</li>
+                            <li>Created <code>.env</code> from <code>.env.example</code> so MongoDB Atlas connects in dev</li>
+                            <li><strong>Documentation</strong></li>
+                            <li>Rewrote <code>TDD_WORKFLOW.md</code> with the working integration test approach</li>
+                            <li>Updated <code>AGENTS.md</code> to mandate updating progress files after each sprint</li>
+                            <li>Updated <code>PROGRESS.html</code>, <code>FEATURE_STATUS.html</code>, <code>KANBAN.html</code>, <code>DAILY_LOG.html</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="log-section">
+                        <h4>Test totals</h4>
+                        <ul>
+                            <li>Unit tests: 45 passing</li>
+                            <li>Integration tests: 24 passing</li>
+                        </ul>
+                    </div>
+
+                    <div class="log-section">
+                        <h4>Blockers</h4>
+                        <p>None</p>
+                    </div>
+
+                    <div class="log-section">
+                        <h4>Tomorrow / Next session</h4>
+                        <ul>
+                            <li>Begin Sprint 4: User management UI, permission builder, audit logging</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="log-entry">
+                    <h3>May 21, 2026 (morning)</h3>
+                    <div class="log-date">Wednesday</div>
+
+                    <div class="log-section">
+                        <h4>Completed</h4>
+                        <ul>
+                            <li>Updated implementation-plan.html to align with spec.html and features.html (merged from 24 to 22 features)</li>
+                            <li>Merged Feature 5 (Enrollment Priority System) into Feature 4 (Automatic Eligibility Determination)</li>
+                            <li>Merged Feature 13 (Parent Portal &amp; Status Tracking) into Feature 6 (Application Lifecycle Management)</li>
+                            <li>Removed scope limitations from Form Builder, Reporting, and Data Integration features</li>
+                            <li>Updated development-plan.html to reflect 22-feature structure (merged sprints, renumbered from 30 to 29 sprints)</li>
+                            <li>Updated FEATURE_STATUS.html to reflect 22 features</li>
+                            <li><strong>Sprint 1: Project Setup &amp; Database Schema</strong> completed</li>
+                            <li>Added Mongoose ODM and @types/node dependencies</li>
+                            <li>Created <code>.env.example</code>, runtimeConfig wiring, schemas for 10 collections</li>
+                            <li>Created health endpoint, error handler, logger, Netlify config</li>
+                            <li><strong>Sprint 2: Authentication System</strong> completed</li>
+                            <li>JWT, bcrypt, register/login endpoints, auth middleware</li>
+                        </ul>
+                    </div>
+
+                    <div class="log-section">
+                        <h4>Blockers</h4>
+                        <p>None</p>
+                    </div>
+
+                    <div class="log-section">
+                        <h4>Next</h4>
+                        <ul>
+                            <li>Sprint 3: Granular permission system (Part 1)</li>
                         </ul>
                     </div>
                 </div>
