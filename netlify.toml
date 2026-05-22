@@ -5,6 +5,11 @@
   NODE_VERSION = "24"
 
 [[redirects]]
+  from = "/_nuxt/*"
+  to = "/_nuxt/:splat"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
